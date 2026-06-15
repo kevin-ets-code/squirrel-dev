@@ -1,0 +1,291 @@
+{
+  "profile": {
+    "name": "Kevin NICOLAS",
+    "role": "Développeur No-code/Low-code",
+    "tagline": "Je transforme des problèmes métier flous en produits qui tournent en prod.",
+    "location": "Paris, France",
+    "email": "kevin.nicolas.ets@gmail.com",
+    "links": {
+      "github": "https://github.com/kevin-ets-code",
+      "linkedin": "https://www.linkedin.com/in/kevin-nicolas201087/"
+    }
+  },
+  "readme": {
+    "intro": "[À COMPLÉTER — Qui je suis, en 2-3 phrases : ton prénom/nom, ton métier (développeur no-code / low-code), ce que tu construis (sites vitrines, applications sur-mesure) et pour qui.]",
+    "approach": "[À COMPLÉTER — Ton approche et ce qui te distingue. Pistes : autodidacte, tu pars du **problème métier** réel pour livrer une **solution qui tourne en prod** ; tu mixes outils no-code/low-code et code quand c'est pertinent ; tu soignes le rendu et la maintenabilité. Écris-le avec tes mots, ne garde rien d'inventé.]",
+    "navigation": "Ce portfolio est un éditeur de code. Chaque projet est un fichier `.md` : ouvre-les dans l'explorateur à gauche, et bascule entre la vue **Preview** (lisible) et **Raw** (le JSON brut). Le panneau **Outils** (icône paquet dans la barre de gauche) liste les technologies et montre, pour chacune, les projets qui l'utilisent. Sur ordinateur, la vue **Graph** relie projets et outils : clique un nœud projet pour ouvrir sa fiche."
+  },
+  "projects": [
+    {
+      "id": "karine-de-leusse",
+      "name": "karine-de-leusse",
+      "type": "pro",
+      "year": 2026,
+      "status": "En ligne",
+      "title": "Site vitrine -- Karine de Leusse",
+      "oneliner": "Site vitrine sur-mesure pour une psychologue clinicienne spécialisée en cyberaddiction, à Paris.",
+      "problem": "Karine de Leusse exerçait avec deux présences en ligne distinctes et cloisonnées (cyberaddictologie.fr, axé soin clinique, et fugitisme.fr, axé réflexion éditoriale), sans unité de marque ni d'expérience. Il fallait fusionner ces deux identités sous un seul domaine, valoriser à la fois son activité de soin et son travail éditorial (~30 textes : articles, carnets, extraits, presse), et offrir une prise de rendez-vous fluide.",
+      "solution": "Refonte complète sous Webflow réunissant les deux sites sous cyberaddictologie.fr, avec une architecture de 7 pages (Accueil, Le Fugitisme, Magazine, Vidéos, Cyberaddiction, À propos, Contact). Design system sur-mesure : grille d'espacement de 8px, largeur de lecture optimisée (~65 caractères/ligne) et lettrine en CSS sur les articles. Intégration du CTA Doctolib omniprésent, scroll fluide via Lenis.js, traitement éditorial de ~30 textes avec règles de formatage strictes, et pages légales conformes (sans bandeau cookies, aucun tracker tiers).",
+      "stack": [
+        "webflow",
+        "javascript",
+        "css"
+      ],
+      "metrics": [],
+      "highlights": [
+        "Fusion de deux sites cloisonnés sous une marque et un domaine uniques",
+        "Architecture de 7 pages couvrant soin clinique et travail éditorial",
+        "Design system sur-mesure et mise en page éditoriale soignée (~30 textes)",
+        "Prise de rendez-vous Doctolib intégrée sur l'ensemble du site",
+        "Conforme RGPD : aucun tracker tiers, pas de bandeau cookies"
+      ],
+      "demo": "https://cyberaddictologie.fr",
+      "repo": null
+    },
+    {
+      "id": "bibliogo",
+      "name": "bibliogo",
+      "type": "perso",
+      "year": 2026,
+      "status": "En test fermé",
+      "title": "BiblioGo — Gestion de bibliothèque personnelle",
+      "oneliner": "Application mobile pour cataloguer, organiser et suivre ses lectures, avec une dimension sociale et de la gamification.",
+      "problem": "Les lecteurs n'ont pas d'outil simple pour cataloguer leur bibliothèque physique, suivre leur progression de lecture et partager leurs découvertes. Les solutions existantes sont soit trop basiques, soit pas adaptées au public francophone (couverture des livres FR souvent incomplète).",
+      "solution": "Une app mobile Flutter complète : scan ISBN et recherche multi-sources (ISBNDB + Google Books), bibliothèque organisée en étagères/tags/séries, suivi de lecture (sessions, streaks, objectifs, badges), statistiques, réseau social (amis, leaderboard, étagères publiques), citations, prêts/emprunts, wishlist, import/export CSV et export RGPD. Backend Supabase sur-mesure (RLS, Edge Functions pour le lookup ISBN, la récupération de couvertures et la traduction de catégories). Monétisation via abonnement Premium (RevenueCat). Deep links et site web associé.",
+      "stack": [
+        "claude",
+        "claudecode",
+        "flutter",
+        "supabase",
+        "riverpod",
+        "revenuecat",
+        "github"
+      ],
+      "metrics": [
+        {
+          "label": "Modules fonctionnels",
+          "value": "22"
+        }
+      ],
+      "highlights": [
+        "Scan ISBN et recherche multi-sources (ISBNDB + Google Books)",
+        "Suivi de lecture gamifié : sessions, streaks, objectifs, badges",
+        "Dimension sociale : amis, leaderboard, étagères publiques",
+        "Backend Supabase sur-mesure avec Edge Functions",
+        "Import/export CSV et export RGPD"
+      ],
+      "demo": null,
+      "repo": null
+    },
+    {
+      "id": "chronos-humanite",
+      "name": "chronos-humanite",
+      "type": "perso",
+      "year": "2026",
+      "status": "En ligne",
+      "title": "CHRONOS · Humanité",
+      "oneliner": "Globe 3D interactif retraçant l'histoire de l'humanité, de ~300 000 av. J.-C. à aujourd'hui.",
+      "problem": "Visualiser l'histoire humaine sur une frise chronologique linéaire reste abstrait : on perçoit mal la dimension géographique des migrations, empires et événements.",
+      "solution": "Un globe Three.js interactif couplé à une timeline : affichage d'événements, overlays de territoires/empires, atmosphère et ciel étoilé procéduraux. Construit en un seul index.html léger et autonome, avec données externes en JSON.",
+      "stack": [
+        "claude",
+        "claudecode",
+        "threejs",
+        "javascript",
+        "html",
+        "css",
+        "github",
+        "vercel"
+      ],
+      "highlights": [
+        "Rendu 3D temps réel : tone mapping ACES Filmic, ombres de nuages, terminateur orangé, bloom desktop.",
+        "Ciel procédural : champ d'étoiles ShaderMaterial avec scintillement, skybox Voie lactée, section réglages GALAXIE.",
+        "Overlay de territoires via projection texture Canvas 2D (dataset Cliopatria/Seshat).",
+        "UI mobile optimisée (textures 2K) et contrôle artistique manuel via globals window._*."
+      ],
+      "demo": "https://squirrel-app-chronos-humanite.vercel.app/",
+      "repo": "https://github.com/kevin-ets-code/chronos-humanite"
+    },
+    {
+      "id": "cell-block",
+      "name": "cell-block",
+      "type": "perso",
+      "year": "2026",
+      "status": "En ligne",
+      "title": "Cell Block",
+      "oneliner": "Mini-jeu web multijoueur asynchrone basé sur le Dilemme du Prisonnier, en direction artistique terminal phosphore / CRT années 80.",
+      "problem": "Recréer la tension du Dilemme du Prisonnier en ligne entre deux inconnus, sans temps réel ni rounds, avec un seul choix secret par partie révélé une fois les deux joueurs présents.",
+      "solution": "Jeu React + Vite déployé sur Vercel, avec matchmaking asynchrone géré par Supabase (PostgreSQL, Edge Functions, pg_cron). Auth username + password sans email via Supabase Auth, calcul des scores côté serveur en Edge Function, expiration auto des parties non rejointes après 1h.",
+      "stack": [
+        "claude",
+        "claudecode",
+        "react",
+        "vite",
+        "supabase",
+        "vercel",
+        "javascript",
+        "css"
+      ],
+      "highlights": [
+        "Matchmaking asynchrone : un joueur crée une partie waiting ou rejoint celle d'un inconnu, résultats calculés instantanément à la jonction.",
+        "Calcul des scores 100 % côté serveur (Edge Functions) pour empêcher toute triche client.",
+        "Direction artistique DEAD DROP complète : effets CRT (scanlines, flicker, glow phosphore), polices VT323 + Space Mono, palette terminal vert.",
+        "Carte d'agent partageable avec QR code, export PNG via html2canvas, et Web Share API."
+      ],
+      "demo": "https://squirrel-game-prisoners-dilemma.vercel.app/",
+      "repo": ""
+    },
+    {
+  "id": "pharow",
+  "name": "pharow",
+  "type": "pro",
+  "year": "2023",
+  "status": "En ligne",
+  "title": "Pharow -- site marketing B2B",
+  "oneliner": "Site vitrine d'une plateforme SaaS de génération de leads B2B en France.",
+  "problem": "Refonte du site pré existant + nouvelles page",
+  "solution": "Intégration Webflow - Design assuré par une personne tierce - ",
+  "stack": ["webflow","javascript","claude","css","html"],
+  "metrics": [
+  ],
+  "highlights": [
+    "Création page pricing custom pour des prix dynamiques"
+  ],
+  "demo": "https://www.pharow.com/",
+  "repo": ""
+},
+{
+  "id": "neobrain",
+  "name": "neobrain",
+  "type": "pro",
+  "year": "2023",
+  "status": "En ligne",
+  "title": "Neobrain -- Site vitrine -- Plateforme Talent Management & compétences",
+  "oneliner": "Site vitrine d'une plateforme intuitive de gestion des talents au service de la performance de l’entreprise. Neobrain révèle les compétences et engage les collaborateurs dans la personnalisation de leurs parcours professionnels.",
+  "problem": "Refonte du site pré existant + nouvelles page",
+  "solution": "Intégration Webflow",
+  "stack": ["webflow","javascript","css","html","figma"],
+  "metrics": [
+  ],
+  "highlights": [
+    "Création page pricing custom pour des prix dynamiques"
+  ],
+  "demo": "https://www.neobrain.io/",
+  "repo": ""
+}
+  ],
+  "tools": {
+    "webflow": {
+      "label": "Webflow",
+      "description": "Plateforme no-code pour concevoir, animer et publier des sites web professionnels avec un CMS intégré.",
+      "url": "https://webflow.com",
+      "logo": "/logos/webflow.svg",
+      "color": "#146EF5"
+    },
+    "javascript": {
+      "label": "JavaScript",
+      "description": "Langage de programmation du web, qui rend les pages interactives et dynamiques côté navigateur.",
+      "url": "https://developer.mozilla.org/fr/docs/Web/JavaScript",
+      "logo": "/logos/javascript.svg",
+      "color": "#F7DF1E"
+    },
+    "css": {
+      "label": "CSS",
+      "description": "Langage de style qui définit la mise en page, les couleurs et l'apparence des pages web.",
+      "url": "https://developer.mozilla.org/fr/docs/Web/CSS",
+      "logo": "/logos/css.svg",
+      "color": "#663399"
+    },
+    "flutter": {
+      "label": "Flutter",
+      "description": "Framework de Google pour créer des applications mobiles, web et desktop à partir d'une seule base de code.",
+      "url": "https://flutter.dev",
+      "logo": "/logos/flutter.svg",
+      "color": "#02569B"
+    },
+    "supabase": {
+      "label": "Supabase",
+      "description": "Backend open source clé en main : base de données Postgres, authentification, stockage et API en temps réel.",
+      "url": "https://supabase.com",
+      "logo": "/logos/supabase.svg",
+      "color": "#3FCF8E"
+    },
+    "riverpod": {
+      "label": "Riverpod",
+      "description": "Gestionnaire d'état pour Flutter, qui rend les données de l'application prévisibles et testables.",
+      "url": "https://riverpod.dev",
+      "logo": "",
+      "color": "#3889c4"
+    },
+    "revenuecat": {
+      "label": "RevenueCat",
+      "description": "Service de gestion des abonnements et achats in-app pour applications mobiles, multi-plateforme.",
+      "url": "https://www.revenuecat.com",
+      "logo": "/logos/revenuecat.svg",
+      "color": "#F2545B"
+    },
+    "github": {
+      "label": "GitHub",
+      "description": "Plateforme d'hébergement de code basée sur Git, pour le versionnage et la collaboration sur les projets.",
+      "url": "https://github.com",
+      "logo": "/logos/github.svg",
+      "color": "#181717"
+    },
+    "threejs": {
+      "label": "Three.js",
+      "description": "Bibliothèque JavaScript pour créer et afficher des graphismes 3D dans le navigateur via WebGL.",
+      "url": "https://threejs.org",
+      "logo": "/logos/threejs.svg",
+      "color": "#000000"
+    },
+    "html": {
+      "label": "HTML",
+      "description": "Langage de balisage qui structure le contenu des pages web (texte, images, liens, etc.).",
+      "url": "https://developer.mozilla.org/fr/docs/Web/HTML",
+      "logo": "/logos/html.svg",
+      "color": "#E34F26"
+    },
+    "vercel": {
+      "label": "Vercel",
+      "description": "Plateforme de déploiement et d'hébergement pour sites et applications front-end, optimisée pour le web moderne.",
+      "url": "https://vercel.com",
+      "logo": "/logos/vercel.svg",
+      "color": "#000000"
+    },
+    "react": {
+      "label": "React",
+      "description": "Bibliothèque JavaScript pour construire des interfaces utilisateur à base de composants réutilisables.",
+      "url": "https://react.dev",
+      "logo": "/logos/react.svg",
+      "color": "#61DAFB"
+    },
+    "vite": {
+      "label": "Vite",
+      "description": "Outil de build front-end ultra-rapide, avec serveur de développement instantané et bundling optimisé.",
+      "url": "https://vite.dev",
+      "logo": "/logos/vite.svg",
+      "color": "#9135FF"
+    },
+    "claude": {
+      "label": "Claude",
+      "description": "Assistant IA d'Anthropic, utilisé pour le raisonnement, la rédaction et l'aide au développement.",
+      "url": "https://claude.ai",
+      "logo": "/logos/claude.svg",
+      "color": "#D97757"
+    },
+    "claudecode": {
+      "label": "Claude Code",
+      "description": "Outil de développement agentique d'Anthropic qui permet de déléguer des tâches de code à Claude en ligne de commande.",
+      "url": "https://www.claude.com/product/claude-code",
+      "logo": "/logos/claudecode.svg",
+      "color": "#D97757"
+    },
+    "figma": {
+      "label": "Figma",
+      "description": "Outil de design d'interface collaboratif pour le prototypage et la conception UI/UX en ligne.",
+      "url": "https://www.figma.com",
+      "logo": "/logos/figma.svg",
+      "color": "#F24E1E"
+    }
+  }
+}

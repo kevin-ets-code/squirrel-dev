@@ -1,0 +1,645 @@
+# Guide — Portfolio "IDE"
+
+Ce portfolio est une application Vite + React qui ressemble à un éditeur de code
+(thème sombre type VS Code). Tout le contenu vient d'un seul fichier de données :
+[`src/projects.json`](src/projects.json). Pas besoin de toucher au code React pour
+ajouter ou modifier un projet.
+
+---
+
+## 1. Ajouter / modifier un projet
+
+Ouvre [`src/projects.json`](src/projects.json) et ajoute un objet dans le tableau
+`projects`. Chaque projet suit ce schéma :
+
+```json
+{
+  "id": "mon-projet",
+  "name": "mon-projet",
+  "type": "pro",
+  "year": 2025,
+  "status": "En ligne",
+  "title": "Mon Projet — sous-titre court",
+  "oneliner": "Une phrase qui résume l'impact du projet.",
+  "problem": "Le contexte et le problème à résoudre.",
+  "solution": "Ce que tu as construit et comment.",
+  "stack": ["react", "node-js", "postgresql"],
+  "metrics": [
+    { "label": "Temps gagné", "value": "-40%" },
+    { "label": "Utilisateurs", "value": "1 200" }
+  ],
+  "highlights": [
+    "Un fait marquant qualitatif, quand un chiffre n'a pas de sens",
+    "Une autre réussite notable du projet"
+  ],
+  "demo": "https://exemple.com",
+  "repo": "https://github.com/moi/mon-projet"
+}
+```
+
+### Champs
+
+| Champ      | Type                         | Notes                                                        |
+| ---------- | ---------------------------- | ------------------------------------------------------------ |
+| `id`       | string (unique)              | Identifiant interne. Doit être unique.                       |
+| `name`     | string (slug)                | Nom de fichier affiché (`name.md`). Format `mon-projet`.     |
+| `type`     | `"pro"` ou `"perso"`         | Range le projet dans le dossier correspondant + couleur d'icône. |
+| `year`     | number                       | Année du projet.                                             |
+| `status`   | string                       | État du projet, affiché en badge coloré (voir ci-dessous).   |
+| `title`    | string                       | Titre H1 de la fiche (mode Preview).                         |
+| `oneliner` | string                       | Phrase d'accroche en italique.                               |
+| `problem`  | string                       | Section "Le problème".                                       |
+| `solution` | string                       | Section "La solution".                                       |
+| `stack`    | string[] (ids d'outils)      | **Ids** d'outils (pas les noms) — voir « Outils : système id / label ». |
+| `metrics`  | `{ label, value }[]`         | **Optionnel.** Résultats chiffrés → section "Résultats" (tableau label/valeur). Absent ou `[]` = section masquée. |
+| `highlights` | string[]                   | **Optionnel.** Faits marquants qualitatifs → section "Points clés" (liste à puces). Absent ou `[]` = section masquée. |
+| `demo`     | string (URL) ou `null`       | Lien démo. `null` = pas affiché.                             |
+| `repo`     | string (URL) ou `null`       | Lien code. `null` = pas affiché.                             |
+
+> Les couleurs d'icônes sont **fixes** (indépendantes de l'accent) : `pro` = **ambre**,
+> `perso` = **teal**. Changer l'accent ne les modifie pas. (L'accent par défaut étant
+> teal, l'icône perso a la même couleur que l'accent par défaut — c'est normal.)
+
+### Le champ `status`
+
+Le `status` est une chaîne libre affichée :
+
+- en **badge coloré** sur la fiche projet (mode Preview), à côté du badge type + année ;
+- sous forme de **pastille** colorée à droite du nom de fichier dans l'explorateur ;
+- tel quel dans la **vue Raw** (puisqu'il fait partie de l'objet JSON).
+
+Valeurs reconnues et code couleur (défini dans `src/lib/status.js`) :
+
+| Valeur            | Couleur du badge |
+| ----------------- | ---------------- |
+| `"En ligne"`      | 🟢 vert          |
+| `"En cours"`      | 🟠 orange/jaune  |
+| `"En test fermé"` | 🟠 orange/jaune  |
+| `"Prototype"`     | 🟠 orange/jaune  |
+| `"Archivé"`       | ⚪ gris           |
+
+Toute autre valeur s'affiche en **gris** (neutre). Pour ajouter une valeur ou
+changer une couleur : édite les listes dans `src/lib/status.js` et les variables
+`--status-green` / `--status-warn` / `--status-gray` en haut de `src/styles.css`.
+
+### Résultats : chiffres (`metrics`) ou faits qualitatifs (`highlights`)
+
+Deux façons, complémentaires, de présenter les résultats d'un projet — **les deux
+sont optionnels** :
+
+- **`metrics`** — des paires `{ label, value }` **chiffrées**, rendues dans la
+  section **"Résultats"** (tableau). Pour ce qui se mesure : « -40 % », « 1 200
+  utilisateurs », « 7 pages »…
+- **`highlights`** — une **liste de chaînes** qualitatives, rendues dans la
+  section **"Points clés"** (liste à puces). Pour ce qui se raconte plutôt qu'il
+  ne se chiffre : « conformité RGPD sans tracker tiers », « backend sur-mesure »…
+
+Un projet peut avoir **les deux** sections, **une seule**, ou **aucune**. Une
+section dont le tableau est absent ou vide (`[]`) n'est **jamais** affichée.
+
+### Affichage Preview / Raw (toutes les pages)
+
+**Chaque page de contenu** de l'éditeur (README, fiche projet, fiche outil, et
+toute page future) propose un toggle **Preview / Raw** en haut à droite, plus une
+gouttière/coloration et un **bouton copier** en vue Raw. Le mécanisme est
+**mutualisé** dans [`src/components/ContentPage.jsx`](src/components/ContentPage.jsx)
+(toggle) et [`src/components/RawView.jsx`](src/components/RawView.jsx) (rendu brut
++ copie) : il n'est **pas re-codé page par page**.
+
+- **Preview** : le rendu lisible (markdown stylé, badges, etc.).
+- **Raw** : la **source brute** de la page, selon son format :
+  - **projet** et **outil** → **JSON** de l'objet (coloré, avec numéros de ligne) ;
+  - **README** → le **markdown source** (le README n'est pas du JSON) ;
+  - une future page d'un autre format afficherait **sa** source brute.
+- **Bouton copier** (coin haut-droite du bloc Raw) : copie le contenu brut affiché
+  (JSON ou markdown) dans le presse-papier, avec un bref retour visuel (icône
+  « check » ~1,5 s). Focusable au clavier + `aria-label`.
+
+> **Ajouter une page** : enveloppe son rendu dans `ContentPage` en lui passant
+> `preview` (React), `rawText` (la source) et `rawFormat` (`"json"`, `"markdown"`,
+> …). Elle hérite alors automatiquement de Preview/Raw et du bouton copier.
+
+### Le graphe se met à jour tout seul
+
+Le portfolio a deux vues, basculables depuis la barre d'activité à gauche :
+l'**IDE** (onglets + fiches) et le **Graph** (icône en forme de réseau).
+
+La vue Graph est **entièrement auto-générée depuis `projects.json`** — il n'y a
+**rien à maintenir à la main** :
+
+- chaque projet devient un nœud (ambre si `pro`, teal si `perso`) ;
+- chaque techno unique listée dans les `stack` devient un nœud outil (bleu) ;
+- un lien est créé entre un projet et chacune de ses technos ;
+- un outil partagé par plusieurs projets a donc plusieurs liens et grossit :
+  on repère d'un coup d'œil les technos centrales.
+
+Concrètement : **ajoute un projet dans `projects.json`, et le graphe se reconstruit
+automatiquement** (nouveaux nœuds, nouveaux liens, fusion des outils déjà présents).
+Aucune position ni aucun nœud n'est codé en dur.
+
+Interactions dans le graphe :
+
+- **Déplacer les nœuds** : chaque nœud se glisse individuellement à la souris.
+  Ses liens suivent, les autres nœuds ne bougent pas, et la position est
+  conservée là où on le lâche (pas de re-placement automatique). Pratique pour
+  regrouper manuellement des projets autour d'un outil. Glisser sur le **fond**
+  déplace (pan) tout le canvas ; la molette zoome.
+- **Simple clic = focus** : sur un projet OU un outil, on n'affiche plus que ce
+  nœud, ses voisins directs et les liens entre eux ; tout le reste disparaît.
+  Re-cliquer le même nœud, ou cliquer dans le vide, réaffiche tout.
+- **Double-clic sur un projet = ouvrir la fiche** : bascule en vue IDE et ouvre
+  l'onglet du projet. (Les outils n'ont pas de fiche : juste le focus.)
+- **Barre de filtres** (au-dessus du canvas) :
+  - les boutons **Tous / Pro / Perso / Outils** affichent ou masquent ces
+    catégories de nœuds ;
+  - le champ de **recherche** ne garde que les nœuds dont le nom contient la
+    saisie (et leurs voisins directs) ;
+  - filtres et focus se combinent.
+
+### Le panneau Outils (et les fiches outil)
+
+La barre d'activité de gauche propose, **entre l'explorateur (fichiers) et la
+recherche**, une icône **Outils** (un paquet). Elle remplace l'arborescence de
+fichiers par la **liste de tous les outils** :
+
+- les outils sont **déduits automatiquement des `stack`** de tous les projets
+  (même source que le graphe, **rien en dur**) ;
+- le libellé de section **OUTILS** affiche un **compteur** = nombre d'outils
+  uniques (dérivé de la même source que la liste, donc toujours à jour) ;
+- chaque outil affiche son nom + un badge indiquant **le nombre de projets** qui
+  l'utilisent ;
+- la liste est triée par **utilisations décroissantes** (les plus centraux en haut).
+
+> L'explorateur de fichiers suit la même logique : son libellé de section
+> **PROJETS** porte un compteur = **README + tous les projets** (pro + perso),
+> dérivé dynamiquement de `projects.json`.
+
+**Cliquer un outil ouvre un onglet** (comme un projet : fermable, pas de doublon)
+avec une fiche détail : breadcrumb `tools › nom`, le nom en titre, une méta
+« Utilisé dans X projet(s) », une éventuelle description, puis la section
+**Projets** listant les projets concernés (titre + badge `pro`/`perso` + oneliner).
+Cliquer un projet dans cette liste **ouvre sa fiche** (même système d'onglets).
+
+#### Outils : système id / label
+
+Les outils sont identifiés par un **id stable** (slug minuscule, tirets pour les
+espaces : `github-pages`), **pas par leur nom d'affichage**. Cela permet de
+renommer un outil (le label) sans casser les références dans les projets.
+
+Deux endroits travaillent ensemble :
+
+1. **L'objet `tools`**, **au niveau racine** de `projects.json` (à côté de
+   `profile` et `projects`) : une **map `id` → métadonnées** de l'outil.
+
+   ```json
+   "tools": {
+     "flutter": {
+       "label": "Flutter",
+       "description": "Framework UI multiplateforme de Google (Dart).",
+       "url": "https://flutter.dev",
+       "logo": "/logos/flutter.svg",
+       "color": "#02569B"
+     },
+     "css": { "label": "CSS", "description": "", "url": "", "logo": "", "color": "" }
+   }
+   ```
+
+   | Clé           | Rôle                                                                 |
+   | ------------- | -------------------------------------------------------------------- |
+   | _(la clé)_    | **id** de l'outil (slug minuscule). C'est lui qu'on met dans `stack`.|
+   | `label`       | **Obligatoire.** Nom affiché partout (chips, graphe, fiche outil).   |
+   | `description` | Optionnel. Affiché en section « Description » de la fiche outil (vide/absent = masqué). |
+   | `url`         | Optionnel. Affiché en chip « Site officiel ↗ » sur la fiche outil.   |
+   | `logo`        | Optionnel. Chemin du logo SVG (voir « Logos » ci-dessous).          |
+   | `color`       | Optionnel. Couleur de marque (hex, ex `#4353FF`) servant de fond à la pastille du logo. Vide = fond gris neutre. |
+
+#### Logos des outils
+
+Les logos vivent dans **`public/logos/`** et sont **nommés d'après l'id** de
+l'outil : `public/logos/<id>.svg` (ex. id `webflow` → `public/logos/webflow.svg`).
+Le champ `logo` pointe vers ce fichier avec un chemin absolu depuis la racine
+publique : `"/logos/webflow.svg"`.
+
+Le rendu force le logo en **blanc** (filtre CSS, quel que soit le SVG d'origine),
+centré avec un peu de padding, sur un fond rempli de la couleur `color` de l'outil
+(gris neutre si `color` est vide). La **forme du fond** dépend de l'emplacement :
+
+| Emplacement                | Forme du fond              | Taille |
+| -------------------------- | -------------------------- | ------ |
+| Fiche outil (éditeur)      | cercle                     | ~36px  |
+| Nœuds du graphe            | cercle                     | ~32px  |
+| Panneau Tools (sidebar)    | carré à coins arrondis (4px) | ~18px |
+
+Si `logo` est **vide/absent**, la pastille affiche à la place l'**initiale du
+label** (première lettre, en majuscule, blanche, monospace, centrée) sur le même
+fond coloré — `color` si défini, sinon gris neutre. Mêmes formes et tailles que
+les vrais logos (cercle en fiche outil, carré arrondi en sidebar). Ainsi un outil
+sans logo reste identifiable visuellement, sans icône générique.
+
+2. **Le `stack` de chaque projet** contient des **ids**, pas des noms :
+
+   ```json
+   "stack": ["flutter", "supabase", "github-pages"]
+   ```
+
+**Résolution** : partout où un outil s'affiche (chips de stack, nœuds du graphe,
+panneau Outils, fiche outil), l'id est résolu vers son `label` via la map `tools`.
+Les comptages « utilisé dans X projets » et les liens du graphe se basent sur
+l'**id**. Si un id présent dans un `stack` n'existe pas dans `tools`, l'app
+affiche **l'id tel quel** (fallback, pas de crash) et logge un avertissement dans
+la console.
+
+#### Ajouter un nouvel outil
+
+1. Crée une entrée dans `tools` avec un **id** unique et au moins un `label`
+   (et, si tu as le logo, dépose `public/logos/rust.svg` puis renseigne `logo`/`color`) :
+   ```json
+   "rust": { "label": "Rust", "description": "", "url": "", "logo": "/logos/rust.svg", "color": "#DEA584" }
+   ```
+2. Référence cet **id** dans le `stack` des projets concernés :
+   ```json
+   "stack": ["rust", "supabase"]
+   ```
+
+C'est tout : l'outil apparaît automatiquement dans le panneau Outils, le graphe et
+les chips de stack, avec son label. L'objet `tools` reste optionnel dans l'absolu
+(un id non déclaré s'affiche en fallback), mais déclarer chaque outil est
+recommandé pour avoir des labels propres et les métadonnées.
+
+### Source Control (historique git)
+
+La barre d'activité propose, **sous la recherche** (convention VS Code), une icône
+**Source Control** (la branche git). Elle remplace l'arborescence par un **faux
+historique git** : une timeline des projets présentée comme un `git log`. C'est
+**purement narratif** — il n'y a **aucun vrai git** derrière, tout est dérivé de
+`projects.json`.
+
+- la liste des « commits » = **tous les projets**, triés par **année décroissante**,
+  puis par `id` (ordre **stable et déterministe**, jamais de hasard) ;
+- chaque ligne affiche un **hash court** (7 caractères hex), le `name` du projet
+  (le slug `.md`) comme **message de commit**, un **badge** `pro`/`perso` (mêmes couleurs que les
+  icônes de l'explorateur : ambre / teal) et l'**année** en méta ;
+- le libellé de section **HISTORIQUE** porte un **compteur** = nombre de commits =
+  nombre de projets (dérivé de la même source que les compteurs PROJETS / OUTILS) ;
+- un en-tête décoratif **« main »** (statique) rappelle la branche en haut du panneau.
+
+> **Le hash est déterministe** : il est calculé comme une **fonction pure de l'`id`**
+> du projet (petit hash FNV-1a tronqué à 7 caractères, voir
+> [`src/lib/history.js`](src/lib/history.js)). Il est **purement cosmétique** et **ne
+> change jamais** d'un reload à l'autre. Renommer un titre ne change pas le hash ;
+> seul l'`id` le détermine.
+
+**Cliquer un commit** (ou **Entrée**) **ouvre la fiche projet** — exactement la même
+action que cliquer le projet dans l'explorateur (même système d'onglets, pas de
+doublon, focus déplacé vers le contenu). Aucune logique d'ouverture n'est re-codée.
+
+**Zéro contenu en dur** : ajouter un projet dans `projects.json` l'ajoute
+automatiquement à l'historique (nouveau commit, hash dérivé, compteur à jour). Le
+panneau est repris dans la **rangée d'onglets du drawer mobile** (onglet « Git »),
+comme les autres panneaux.
+
+### Navigation mobile (sous 720px)
+
+Sous **720px**, l'activity bar verticale est masquée. La sidebar devient un
+**drawer coulissant** ouvert par le bouton **« ☰ Explorer »** de la title bar.
+
+Pour ne jamais se retrouver coincé, le drawer affiche en haut une **rangée
+d'onglets** qui remplace l'activity bar : **Explorer / Tools / Recherche / Git / Graph**.
+On peut donc basculer entre tous les panneaux à tout moment (le panneau actif est
+surligné, et changer de panneau ne ferme pas le drawer).
+
+**Le Graph n'est pas disponible sur mobile** : un graphe de nœuds est
+inexploitable sur petit écran. L'onglet Graph reste visible, mais au lieu du
+canvas il affiche un message expliquant qu'il faut un écran d'au moins 720px,
+avec un bouton **« Ouvrir le panneau Tools »** (le panneau Tools donne la même
+information « quels projets utilisent quel outil », en version lisible sur
+mobile). Dans ce cas, le code de la vue graphe (React Flow) **n'est pas chargé**.
+
+Au-dessus de 720px, rien ne change : activity bar complète et Graph pleinement
+fonctionnel.
+
+### Palette de commandes (Ctrl/Cmd+K)
+
+Une **palette de commandes** façon VS Code s'ouvre avec **Ctrl+K** (ou **Cmd+K**
+sur Mac) : une modale centrée en haut de l'écran avec un champ de recherche
+(focus automatique à l'ouverture). On y accède à tout sans la souris.
+
+> Pas de Ctrl+P : ce raccourci est réservé à l'impression du navigateur, on n'y
+> touche pas.
+
+**Ce qu'elle liste** — la liste est **entièrement auto-dérivée de
+`projects.json`** (même source que le graphe et le panneau Tools), donc rien
+n'est codé en dur : un projet ou un outil ajouté au JSON y apparaît
+automatiquement. On y trouve :
+
+- **tous les projets** → ouvre la fiche projet (même onglet que l'explorateur) ;
+- **tous les outils** (déduits des `stack`, résolus via la map `tools`) → ouvre
+  la fiche outil (même action que le panneau Tools) ;
+- **les actions** : ouvrir le README, ouvrir les Paramètres, basculer la vue
+  IDE / Graphe, basculer le thème clair / sombre.
+
+La palette ne **re-code aucune** de ces ouvertures : elle appelle les mêmes
+fonctions que la sidebar, le panneau Tools et les Paramètres (mêmes gardes, **pas
+de doublon d'onglet**).
+
+**Recherche** : fuzzy/substring sur le libellé. Le préfixe **`>`** ne liste que
+les **actions** (convention VS Code) ; sans préfixe, tout est listé.
+
+**Navigation clavier** : **↑/↓** déplacent la sélection, **Entrée** ouvre/exécute,
+**Échap** ferme. La souris fonctionne aussi (survol = sélection, clic = exécution).
+
+**Point d'entrée mobile** : sous 720px le raccourci clavier n'a pas de sens au
+doigt. Un **bouton dédié dans la title bar** (icône « invite de commande », à
+droite) ouvre la même palette. Il reste visible sur desktop comme rappel du
+raccourci.
+
+#### Accessibilité (et l'exception focus trap)
+
+- La palette est une `role="dialog"` + `aria-modal`, avec un `aria-label`.
+- Le champ est une **combobox** (`role="combobox"`), la liste une
+  `role="listbox"`, chaque ligne une `role="option"` (`aria-selected` sur
+  l'active) reliée au champ via `aria-activedescendant`.
+- **Exception assumée à la règle « jamais de focus trap »** : partout ailleurs le
+  focus n'est jamais piégé (Tab finit toujours par sortir vers le navigateur).
+  La palette **déroge** à cette règle parce que c'est une **modale temporaire** :
+  tant qu'elle est ouverte, le focus est **piégé dedans** (Tab neutralisé).
+  **Échap** (ou un clic dans le vide, ou l'exécution d'une commande) la ferme et
+  **rend le focus** à l'élément qui l'avait avant l'ouverture. Une fois fermée,
+  on retombe sur le comportement global **sans piège**.
+- Focus visible cohérent (`:focus-visible`), thème clair **et** sombre via les
+  variables CSS existantes (la ligne sélectionnée utilise `--accent`).
+
+### Modifier le profil
+
+Le bloc `profile` en haut du JSON alimente l'onglet **README** (nom, rôle,
+tagline, localisation, email, liens GitHub/LinkedIn de la section « Me contacter »).
+
+```json
+"profile": {
+  "name": "Ton Nom",
+  "role": "Ton rôle",
+  "tagline": "Ta phrase d'accroche.",
+  "location": "Ta ville",
+  "email": "toi@exemple.com",
+  "links": {
+    "github": "https://github.com/toi",
+    "linkedin": "https://www.linkedin.com/in/toi"
+  }
+}
+```
+
+### Le contenu du README (objet `readme`)
+
+La page d'accueil (onglet **README**) est pilotée par un objet **`readme`** au
+niveau racine de `projects.json` (à côté de `profile` et `projects`) :
+
+```json
+"readme": {
+  "intro": "Qui je suis, en 2-3 phrases.",
+  "approach": "Mon approche et ce qui me distingue.",
+  "navigation": "Comment explorer ce portfolio."
+}
+```
+
+- Chaque champ est du **markdown** (gras, `code inline`, listes…) rendu au thème.
+- `intro` → section « Qui je suis », `approach` → « Mon approche »,
+  `navigation` → « Naviguer ce portfolio ». Un champ vide masque sa section.
+- L'en-tête (nom, rôle, localisation, tagline) vient de `profile` ; la section
+  **« Me contacter »** (email + bouton copier, GitHub, LinkedIn) est générée depuis
+  `profile.email` et `profile.links`.
+- Le fichier livré contient des **placeholders entre crochets** dans `intro` et
+  `approach` : remplace-les par tes vrais textes (le parcours n'est pas inventé).
+
+### Bouton « copier l'email »
+
+À côté de l'email (section contact du README), un bouton **Copier** copie l'adresse
+via `navigator.clipboard`, affiche **« Copié ! »** ~1,5 s puis revient à l'état
+normal. Si l'API Clipboard est indisponible, un **repli** (`execCommand`) prend le
+relais ; en cas d'échec, le bouton affiche brièvement « Échec ». Le bouton est
+focusable au clavier et porte un `aria-label`, avec annonce vocale (`aria-live`).
+
+### Image Open Graph / SEO
+
+Le `<head>` de [`index.html`](index.html) contient le `<title>`, la
+`meta description`, et les balises **Open Graph** + **Twitter Card**.
+
+- **À faire** : créer une image de partage en **1200×630px** et la déposer dans
+  **`public/og-image.png`** (référencée par `og:image` et `twitter:image`).
+- **`og:url`** est un placeholder (`https://squirrel-dev.vercel.app`) : remplace-le
+  par l'URL réelle après déploiement.
+
+### Page 404 (route inconnue)
+
+L'app **n'a pas de routeur** : elle est pilotée par onglets et vit à la racine
+(`/`). Pour que les URL inconnues ne renvoient pas une erreur Vercel brute, deux
+pièces travaillent ensemble :
+
+1. **[`vercel.json`](vercel.json)** — un *rewrite SPA* renvoie **toute** route
+   vers `index.html` (`"/(.*)" → "/index.html"`). On reste sur un build Vite
+   standard ; c'est juste la règle de réécriture côté hébergeur.
+2. **[`src/components/NotFound.jsx`](src/components/NotFound.jsx)** — comme l'app
+   n'a aucune route cliente, **toute URL autre que `/` est inconnue**. Au
+   démarrage, [`src/App.jsx`](src/App.jsx) compare `window.location.pathname` à
+   `/` : s'il diffère, il affiche l'**écran 404** au lieu de l'app.
+
+L'écran 404 est **thématique mais sobre** : un faux onglet `404.md`, un bloc
+terminal `cat <chemin> → No such file or directory`, le titre **« Page
+introuvable »** et un bouton **« ← Retour à l'accueil »**. Ce bouton remet l'URL
+à `/` (`history.replaceState`, sans recharger) et réaffiche l'app sur le README.
+Il est focusable au clavier avec focus visible (anneau d'accent global).
+
+> **Personnaliser** : le texte, le titre et le faux onglet sont dans
+> `NotFound.jsx` ; le style est dans le bloc « Page 404 » de
+> [`src/styles.css`](src/styles.css), **uniquement via les variables de thème**
+> (`--font-mono`, `--accent`, `--code-orange`…) — il s'adapte donc au thème clair
+> **et** sombre sans retouche.
+
+### Message console d'accueil
+
+Au chargement, l'app écrit **une fois** dans la console du navigateur un petit
+message d'accueil pour les devs qui ouvrent les devtools (ASCII art + accroche +
+moyens de contact, stylé via `console.log('%c…', css)`). Il vit dans
+[`src/lib/consoleGreeting.js`](src/lib/consoleGreeting.js) et est appelé **au
+niveau module** dans [`src/main.jsx`](src/main.jsx) (donc une seule fois au
+démarrage, pas à chaque render).
+
+L'email et les liens GitHub/LinkedIn sont **dérivés de `profile`**
+(`projects.json`) — **rien en dur**, même source que la section « Me contacter »
+du README. Modifier `profile` met donc à jour le message console automatiquement.
+
+---
+
+## Paramètres (préférences d'affichage)
+
+En **bas de la barre d'activité** (icône **engrenage**, façon VS Code), un bouton
+ouvre un onglet **Settings** (comme une fiche projet : onglet fermable, sans
+doublon). Sur mobile (sous 720px), l'engrenage est repris dans la rangée d'onglets
+du drawer (« Réglages »), l'activity bar étant masquée.
+
+Deux réglages pour l'instant :
+
+- **Thème clair / sombre** — un interrupteur bascule entre les deux jeux de couleurs.
+- **Couleur d'accent** — cinq pastilles prédéfinies (teal par défaut, bleu, violet,
+  vert, ambre). Un lien « Réinitialiser » réapparaît dès qu'un accent non par défaut
+  est choisi.
+
+### Ce sont des préférences UTILISATEUR, pas du contenu
+
+Ces réglages **ne vont pas dans `projects.json`**. Ils sont de l'état d'interface,
+persisté dans le **`localStorage`** du navigateur via un contexte dédié
+([`src/lib/preferences.jsx`](src/lib/preferences.jsx)) monté à la racine
+([`src/main.jsx`](src/main.jsx)) — ainsi le thème/accent s'appliquent à toute l'app,
+que l'onglet Settings soit ouvert ou non. Clés : `pref:theme` et `pref:accent`.
+
+### Thème : par défaut, on suit le système
+
+Tant que l'utilisateur **n'a pas touché** l'interrupteur, le thème **suit
+`prefers-color-scheme`** du système (et réagit en direct s'il change). **Dès** qu'il
+choisit manuellement, ce choix est persisté et on **arrête de suivre** le système.
+
+### Comment c'est structuré (côté CSS)
+
+- Le thème **sombre** est le `:root` par défaut de [`src/styles.css`](src/styles.css).
+  Le thème **clair** est un **second jeu de variables** sous
+  `:root[data-theme='light'] { … }` ; le contexte pose `data-theme` sur `<html>`.
+  On **surcharge uniquement des variables**, jamais de patch au cas par cas.
+- L'**accent** est appliqué au runtime en surchargeant `--accent` en inline sur
+  `<html>`. `--tab-top-active` (liseré d'onglet actif) **dérive de `--accent`** et
+  `--accent-status` (barre de statut) en est une variante assombrie via `color-mix`
+  : elles **suivent l'accent choisi**.
+- Les **icônes projets** `--icon-pro` (**ambre**) et `--icon-perso` (**teal**) sont
+  au contraire **fixes** : elles ne suivent **pas** l'accent. `--icon-tool` (bleu)
+  est également indépendant. (Accent par défaut = teal, donc l'icône perso coïncide
+  avec l'accent par défaut — voulu.)
+- Pour ajouter/retirer un accent : éditer `ACCENT_PRESETS` dans
+  [`src/lib/preferences.jsx`](src/lib/preferences.jsx). Choisir des teintes de
+  luminance proche du teal pour garder un bon contraste en clair **et** en sombre.
+
+### Pastilles d'outils en mode clair
+
+Les logos d'outils sont forcés en **blanc** sur le fond `color` de l'outil (cf.
+[ToolLogo](src/components/ToolLogo.jsx)). Les couleurs de marque étant en général
+saturées/foncées, elles restent lisibles sur les deux thèmes. Le **fallback** sans
+`color` (`--tool-badge-fallback`) reste un **gris suffisamment foncé en clair**
+pour que la lettre/le logo blancs restent visibles. Si tu ajoutes un outil avec une
+`color` très claire, prévois un logo lisible (ou laisse le fallback).
+
+### Idées pour plus tard (non implémentées)
+
+Notées en `TODO` dans [`src/components/SettingsView.jsx`](src/components/SettingsView.jsx) :
+vue par défaut au chargement, taille de police de l'éditeur, ouvrir les liens dans un
+nouvel onglet, réinitialisation globale des préférences.
+
+---
+
+## Accessibilité clavier
+
+Le portfolio est entièrement utilisable au clavier, **sans jamais piéger le focus**
+(Tab finit toujours par sortir vers le navigateur).
+
+- **Skip link** : au tout premier `Tab`, un lien « Aller au contenu » apparaît en
+  haut à gauche et saute directement à la zone éditeur (en sautant l'activity bar
+  et la sidebar).
+- **Onglets (pattern ARIA Tabs)** : la barre d'onglets est un `role="tablist"`,
+  chaque onglet un `role="tab"` (`aria-selected` sur l'actif), relié à son contenu
+  `role="tabpanel"` via `aria-controls` / `aria-labelledby`. Quand le focus est sur
+  un onglet : **flèches gauche/droite** déplacent le focus (roving tabindex),
+  **Entrée/Espace** activent l'onglet, et le bouton **×** de fermeture reste
+  atteignable. Focus visible net (anneau teal).
+- **Tab suit l'onglet actif** : seul le contenu de l'onglet **affiché** est dans le
+  DOM, donc après les onglets, `Tab` entre dans le contenu réellement visible
+  (les liens démo/repo de l'onglet actif sont atteignables). Les contenus des
+  onglets inactifs ne sont pas rendus, donc jamais focusables.
+- **Focus déplacé à l'ouverture** : activer un fichier dans l'explorateur ou un
+  outil dans le panneau Tools (clic ou Entrée) déplace le focus vers le contenu
+  qui vient de s'ouvrir (le tabpanel). L'usage souris n'est pas perturbé (focus
+  programmatique, sans anneau visible).
+- **Liens d'aide en fin de contenu** : à la toute fin de chaque onglet, deux liens
+  masqués apparaissent au `Tab` :
+  - **« ↑ Revenir au menu »** : redonne le focus au panneau actif de la sidebar
+    (et ouvre le drawer sur mobile) ;
+  - **« → Onglet suivant »** : affiché seulement s'il y a plus d'un onglet ouvert ;
+    active l'onglet suivant (cycle) et lui donne le focus.
+
+    Ce sont de vrais boutons, **pas un piège** : si on les ignore et continue au
+    `Tab`, on sort normalement vers le navigateur.
+- **Graph hors tabulation** : l'icône Graph de l'activity bar n'est pas atteignable
+  au `Tab` (`tabindex="-1"`) — un graphe de nœuds n'a pas de parcours clavier utile
+  — mais reste cliquable à la souris. Les autres icônes (Explorateur, Tools,
+  Recherche, **Paramètres**) restent tabulables.
+- **Paramètres** : l'engrenage de l'activity bar est un bouton avec `aria-label`,
+  tabulable et avec focus visible. Dans la page Settings, l'interrupteur de thème est
+  un `role="switch"` (`aria-checked`), et les pastilles d'accent un
+  `role="radiogroup"` de `role="radio"` (`aria-checked`, `aria-label` = nom de la
+  couleur) — le tout focusable au clavier avec anneau `:focus-visible`.
+- **Focus visible global** : tous les éléments interactifs (liens, boutons, items
+  d'arborescence, items outils, toggle Preview/Raw, icônes de l'activity bar)
+  reçoivent un anneau de focus net au clavier (`:focus-visible`, couleur d'accent),
+  jamais supprimé sans remplacement.
+- **ARIA des icônes** : les boutons-icônes sans texte (activity bar) portent un
+  `aria-label`. Les icônes/logos décoratifs sont `aria-hidden`.
+
+---
+
+## 2. Lancer en local
+
+```bash
+npm install      # une seule fois
+npm run dev      # serveur de dev → http://localhost:5173
+```
+
+Pour tester le build de production localement :
+
+```bash
+npm run build    # génère le dossier dist/
+npm run preview  # sert dist/ → http://localhost:4173
+```
+
+---
+
+## 3. Personnaliser le thème
+
+Toutes les couleurs sont des variables CSS regroupées en haut de
+[`src/styles.css`](src/styles.css), dans le bloc `:root`. Change par exemple
+`--accent` (teal) ou `--icon-pro` / `--icon-perso` pour adapter la palette. Les
+polices (`--font-mono`, `--font-sans`) y sont aussi.
+
+> `--icon-pro` (ambre) et `--icon-perso` (teal) sont **fixes** : ils ne suivent
+> **pas** l'accent. Changer l'accent (dans **Paramètres** ou via `--accent`) ne
+> recolore donc pas les icônes pro/perso — modifie directement `--icon-pro` /
+> `--icon-perso` pour ça.
+
+Ici on modifie les **valeurs par défaut** (thème sombre = `:root`, thème clair =
+`:root[data-theme='light']`). Pour basculer clair/sombre ou changer l'accent **sans
+toucher au code**, voir la section **« Paramètres (préférences d'affichage) »** plus
+haut — ces choix sont propres à chaque visiteur (localStorage).
+
+---
+
+## 4. Déployer sur Vercel
+
+Le projet est un build Vite standard : aucune configuration supplémentaire n'est
+nécessaire. Un fichier [`vercel.json`](vercel.json) ajoute juste un *rewrite SPA*
+(toute route → `index.html`) pour que les URL inconnues passent par l'app (qui
+affiche alors sa page 404, cf. « Page 404 »).
+
+### Option A — depuis l'interface Vercel
+
+1. Pousse le repo sur GitHub / GitLab / Bitbucket.
+2. Sur [vercel.com](https://vercel.com), clique **Add New → Project** et importe le repo.
+3. Vercel détecte automatiquement Vite :
+   - **Framework Preset** : `Vite`
+   - **Build Command** : `npm run build`
+   - **Output Directory** : `dist`
+4. Clique **Deploy**. C'est tout.
+
+### Option B — depuis le CLI
+
+```bash
+npm i -g vercel
+vercel           # déploiement de preview
+vercel --prod    # déploiement en production
+```
+
+Chaque push sur la branche `main` redéploie automatiquement en production une fois
+le projet relié à Vercel.

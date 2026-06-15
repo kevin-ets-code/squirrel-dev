@@ -1,0 +1,1957 @@
+/* ============================================================
+   Variables — toutes les couleurs personnalisables ici
+   ============================================================ */
+:root {
+  /* Fonds */
+  --bg-editor: #1e1e1e;
+  --bg-sidebar: #252526;
+  --bg-activity: #333333;
+  --bg-titlebar: #3c3c3c;
+  --bg-tab-active: #1e1e1e;
+  --bg-tab-inactive: #2d2d2d;
+  --bg-tabbar: #252526;
+  --bg-hover: #2a2d2e;
+  --bg-input: #3c3c3c;
+  --bg-toggle: #2d2d2d;
+  --bg-toggle-active: #0e639c;
+  --bg-active-row: #37373d;     /* item actif dans l'explorateur/outils */
+  --bg-tab-hover: #2f2f31;      /* survol d'un onglet inactif */
+  --bg-card-hover: #2b2b2c;     /* survol des cartes (fiche outil, contact) */
+
+  /* Voiles (overlays) — fonds translucides qui se posent sur la surface.
+     En clair, ils passent en noir translucide pour rester visibles. */
+  --overlay-1: rgba(255, 255, 255, 0.06); /* chips, code inline, en-têtes de table */
+  --overlay-2: rgba(255, 255, 255, 0.03); /* voiles très discrets (lignes paires…) */
+  --overlay-3: rgba(255, 255, 255, 0.12); /* survols marqués (fermer onglet…) */
+
+  /* Texte */
+  --fg: #d4d4d4;
+  --fg-muted: #858585;
+  --fg-bright: #ffffff;
+  --fg-heading: #e8e8e8;
+
+  /* Accents */
+  --accent: #4ec9b0;            /* teal — surchargeable au runtime (Paramètres) */
+  /* Dérivés de --accent : suivent automatiquement la couleur d'accent choisie.
+     --accent-status = même teinte assombrie (barre de statut VS Code). */
+  --accent-status: color-mix(in srgb, var(--accent) 55%, #000);
+  /* Icônes projets : couleurs FIXES, indépendantes de l'accent (ne bougent pas
+     quand l'utilisateur change la couleur d'accent). */
+  --icon-pro: #e0b341;          /* ambre (projets pro) */
+  --icon-perso: #4ec9b0;        /* teal (projets perso) */
+  --icon-tool: #569cd6;         /* bleu pour les outils (cohérent avec le graphe) */
+  --tool-badge-fallback: #5a5a5a; /* fond de pastille quand l'outil n'a pas de "color" */
+  --graph-tool: #569cd6;        /* bleu pour les outils dans le graphe */
+  --bg-graph: #181818;          /* fond du canvas, distinct de l'éditeur */
+  --graph-edge: #4a4a4a;        /* edges au repos */
+  --graph-dot: #2a2a2a;         /* points du fond du canvas (React Flow Background) */
+  --graph-node: #232323;        /* fond des nœuds du graphe */
+  --graph-control-bg: #2d2d2d;  /* boutons de zoom React Flow */
+  --graph-control-border: #1e1e1e;
+  --graph-control-hover: #3a3a3a;
+  --graph-panel-bg: rgba(30, 30, 30, 0.85); /* glass légende/hint du graphe */
+
+  /* Statut des projets */
+  --status-green: #3fb950;      /* En ligne */
+  --status-warn: #d8a128;       /* En cours / En test / Prototype */
+  --status-gray: #8a8a8a;       /* Archivé */
+
+  /* Bordures */
+  --border: #3c3c3c;
+  --border-soft: #2b2b2b;
+  --tab-top-active: var(--accent);  /* liseré de l'onglet actif = couleur d'accent */
+
+  /* Coloration syntaxique markdown / raw */
+  --code-orange: #ce9178;       /* strings, code inline */
+  --code-blue: #9cdcfe;         /* clés JSON */
+  --code-green: #6a9955;        /* nombres / null */
+  --code-comment: #6a9955;
+
+  /* Boutons macOS */
+  --mac-red: #ff5f56;
+  --mac-yellow: #ffbd2e;
+  --mac-green: #27c93f;
+
+  /* Typo */
+  --font-mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Menlo,
+    Consolas, 'Courier New', monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
+    sans-serif;
+
+  /* Dimensions */
+  --h-titlebar: 36px;
+  --h-statusbar: 24px;
+  --w-activity: 48px;
+  --w-sidebar: 240px;
+  --h-tabbar: 36px;
+}
+
+/* ============================================================
+   Thème CLAIR — second jeu de variables (data-theme="light" sur <html>).
+   On NE surcharge QUE les variables : aucun patch au cas par cas.
+   --accent n'est volontairement PAS redéfini ici (il fonctionne sur les deux
+   thèmes et reste surchargé au runtime par la préférence d'accent).
+   ============================================================ */
+:root[data-theme='light'] {
+  /* Fonds */
+  --bg-editor: #ffffff;
+  --bg-sidebar: #f3f3f3;
+  --bg-activity: #e8e8e8;
+  --bg-titlebar: #e4e4e4;
+  --bg-tab-active: #ffffff;
+  --bg-tab-inactive: #ececec;
+  --bg-tabbar: #f3f3f3;
+  --bg-hover: #e6e6e6;
+  --bg-input: #ffffff;
+  --bg-toggle: #e8e8e8;
+  --bg-toggle-active: #0e639c; /* bleu d'action conservé */
+  --bg-active-row: #dbe8f5;    /* sélection bleutée façon explorateur clair */
+  --bg-tab-hover: #e2e2e2;
+  --bg-card-hover: #ececec;
+
+  /* Voiles → noir translucide pour rester visibles sur fond clair */
+  --overlay-1: rgba(0, 0, 0, 0.05);
+  --overlay-2: rgba(0, 0, 0, 0.03);
+  --overlay-3: rgba(0, 0, 0, 0.09);
+
+  /* Texte (--fg-bright reste blanc : utilisé sur fonds colorés) */
+  --fg: #2b2b2b;
+  --fg-muted: #6a6a6a;
+  --fg-heading: #1a1a1a;
+
+  /* Bordures */
+  --border: #d0d0d0;
+  --border-soft: #e2e2e2;
+
+  /* Coloration syntaxique markdown / raw — variantes foncées (lisibles sur blanc) */
+  --code-orange: #a31515;
+  --code-blue: #0451a5;
+  --code-green: #098658;
+  --code-comment: #008000;
+
+  /* Pastille outil sans couleur : on garde un gris assez foncé pour que la
+     lettre/le logo BLANCS restent lisibles (cf. ToolLogo). */
+  --tool-badge-fallback: #6a6a6a;
+
+  /* Graphe (React Flow) */
+  --bg-graph: #f5f5f5;
+  --graph-dot: #d2d2d2;
+  --graph-node: #ffffff;
+  --graph-edge: #c4c4c4;
+  --graph-control-bg: #ffffff;
+  --graph-control-border: #d0d0d0;
+  --graph-control-hover: #ececec;
+  --graph-panel-bg: rgba(255, 255, 255, 0.9);
+}
+
+/* ============================================================
+   Reset
+   ============================================================ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: var(--bg-editor);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+button {
+  font-family: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-thumb {
+  background: #424242;
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4f4f4f;
+  background-clip: content-box;
+}
+
+/* ============================================================
+   Accessibilité clavier : focus visible, skip links
+   ============================================================ */
+/* Anneau de focus net et contrasté sur TOUS les éléments interactifs,
+   uniquement au clavier (:focus-visible). Jamais d'outline supprimé sans
+   remplacement. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role='tab']:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+/* Le conteneur de contenu (tabpanel) reçoit le focus par programmation :
+   pas d'anneau dans ce cas (il n'est pas "focus-visible"). */
+.editor-content:focus {
+  outline: none;
+}
+/* Cible du skip link : grande zone => anneau en inset pour rester propre. */
+.editor:focus-visible {
+  outline-offset: -2px;
+}
+
+/* Classe utilitaire : masqué visuellement mais lu par les lecteurs d'écran. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Skip link "Aller au contenu" : caché, révélé au premier Tab. */
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: -48px;
+  z-index: 100;
+  background: var(--accent);
+  color: #06231d;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 0 0 6px 6px;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 0;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Les onglets vivent dans une barre à overflow caché : anneau en inset
+   pour qu'il reste entièrement visible. */
+.tab:focus-visible {
+  outline-offset: -2px;
+}
+
+/* Liens d'aide clavier en fin de contenu : cachés, révélés au focus.
+   position: fixed au focus => visibles même si le contenu est défilé. */
+.content-end-nav {
+  display: contents;
+}
+.cen-link {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.cen-link:focus {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  transform: translateX(-50%);
+  width: auto;
+  height: auto;
+  z-index: 90;
+  background: var(--accent);
+  color: #06231d;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 18px;
+  border-radius: 6px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.55);
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   Layout général
+   ============================================================ */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  position: relative;
+}
+
+/* ============================================================
+   Title bar
+   ============================================================ */
+.title-bar {
+  height: var(--h-titlebar);
+  min-height: var(--h-titlebar);
+  background: var(--bg-titlebar);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  user-select: none;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.title-left,
+.title-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.title-right {
+  justify-content: flex-end;
+}
+
+.title-center {
+  flex: 0 1 auto;
+  color: var(--fg-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.brand-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #06231d;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.explorer-toggle {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+.explorer-toggle:hover {
+  background: var(--overlay-1);
+}
+
+/* Bouton d'ouverture de la palette de commandes (title bar). Visible partout :
+   point d'entrée tactile sur mobile + rappel du raccourci sur desktop. */
+.command-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 22px;
+  border-radius: 4px;
+  color: var(--fg-muted);
+  flex-shrink: 0;
+}
+.command-trigger:hover {
+  background: var(--overlay-1);
+  color: var(--fg);
+}
+
+/* ============================================================
+   Activity bar
+   ============================================================ */
+.activity-bar {
+  width: var(--w-activity);
+  min-width: var(--w-activity);
+  background: var(--bg-activity);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 6px;
+  gap: 2px;
+}
+
+.activity-btn {
+  width: var(--w-activity);
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-muted);
+  position: relative;
+  transition: color 0.12s ease;
+}
+.activity-btn:hover {
+  color: var(--fg);
+}
+.activity-btn.active {
+  color: var(--fg-heading);
+}
+
+/* Engrenage Paramètres : épinglé en bas de l'activity bar (style VS Code). */
+.activity-btn-bottom {
+  margin-top: auto;
+}
+.activity-btn.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent);
+}
+
+/* ============================================================
+   Sidebar
+   ============================================================ */
+.sidebar-wrap {
+  width: var(--w-sidebar);
+  min-width: var(--w-sidebar);
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border-soft);
+  display: flex;
+}
+
+.sidebar {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-header {
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  padding: 12px 16px 4px;
+  font-family: var(--font-sans);
+}
+
+.sidebar-section-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--fg-muted);
+  padding: 6px 12px 4px;
+}
+/* Compteur discret à côté du libellé de section (Projets / Outils) */
+.section-count {
+  font-weight: 600;
+  letter-spacing: 0;
+  font-size: 10px;
+  color: var(--fg-muted);
+  background: var(--overlay-1);
+  border-radius: 9px;
+  padding: 0 6px;
+  line-height: 16px;
+}
+
+.sidebar-tree {
+  overflow-y: auto;
+  padding-bottom: 12px;
+  flex: 1;
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 4px 12px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--fg);
+  text-align: left;
+  border-radius: 0;
+}
+.file-row:hover {
+  background: var(--bg-hover);
+}
+.file-row.active {
+  background: var(--bg-active-row);
+}
+.file-readme {
+  padding-left: 16px;
+}
+.file-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.folder-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 4px 12px 4px 8px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--fg);
+  text-align: left;
+}
+.folder-row:hover {
+  background: var(--bg-hover);
+}
+.folder-name {
+  font-weight: 600;
+}
+.folder-count {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--fg-muted);
+  background: var(--overlay-1);
+  border-radius: 9px;
+  padding: 0 7px;
+}
+.folder-children .file-row {
+  padding-left: 30px;
+}
+
+/* Recherche */
+.search-field {
+  padding: 4px 12px 8px;
+}
+.search-field input {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  padding: 5px 8px;
+  border-radius: 3px;
+  outline: none;
+}
+.search-field input:focus {
+  border-color: var(--accent);
+}
+.search-count {
+  font-size: 11px;
+  color: var(--fg-muted);
+  padding: 0 12px 6px;
+}
+
+/* ============================================================
+   Éditeur
+   ============================================================ */
+.editor {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--bg-editor);
+}
+
+.editor-tabs {
+  display: flex;
+  height: var(--h-tabbar);
+  min-height: var(--h-tabbar);
+  background: var(--bg-tabbar);
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 10px 0 14px;
+  height: 100%;
+  background: var(--bg-tab-inactive);
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  border-right: 1px solid var(--border-soft);
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+  max-width: 220px;
+}
+.tab:hover {
+  background: var(--bg-tab-hover);
+}
+.tab.active {
+  background: var(--bg-tab-active);
+  color: var(--fg-heading);
+}
+.tab.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1.5px;
+  background: var(--tab-top-active);
+}
+.tab-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tab-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  color: inherit;
+  opacity: 0.6;
+}
+.tab-close:hover {
+  background: var(--overlay-3);
+  opacity: 1;
+}
+
+.editor-content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.project-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.content-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 16px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg-editor);
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  overflow: hidden;
+}
+.crumb {
+  white-space: nowrap;
+}
+.crumb-active {
+  color: var(--fg);
+}
+.crumb-sep {
+  color: #5a5a5a;
+}
+
+/* Toggle Preview / Raw */
+.view-toggle {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.toggle-btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  color: var(--fg-muted);
+  background: var(--bg-toggle);
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.toggle-btn:not(:last-child) {
+  border-right: 1px solid var(--border);
+}
+.toggle-btn:hover {
+  color: var(--fg);
+}
+.toggle-btn.active {
+  background: var(--bg-toggle-active);
+  color: #ffffff;
+}
+
+.content-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 28px 40px 60px;
+}
+
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-muted);
+  gap: 6px;
+}
+.empty-hint {
+  font-size: 13px;
+}
+
+/* ============================================================
+   Vue Raw (JSON coloré)
+   ============================================================ */
+.raw-view {
+  position: relative;
+  display: flex;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+}
+/* Markdown brut : lignes longues qui s'enroulent, sans gouttière de numéros.
+   Sélecteur double pour passer devant `.raw-code { white-space: pre }` (défini
+   plus bas, même spécificité sinon). */
+.raw-code.raw-code-wrap {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.raw-plain .raw-code {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Bouton copier de la vue Raw : discret, coin haut-droite du bloc (style VS Code). */
+.raw-copy {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 5px;
+  color: var(--fg-muted);
+  background: var(--bg-editor);
+  border: 1px solid var(--border-soft);
+  opacity: 0.75;
+  transition: color 0.12s ease, background 0.12s ease, opacity 0.12s ease;
+}
+.raw-copy:hover {
+  opacity: 1;
+  color: var(--fg);
+  background: var(--bg-hover);
+}
+.raw-copy.is-copied {
+  opacity: 1;
+  color: var(--status-green);
+  border-color: var(--status-green);
+}
+.raw-gutter {
+  flex-shrink: 0;
+  text-align: right;
+  padding-right: 16px;
+  color: #5a5a5a;
+  user-select: none;
+  border-right: 1px solid var(--border-soft);
+  margin-right: 16px;
+}
+.raw-lineno {
+  height: 1.6em;
+}
+.raw-code {
+  margin: 0;
+  font-family: var(--font-mono);
+  white-space: pre;
+}
+.raw-line {
+  min-height: 1.6em;
+}
+.tok-key {
+  color: var(--code-blue);
+}
+.tok-string {
+  color: var(--code-orange);
+}
+.tok-number {
+  color: var(--code-green);
+}
+.tok-punct {
+  color: var(--fg);
+}
+
+/* ============================================================
+   Status bar
+   ============================================================ */
+.status-bar {
+  height: var(--h-statusbar);
+  min-height: var(--h-statusbar);
+  background: var(--accent-status);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.status-left,
+.status-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Markdown rendu (mode Preview)
+   ============================================================ */
+.markdown-body {
+  max-width: 820px;
+  font-family: var(--font-sans);
+  color: var(--fg);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3 {
+  font-family: var(--font-mono);
+  color: var(--fg-heading);
+  line-height: 1.3;
+  font-weight: 600;
+}
+.markdown-body h1 {
+  font-size: 28px;
+  margin-bottom: 4px;
+  padding-bottom: 10px;
+}
+.markdown-body h2 {
+  font-size: 19px;
+  color: var(--accent);
+  margin-top: 32px;
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.markdown-body h3 {
+  font-size: 16px;
+  margin-top: 22px;
+  margin-bottom: 8px;
+}
+.markdown-body p {
+  margin: 12px 0;
+}
+.markdown-body em {
+  color: var(--fg-muted);
+}
+.markdown-body strong {
+  color: var(--fg-heading);
+}
+.markdown-body a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.markdown-body a:hover {
+  border-bottom-color: var(--accent);
+}
+.markdown-body ul,
+.markdown-body ol {
+  margin: 12px 0;
+  padding-left: 24px;
+}
+.markdown-body li {
+  margin: 5px 0;
+}
+.markdown-body code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  color: var(--code-orange);
+  background: var(--overlay-1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.markdown-body hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 24px 0;
+}
+.markdown-body blockquote {
+  border-left: 3px solid var(--accent);
+  margin: 14px 0;
+  padding: 4px 16px;
+  color: var(--fg-muted);
+}
+.markdown-body table {
+  border-collapse: collapse;
+  margin: 16px 0;
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid var(--border);
+  padding: 8px 14px;
+  text-align: left;
+}
+.markdown-body th {
+  background: var(--overlay-1);
+  color: var(--fg-heading);
+  font-weight: 600;
+}
+.markdown-body td {
+  color: var(--fg);
+}
+.markdown-body tr:nth-child(even) td {
+  background: var(--overlay-2);
+}
+
+/* ============================================================
+   En-tête de fiche projet : titre + oneliner + badges méta/status
+   ============================================================ */
+.project-header {
+  margin-bottom: 4px;
+}
+.project-oneliner {
+  margin-top: 6px;
+}
+.project-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.meta-chip,
+.status-chip {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1;
+  padding: 4px 10px;
+  border-radius: 11px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+.meta-chip {
+  color: var(--fg);
+  background: var(--overlay-1);
+}
+.status-chip {
+  background: var(--overlay-2);
+  font-weight: 600;
+}
+.status-chip.status-green {
+  color: var(--status-green);
+  border-color: var(--status-green);
+}
+.status-chip.status-warn {
+  color: var(--status-warn);
+  border-color: var(--status-warn);
+}
+.status-chip.status-gray {
+  color: var(--status-gray);
+  border-color: var(--status-gray);
+}
+
+/* Compteur d'utilisations dans le panneau Outils */
+.tool-count {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--fg-muted);
+  background: var(--overlay-1);
+  border-radius: 9px;
+  padding: 0 7px;
+  flex-shrink: 0;
+}
+
+/* Source Control : historique "git" narratif (panneau sidebar) */
+.sc-branch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 14px 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+}
+.sc-branch svg {
+  flex-shrink: 0;
+}
+.sc-commit {
+  gap: 8px;
+}
+/* Faux hash de commit : mono, teinté accent pour évoquer un SHA */
+.sc-hash {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.sc-message {
+  flex: 1;
+}
+.sc-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.sc-year {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+}
+/* Badge pro/perso : reprend les couleurs d'icônes de l'explorateur */
+.sc-badge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  line-height: 15px;
+  padding: 0 5px;
+  border-radius: 9px;
+  border: 1px solid currentColor;
+}
+.sc-badge-pro {
+  color: var(--icon-pro);
+}
+.sc-badge-perso {
+  color: var(--icon-perso);
+}
+
+/* En-tête de fiche outil : logo optionnel + lien optionnel */
+.tool-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+/* l'en-tête de fiche outil aligne logo + titre : pas de marge/padding parasite */
+.tool-title-row h1 {
+  margin: 0;
+  padding: 0;
+}
+/* Pastille logo : logo blanc centré sur fond coloré.
+   Forme contrôlée par .tool-logo-circle / .tool-logo-square. */
+.tool-logo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.tool-logo-circle {
+  border-radius: 50%;
+}
+.tool-logo-square {
+  border-radius: 4px;
+}
+.tool-logo-img {
+  width: 62%;
+  height: 62%;
+  object-fit: contain;
+  /* force n'importe quel SVG (même coloré) en blanc, en préservant la forme */
+  filter: brightness(0) invert(1);
+}
+/* Fallback sans logo : initiale du label, blanche et monospace */
+.tool-logo-letter {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  line-height: 1;
+  color: #ffffff;
+  user-select: none;
+}
+/* Lien-pill "Site officiel ↗". Sélecteur qualifié par `a` (spécificité 0,1,1)
+   pour battre `.markdown-body a { border-bottom: 1px solid transparent }` qui,
+   sinon, rendait la bordure BASSE du pill transparente (bord coupé). On rétablit
+   donc la bordure complète, et on neutralise le soulignement au survol. */
+a.tool-link-chip {
+  color: var(--icon-tool);
+  border: 1px solid var(--icon-tool);
+  text-decoration: none;
+}
+a.tool-link-chip:hover {
+  border-color: var(--icon-tool);
+  background: rgba(86, 156, 214, 0.12);
+}
+
+/* Liste des projets dans la fiche outil */
+.tool-projects {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+.tool-project-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--bg-sidebar);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+.tool-project-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
+}
+.tpc-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.tpc-title {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fg-heading);
+}
+.tpc-type {
+  margin-left: auto;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: var(--overlay-2);
+  flex-shrink: 0;
+}
+.tpc-oneliner {
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  color: var(--fg-muted);
+  line-height: 1.5;
+}
+
+/* Pastille de statut dans la sidebar */
+.file-status-dot {
+  margin-left: auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   README : bloc contact + bouton copier-email
+   ============================================================ */
+.contact-block {
+  margin-top: 8px;
+}
+.contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  max-width: 520px;
+}
+.contact-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  background: var(--bg-sidebar);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.contact-label {
+  color: var(--fg-muted);
+  min-width: 64px;
+  flex-shrink: 0;
+}
+.contact-value {
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+a.contact-link {
+  text-decoration: none;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+a.contact-link:hover {
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
+}
+a.contact-link .contact-value {
+  color: var(--accent);
+}
+
+.copy-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  background: var(--overlay-1);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 4px 9px;
+  transition: color 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+}
+.copy-email:hover {
+  color: var(--fg);
+  background: var(--overlay-3);
+}
+.copy-email.is-copied {
+  color: var(--status-green);
+  border-color: var(--status-green);
+}
+.copy-email.is-error {
+  color: var(--status-warn);
+  border-color: var(--status-warn);
+}
+.copy-email-label {
+  line-height: 1;
+}
+
+/* ============================================================
+   Vue Graph (React Flow)
+   ============================================================ */
+.graph-view {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-graph);
+}
+.graph-canvas {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+.graph-view .react-flow {
+  background: var(--bg-graph);
+}
+
+/* Barre de filtres */
+.graph-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 8px 14px;
+  background: var(--bg-tabbar);
+  border-bottom: 1px solid var(--border-soft);
+}
+.gfilter-group {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.gfilter-btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  color: var(--fg-muted);
+  background: var(--bg-toggle);
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.gfilter-btn:not(:last-child) {
+  border-right: 1px solid var(--border);
+}
+.gfilter-btn:hover {
+  color: var(--fg);
+}
+.gfilter-btn.active {
+  background: var(--bg-toggle-active);
+  color: #ffffff;
+}
+.gfilter-search {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  outline: none;
+  width: 200px;
+  max-width: 100%;
+}
+.gfilter-search:focus {
+  border-color: var(--accent);
+}
+.graph-toolbar-hint {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+}
+.graph-loading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-graph);
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+/* Message "Graph indisponible" (mobile) */
+.graph-unavailable {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 14px;
+  padding: 40px 24px;
+  background: var(--bg-graph);
+  color: var(--fg);
+}
+.gu-icon {
+  color: var(--icon-tool);
+  opacity: 0.85;
+}
+.graph-unavailable h2 {
+  font-family: var(--font-mono);
+  font-size: 17px;
+  color: var(--fg-heading);
+  font-weight: 600;
+}
+.graph-unavailable p {
+  max-width: 460px;
+  margin: 0;
+  color: var(--fg-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.gu-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 9px 16px;
+  border-radius: 6px;
+  background: var(--bg-toggle-active);
+  color: #fff;
+  transition: filter 0.12s ease;
+}
+.gu-btn:hover {
+  filter: brightness(1.12);
+}
+
+/* ============================================================
+   Page 404 (route inconnue) — écran thématique éditeur/terminal.
+   Tout dérive des variables de thème => marche en clair ET en sombre.
+   ============================================================ */
+.notfound {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg-editor);
+  color: var(--fg);
+  font-family: var(--font-sans);
+}
+.notfound-window {
+  width: 100%;
+  max-width: 560px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg-editor);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+.notfound-tabbar {
+  display: flex;
+  background: var(--bg-tabbar);
+  border-bottom: 1px solid var(--border);
+}
+.notfound-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--fg);
+  background: var(--bg-tab-active);
+  border-top: 1px solid var(--tab-top-active);
+}
+.notfound-body {
+  padding: 28px 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.notfound-terminal {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  background: var(--overlay-1);
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  padding: 14px 16px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.nf-line {
+  display: block;
+}
+.nf-prompt {
+  color: var(--accent);
+}
+.nf-path {
+  color: var(--code-orange);
+}
+.nf-error {
+  color: var(--status-warn);
+}
+.notfound-title {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--fg-heading);
+}
+.notfound-text {
+  margin: 0;
+  max-width: 44ch;
+  color: var(--fg-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.notfound-home {
+  align-self: flex-start;
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 9px 16px;
+  border-radius: 6px;
+  background: var(--bg-toggle-active);
+  color: #fff;
+  transition: filter 0.12s ease;
+}
+.notfound-home:hover {
+  filter: brightness(1.12);
+}
+
+/* Onglets de panneaux du drawer mobile (masqués en desktop) */
+.mobile-panel-tabs {
+  display: none;
+}
+
+/* Nœuds */
+.gnode {
+  font-family: var(--font-mono);
+  background: var(--graph-node);
+  border: 1.5px solid var(--node-accent, #555);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--fg);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  transition: opacity 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+  cursor: pointer;
+  position: relative;
+}
+.gnode:hover {
+  box-shadow: 0 0 0 1px var(--node-accent), 0 4px 14px rgba(0, 0, 0, 0.5);
+}
+.gnode-project {
+  min-width: 132px;
+}
+.gnode-label {
+  font-size: 13px;
+  color: var(--fg-heading); /* suit le thème (clair/sombre) */
+  white-space: nowrap;
+}
+.gnode-sub {
+  font-size: 10px;
+  color: var(--node-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.gnode-tool {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.gnode-tool .gnode-label {
+  font-size: inherit;
+  color: var(--fg);
+}
+.gnode-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--bg-graph);
+  background: var(--node-accent);
+  border-radius: 9px;
+  padding: 1px 6px;
+}
+.gnode-dim {
+  opacity: 0.22;
+}
+.gnode-hl {
+  box-shadow: 0 0 0 2px var(--node-accent), 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+.gnode-active {
+  box-shadow: 0 0 0 2px var(--node-accent), 0 0 18px rgba(86, 156, 214, 0.5);
+}
+
+/* Handles discrets */
+.graph-view .react-flow__handle {
+  width: 6px;
+  height: 6px;
+  background: var(--node-accent, #666);
+  border: none;
+  opacity: 0.5;
+}
+
+/* Edges */
+.graph-view .react-flow__edge-path {
+  stroke: var(--graph-edge);
+  stroke-width: 1.4;
+  transition: stroke 0.15s ease, stroke-width 0.15s ease, opacity 0.15s ease;
+}
+.graph-view .react-flow__edge.edge-hl .react-flow__edge-path {
+  stroke: var(--graph-tool);
+  stroke-width: 2.2;
+}
+.graph-view .react-flow__edge.edge-dim .react-flow__edge-path {
+  opacity: 0.12;
+}
+
+/* Contrôles de zoom — thème sombre */
+.graph-view .react-flow__controls {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.graph-view .react-flow__controls-button {
+  background: var(--graph-control-bg);
+  border-bottom: 1px solid var(--graph-control-border);
+  color: var(--fg);
+  fill: var(--fg);
+}
+.graph-view .react-flow__controls-button:hover {
+  background: var(--graph-control-hover);
+}
+.graph-view .react-flow__controls-button svg {
+  fill: var(--fg);
+}
+
+/* Panneaux : hint + légende */
+.graph-hint {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  background: var(--graph-panel-bg);
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  padding: 6px 10px;
+  backdrop-filter: blur(2px);
+  max-width: 320px;
+}
+.graph-legend {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg);
+  background: var(--graph-panel-bg);
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  backdrop-filter: blur(2px);
+}
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.legend-chip {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+/* ============================================================
+   Paramètres (onglet Settings)
+   ============================================================ */
+.settings-view {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 28px 40px 60px;
+  max-width: 680px;
+}
+.settings-breadcrumb {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 14px;
+}
+.settings-title {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  color: var(--fg-heading);
+  font-weight: 600;
+}
+.settings-lead {
+  color: var(--fg-muted);
+  margin-top: 6px;
+}
+.settings-section {
+  margin-top: 34px;
+}
+.settings-section-title {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  color: var(--accent);
+  margin-bottom: 14px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.settings-section-hint {
+  margin-top: -6px;
+  margin-bottom: 16px;
+}
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+}
+.settings-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.settings-row-label {
+  color: var(--fg);
+  font-size: 14px;
+}
+.settings-row-hint {
+  color: var(--fg-muted);
+  font-size: 12.5px;
+}
+
+/* Interrupteur (role="switch") */
+.settings-switch {
+  width: 42px;
+  height: 24px;
+  border-radius: 12px;
+  background: var(--bg-toggle);
+  border: 1px solid var(--border);
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.settings-switch.on {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.settings-switch-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  transition: transform 0.15s ease;
+}
+.settings-switch.on .settings-switch-knob {
+  transform: translateX(18px);
+}
+
+/* Pastilles de couleur d'accent (radiogroup) */
+.settings-swatches {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.settings-swatch {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--swatch);
+  border: 2px solid transparent;
+  box-shadow: 0 0 0 1px var(--border);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+.settings-swatch:hover {
+  transform: scale(1.08);
+}
+.settings-swatch.selected {
+  border-color: var(--bg-editor);
+  box-shadow: 0 0 0 2px var(--swatch);
+}
+.settings-reset {
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  text-decoration: underline;
+}
+.settings-reset:hover {
+  color: var(--fg);
+}
+
+/* ============================================================
+   Drawer mobile
+   ============================================================ */
+.scrim {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .activity-bar {
+    display: none;
+  }
+  .explorer-toggle {
+    display: flex;
+  }
+  .title-center {
+    display: none;
+  }
+
+  .sidebar-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 30;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    box-shadow: 2px 0 16px rgba(0, 0, 0, 0.5);
+  }
+  .sidebar-wrap.open {
+    transform: translateX(0);
+  }
+  /* le panneau occupe la hauteur restante sous la rangée d'onglets */
+  .sidebar-wrap > .sidebar {
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* Rangée d'onglets de panneaux (remplace l'activity bar) */
+  .mobile-panel-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: var(--bg-tabbar);
+    border-bottom: 1px solid var(--border-soft);
+    flex-shrink: 0;
+  }
+  .mpt-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 9px 4px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-muted);
+    border-right: 1px solid var(--border-soft);
+    transition: color 0.12s ease, background 0.12s ease;
+  }
+  .mpt-btn:last-child {
+    border-right: none;
+  }
+  .mpt-btn:hover {
+    color: var(--fg);
+  }
+  .mpt-btn.active {
+    color: #fff;
+    background: var(--overlay-1);
+    box-shadow: inset 0 -2px 0 var(--accent);
+  }
+
+  .scrim {
+    display: block;
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 20;
+  }
+
+  .graph-toolbar-hint {
+    display: none;
+  }
+  .gfilter-search {
+    flex: 1;
+  }
+
+  .content-scroll {
+    padding: 20px 18px 50px;
+  }
+  .content-toolbar {
+    padding: 6px 12px;
+  }
+  .status-left {
+    gap: 10px;
+  }
+
+  /* Palette : un peu plus haute dans l'écran et plus large sur petit écran. */
+  .cmd-palette-overlay {
+    padding-top: 8vh;
+  }
+  .cmd-palette {
+    width: 94vw;
+  }
+}
+
+/* ============================================================
+   Palette de commandes (Ctrl/Cmd+K)
+   ============================================================ */
+.cmd-palette-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000; /* au-dessus de tout (skip link 100, status bar 90, drawer 30) */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 12vh;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.cmd-palette {
+  width: min(640px, 92vw);
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-sidebar);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  font-family: var(--font-mono);
+  overflow: hidden;
+}
+
+.cmd-palette-input {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg-input);
+  color: var(--fg);
+  border: none;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  outline: none; /* le panneau entier est l'indicateur de focus de la modale */
+}
+.cmd-palette-input::placeholder {
+  color: var(--fg-muted);
+}
+
+.cmd-palette-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  overflow-y: auto;
+}
+
+.cmd-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 4px;
+  color: var(--fg);
+  cursor: pointer;
+}
+/* Ligne sélectionnée : teinte d'accent + liseré accent (lisible en clair ET
+   sombre, sans sacrifier le contraste du texte). */
+.cmd-option[aria-selected='true'] {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.cmd-option-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  flex-shrink: 0;
+  color: var(--icon-tool);
+}
+
+.cmd-option-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cmd-option-hint {
+  color: var(--fg-muted);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 45%;
+  flex-shrink: 0;
+}
+
+.cmd-palette-empty {
+  padding: 14px;
+  color: var(--fg-muted);
+  text-align: center;
+}
