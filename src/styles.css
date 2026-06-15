@@ -1961,3 +1961,252 @@ a.contact-link .contact-value {
   color: var(--fg-muted);
   text-align: center;
 }
+
+/* ============================================================
+   Toast (feedback temporaire — easter eggs)
+   ============================================================ */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--h-statusbar) + 16px);
+  transform: translateX(-50%);
+  z-index: 500; /* au-dessus du contenu/statusbar (90), sous la palette (1000) */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(440px, 92vw);
+  padding: 10px 16px;
+  background: var(--bg-sidebar);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.4;
+  animation: toast-in 0.22s ease-out;
+}
+.toast-icon {
+  flex-shrink: 0;
+}
+.toast-message {
+  min-width: 0;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 12px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   Panneau Jeux (sidebar)
+   ============================================================ */
+.game-row .game-status {
+  width: 18px;
+  flex-shrink: 0;
+  display: inline-flex;
+  justify-content: center;
+  font-size: 12px;
+}
+.game-locked {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* ============================================================
+   Page konami-code.md — section énigmes (dynamique)
+   ============================================================ */
+.konami-riddles {
+  margin-top: 8px;
+}
+.konami-progress {
+  font-family: var(--font-mono);
+  color: var(--fg-muted);
+}
+.konami-riddle-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.konami-riddle {
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  padding: 12px 14px;
+  background: var(--overlay-2);
+}
+.konami-riddle.is-solved {
+  border-color: var(--status-green);
+}
+.konami-riddle-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.konami-riddle-status {
+  font-size: 13px;
+}
+.konami-riddle-name {
+  font-weight: 600;
+  color: var(--fg-heading);
+}
+.konami-riddle-text {
+  margin: 8px 0 4px;
+}
+.konami-riddle-hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+.konami-hint-label {
+  color: var(--code-orange);
+}
+
+/* ============================================================
+   Onglet de jeu (icône manette) + Jeu Memory
+   ============================================================ */
+.tab-game-icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.memory-game {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 8px 4px 24px;
+}
+.memory-head {
+  margin-bottom: 16px;
+}
+.memory-title {
+  margin: 0 0 4px;
+  font-size: 20px;
+  color: var(--fg-heading);
+}
+.memory-sub {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+.memory-empty {
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+}
+
+.memory-win {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--status-green);
+  border-radius: 6px;
+  background: var(--overlay-2);
+  color: var(--fg-heading);
+}
+.memory-win-emoji {
+  font-size: 18px;
+}
+.memory-replay {
+  margin-left: auto;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--accent);
+  color: var(--bg-editor);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.memory-replay:hover {
+  filter: brightness(1.08);
+}
+
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--memory-cols, 4), 1fr);
+  gap: 10px;
+}
+
+.memory-card {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  perspective: 600px;
+}
+.memory-card:disabled {
+  cursor: default;
+}
+.memory-card-inner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.4s ease;
+}
+.memory-card.is-revealed .memory-card-inner {
+  transform: rotateY(180deg);
+}
+.memory-card-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  backface-visibility: hidden;
+}
+.memory-card-back {
+  background: var(--bg-sidebar);
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 700;
+}
+.memory-card:not(:disabled):hover .memory-card-back {
+  border-color: var(--accent);
+}
+.memory-card-front {
+  background: var(--bg-editor);
+  transform: rotateY(180deg);
+}
+.memory-card.is-matched .memory-card-front {
+  border-color: var(--status-green);
+}
+.memory-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .memory-card-inner {
+    transition: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .memory-grid {
+    gap: 7px;
+  }
+}

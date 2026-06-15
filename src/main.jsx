@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import data from './projects.json'
 import { PreferencesProvider } from './lib/preferences.jsx'
+import { EasterEggsProvider } from './lib/easterEggs.jsx'
 import { logConsoleGreeting } from './lib/consoleGreeting.js'
 import './styles.css'
 
@@ -13,7 +14,9 @@ logConsoleGreeting(data.profile)
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <PreferencesProvider>
-      <App />
+      <EasterEggsProvider>
+        <App />
+      </EasterEggsProvider>
     </PreferencesProvider>
   </React.StrictMode>,
 )

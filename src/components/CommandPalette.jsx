@@ -32,6 +32,18 @@ function fuzzyMatch(text, q) {
   return i === q.length
 }
 
+// Détecte la commande FANTÔME « > solve <réponse> » (easter egg, jamais rendue
+// dans la liste — comme « konami »). La réponse est TOUT ce qui suit « solve  »
+// et peut contenir des espaces (ex. « jeu de paires »). Retourne la réponse
+// brute (non normalisée — la normalisation se fait côté registre) ou null si la
+// saisie n'est pas une commande solve avec une réponse non vide.
+function parseSolve(rawQuery) {
+  const trimmed = rawQuery.trim()
+  const stripped = trimmed.startsWith('>') ? trimmed.slice(1).trim() : trimmed
+  const m = /^solve\s+(.+)$/i.exec(stripped)
+  return m ? m[1] : null
+}
+
 export default function CommandPalette({
   open,
   onClose,
@@ -42,6 +54,8 @@ export default function CommandPalette({
   onOpenReadme,
   onOpenSettings,
   onToggleView,
+  onKonami,
+  onSolve,
 }) {
   if (!open) return null
   return (
@@ -54,6 +68,8 @@ export default function CommandPalette({
       onOpenReadme={onOpenReadme}
       onOpenSettings={onOpenSettings}
       onToggleView={onToggleView}
+      onKonami={onKonami}
+      onSolve={onSolve}
     />
   )
 }
@@ -70,6 +86,8 @@ function CommandPaletteInner({
   onOpenReadme,
   onOpenSettings,
   onToggleView,
+  onKonami,
+  onSolve,
 }) {
   const { theme, setTheme } = usePreferences()
   const [query, setQuery] = useState('')
@@ -110,18 +128,28 @@ function CommandPaletteInner({
     return { actionItems, projectItems, toolItems }
   }, [projects, tools, onOpenProject, onOpenTool, onOpenReadme, onOpenSettings, onToggleView, theme, setTheme])
 
-  // Filtrage : préfixe ">" => actions uniquement (convention VS Code), sinon tout.
-  const results = useMemo(() => {
+  // Query normalisée : trimmée, sans le préfixe « > » éventuel, en minuscules.
+  // Sert au filtrage ET à la détection de la commande cachée « konami ».
+  const normalizedQuery = useMemo(() => {
     const trimmed = query.trim()
-    const actionsOnly = trimmed.startsWith('>')
-    const q = (actionsOnly ? trimmed.slice(1) : trimmed).trim().toLowerCase()
+    const stripped = trimmed.startsWith('>') ? trimmed.slice(1) : trimmed
+    return stripped.trim().toLowerCase()
+  }, [query])
+
+  // Filtrage : préfixe ">" => actions uniquement (convention VS Code), sinon tout.
+  // La commande konami N'EST PAS dans le pool : un easter egg ne s'auto-révèle
+  // pas, donc elle n'apparaît dans AUCUNE liste de résultats (cf. handler Enter
+  // qui la rend exécutable sans jamais la rendre).
+  const results = useMemo(() => {
+    const actionsOnly = query.trim().startsWith('>')
+    const q = normalizedQuery
     const pool = actionsOnly ? actionItems : [...actionItems, ...projectItems, ...toolItems]
     return pool.filter(
       (item) =>
         fuzzyMatch(item.label.toLowerCase(), q) ||
         (item.hint && item.hint.toLowerCase().includes(q)),
     )
-  }, [query, actionItems, projectItems, toolItems])
+  }, [query, normalizedQuery, actionItems, projectItems, toolItems])
 
   // Au montage : focus l'input. Au démontage (fermeture) : RENDRE le focus à
   // l'élément qui l'avait avant l'ouverture (fin du piège de focus).
@@ -158,8 +186,23 @@ function CommandPaletteInner({
       if (results.length) setActiveIndex((i) => (i - 1 + results.length) % results.length)
     } else if (e.key === 'Enter') {
       e.preventDefault()
+      // Easter egg PRIORITAIRE : « > solve <réponse> » (multi-mots). Comme
+      // konami, c'est une commande fantôme jamais rendue dans la liste : on la
+      // détecte ici, à l'exécution. Elle prime sur l'item surligné (la saisie
+      // « solve … » ne matche de toute façon aucun item réel).
+      const solveAnswer = onSolve ? parseSolve(query) : null
       const item = results[activeIndex]
-      if (item) runItem(item)
+      if (solveAnswer != null) {
+        onClose()
+        onSolve(solveAnswer)
+      } else if (item) {
+        runItem(item)
+      } else if (results.length === 0 && normalizedQuery === 'konami' && onKonami) {
+        // Easter egg : aucune liste affichée, mais la saisie exacte « konami »
+        // (avec ou sans « > ») reste EXÉCUTABLE au clavier. Débloque + ferme.
+        onClose()
+        onKonami()
+      }
     } else if (e.key === 'Escape') {
       e.preventDefault()
       onClose()

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { FileIcon, CloseIcon, GearIcon } from './icons.jsx'
+import { FileIcon, CloseIcon, GearIcon, GamepadIcon } from './icons.jsx'
 import ToolLogo from './ToolLogo.jsx'
 
 // Barre d'onglets — pattern WAI-ARIA Tabs.
@@ -61,7 +61,12 @@ export default function EditorTabs({ tabs, activeTab, onActivate, onClose, focus
   return (
     <div className="editor-tabs" role="tablist" aria-label="Onglets ouverts">
       {tabs.map((tab, i) => {
-        const color = tab.type === 'readme' ? 'var(--accent)' : `var(--icon-${tab.type})`
+        const color =
+          tab.type === 'readme'
+            ? 'var(--accent)'
+            : tab.type === 'konami' || tab.type === 'game'
+              ? 'var(--icon-perso)'
+              : `var(--icon-${tab.type})`
         const selected = activeTab === tab.id
         const roving = i === focusIndex ? 0 : -1
         return (
@@ -81,6 +86,10 @@ export default function EditorTabs({ tabs, activeTab, onActivate, onClose, focus
               <ToolLogo logo={tab.logo} color={tab.color} label={tab.name} shape="square" size={15} />
             ) : tab.type === 'settings' ? (
               <GearIcon size={14} color="var(--accent)" />
+            ) : tab.type === 'game' ? (
+              <span className="tab-game-icon" style={{ color }}>
+                <GamepadIcon size={14} />
+              </span>
             ) : (
               <FileIcon size={14} color={color} />
             )}

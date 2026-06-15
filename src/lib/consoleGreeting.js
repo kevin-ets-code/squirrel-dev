@@ -35,5 +35,13 @@ export function logConsoleGreeting(profile = {}) {
   if (github) console.log('%c⌥  GitHub  %c' + github, label, link)
   if (linkedin) console.log('%c in LinkedIn %c' + linkedin, label, link)
 
+  // Clin d'œil discret : ce portfolio cache quelques easter eggs. On évoque le
+  // vieux code de triche (Konami) SANS donner la séquence : l'indice reste une énigme.
+  console.log(
+    `%c🎮 PS  %cce portfolio cache quelques surprises… Les vieux briscards se souviennent d'un certain vieux, vieux, vieux code de triche, à toi de retrouver la suite.`,
+    label,
+    lead,
+  )
+
   if (name) console.log(`%c— ${name}`, label)
 }

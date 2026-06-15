@@ -1,12 +1,22 @@
-import { FilesIcon, PackageIcon, SearchIcon, GraphIcon, GearIcon, GitBranchIcon } from './icons.jsx'
+import {
+  FilesIcon,
+  PackageIcon,
+  SearchIcon,
+  GraphIcon,
+  GearIcon,
+  GitBranchIcon,
+  GamepadIcon,
+} from './icons.jsx'
 
 // Activity bar (48px). Explorateur / Recherche / Tools basculent le panneau (et la
 // vue IDE), Graph bascule en vue graphe, et l'engrenage (en bas) ouvre l'onglet
 // Paramètres. (Le GitHub du profil reste accessible depuis le README.)
+// L'icône « Jeux » n'apparaît QUE si le mode Jeux est débloqué (easterEggUnlocked).
 export default function ActivityBar({
   view,
   panel,
   activeTab,
+  easterEggUnlocked,
   onSelectPanel,
   onSelectGraph,
   onSelectSettings,
@@ -45,6 +55,16 @@ export default function ActivityBar({
       >
         <GitBranchIcon size={24} />
       </button>
+      {easterEggUnlocked && (
+        <button
+          className={'activity-btn' + (view === 'ide' && panel === 'games' ? ' active' : '')}
+          onClick={() => onSelectPanel('games')}
+          aria-label="Jeux"
+          title="Jeux"
+        >
+          <GamepadIcon />
+        </button>
+      )}
       <button
         className={'activity-btn' + (view === 'graph' ? ' active' : '')}
         onClick={onSelectGraph}

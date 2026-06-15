@@ -16,13 +16,22 @@ function Folder({ label, count, children, defaultOpen = true }) {
   )
 }
 
-export default function Sidebar({ profile, projects, activeTab, onOpenReadme, onOpenProject }) {
+export default function Sidebar({
+  profile,
+  projects,
+  activeTab,
+  easterEggUnlocked,
+  onOpenReadme,
+  onOpenProject,
+  onOpenKonami,
+}) {
   const pro = projects.filter((p) => p.type === 'pro')
   const perso = projects.filter((p) => p.type === 'perso')
 
-  // Total de fichiers de l'explorateur = README + tous les projets (pro + perso).
-  // Dérivé de la source : un projet ajouté à projects.json est compté automatiquement.
-  const fileCount = 1 + projects.length
+  // Total de fichiers de l'explorateur = README + tous les projets (pro + perso),
+  // + konami-code.md une fois le mode Jeux débloqué. Dérivé de la source : un
+  // projet ajouté à projects.json est compté automatiquement.
+  const fileCount = 1 + projects.length + (easterEggUnlocked ? 1 : 0)
 
   const renderFile = (project) => (
     <button
@@ -57,6 +66,16 @@ export default function Sidebar({ profile, projects, activeTab, onOpenReadme, on
           <FileIcon color="var(--accent)" />
           <span className="file-name">README.md</span>
         </button>
+
+        {easterEggUnlocked && (
+          <button
+            className={'file-row file-readme' + (activeTab === 'konami' ? ' active' : '')}
+            onClick={onOpenKonami}
+          >
+            <FileIcon color="var(--icon-perso)" />
+            <span className="file-name">konami-code.md</span>
+          </button>
+        )}
 
         <Folder label="pro" count={pro.length}>
           {pro.map(renderFile)}
