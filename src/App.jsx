@@ -56,7 +56,7 @@ export default function App() {
   // Déplace le focus vers le contenu fraîchement ouvert (après le rendu).
   // Programmatique => pas d'anneau de focus visible, n'affecte pas la souris.
   const focusPanel = useCallback(() => {
-    requestAnimationFrame(() => panelRef.current?.focus())
+    requestAnimationFrame(() => panelRef.current?.focus({ preventScroll: true }))
   }, [])
 
   const openReadme = useCallback(() => {
@@ -178,7 +178,7 @@ export default function App() {
       const first = sidebarRef.current?.querySelector(
         '.sidebar button, .sidebar input, .sidebar a[href], .sidebar [tabindex]:not([tabindex="-1"])',
       )
-      first?.focus()
+      first?.focus({ preventScroll: true })
     })
   }, [])
 
