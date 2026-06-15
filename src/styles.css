@@ -1209,7 +1209,13 @@ a.tool-link-chip:hover {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* Lignes contact GitHub/LinkedIn (des <a>). Sélecteur qualifié par `a`
+   (spécificité 0,1,1) pour battre `.markdown-body a { border-bottom: 1px solid
+   transparent }` qui, sinon, rendait la bordure BASSE transparente (bord
+   coupé), alors que la ligne Email (un <div>) gardait la sienne. On rétablit
+   donc la bordure complète de .contact-row. */
 a.contact-link {
+  border: 1px solid var(--border);
   text-decoration: none;
   transition: border-color 0.12s ease, background 0.12s ease;
 }
