@@ -241,7 +241,12 @@ export default function App() {
             onSelectSettings={openSettings}
           />
           {panel === 'search' ? (
-            <SearchPanel projects={projects} onOpenProject={openProject} />
+            <SearchPanel
+              projects={projects}
+              tools={tools}
+              onOpenProject={openProject}
+              onOpenTool={openTool}
+            />
           ) : panel === 'tools' ? (
             <ToolsPanel
               projects={projects}
