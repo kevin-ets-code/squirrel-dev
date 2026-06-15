@@ -2,7 +2,7 @@
   "profile": {
     "name": "Kevin NICOLAS",
     "role": "Développeur No-code/Low-code",
-    "tagline": "Je transforme des problèmes métier flous en produits qui tournent en prod.",
+    "tagline": "Je transforme des problèmes métier en produits qui tournent en prod.",
     "location": "Paris, France",
     "email": "kevin.nicolas.ets@gmail.com",
     "links": {
@@ -11,10 +11,12 @@
     }
   },
   "readme": {
-    "intro": "[À COMPLÉTER — Qui je suis, en 2-3 phrases : ton prénom/nom, ton métier (développeur no-code / low-code), ce que tu construis (sites vitrines, applications sur-mesure) et pour qui.]",
-    "approach": "[À COMPLÉTER — Ton approche et ce qui te distingue. Pistes : autodidacte, tu pars du **problème métier** réel pour livrer une **solution qui tourne en prod** ; tu mixes outils no-code/low-code et code quand c'est pertinent ; tu soignes le rendu et la maintenabilité. Écris-le avec tes mots, ne garde rien d'inventé.]",
-    "navigation": "Ce portfolio est un éditeur de code. Chaque projet est un fichier `.md` : ouvre-les dans l'explorateur à gauche, et bascule entre la vue **Preview** (lisible) et **Raw** (le JSON brut). Le panneau **Outils** (icône paquet dans la barre de gauche) liste les technologies et montre, pour chacune, les projets qui l'utilisent. Sur ordinateur, la vue **Graph** relie projets et outils : clique un nœud projet pour ouvrir sa fiche."
-  },
+    "intro": "Vous avez un projet digital, site, app, marketplace, SaaS et vous ne savez pas par où commencer, quelle stack choisir, ou comment éviter les erreurs coûteuses ?\n\n Je suis Kevin, développeur No-Code/Low-Code.",
+
+    "approach": "Avant d'intégrer quoi que ce soit, je vous aide à cadrer, challenger et structurer votre projet :\n\n- **Audit & conseil** : analyse de votre besoin, choix des bons outils, identification des pièges\n- **Stratégie No-Code** : quelle stack pour votre cas précis (Webflow, WeWeb, Xano, Bubble, Make...)\n- **Consultation technique** : vous avez déjà un outil en place ? Je vous aide à l'optimiser ou à débloquer une situation\n- **Cadrage de projet** : roadmap, estimation réaliste, priorisation des fonctionnalités\n\nEt si vous souhaitez aller plus loin, je prends également en charge la réalisation :\n\n- Web app sur WeWeb + Xano ou Vibe Coding\n- Site sur Webflow ou Vibe Coding\n- Automatisations Make / Zapier / n8n\n- Plateforme SaaS, marketplace, réseau social, outils internes",
+
+    "navigation": "Ce portfolio est un éditeur de code. Chaque projet est un fichier `.md` :\n\n- Ouvrez-les dans l'explorateur à gauche\n- Basculez entre la vue **Preview** (lisible) et **Raw** (le JSON brut)\n\nLe panneau **Outils** (icône paquet dans la barre de gauche) liste les technologies et montre, pour chacune, les projets qui l'utilisent.\n\nSur ordinateur, la vue **Graph** relie projets et outils : cliquez un nœud projet pour ouvrir sa fiche."
+},
   "projects": [
     {
       "id": "karine-de-leusse",
