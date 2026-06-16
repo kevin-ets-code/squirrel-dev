@@ -40,6 +40,7 @@
   --icon-pro: #e0b341;          /* ambre (projets pro) */
   --icon-perso: #4ec9b0;        /* teal (projets perso) */
   --icon-tool: #569cd6;         /* bleu pour les outils (cohérent avec le graphe) */
+  --icon-system: #6a9ce0;       /* pages système : README, konami-code, victory-snake — couleur fixe, indépendante de l'accent, bleu plus clair que --icon-tool */
   --tool-badge-fallback: #5a5a5a; /* fond de pastille quand l'outil n'a pas de "color" */
   --graph-tool: #569cd6;        /* bleu pour les outils dans le graphe */
   --bg-graph: #181818;          /* fond du canvas, distinct de l'éditeur */
@@ -175,6 +176,21 @@ button {
   background: none;
   border: none;
   cursor: pointer;
+}
+
+/* ============================================================
+   Sélection de texte — suit l'accent
+   Fond = accent semi-transparent (color-mix avec transparent, même modèle que
+   --accent-status), donc il suit l'accent choisi au runtime, sur les deux thèmes.
+   À 35 % le texte reste lisible par transparence : on NE force pas `color`.
+   ::selection et ::-moz-selection DOIVENT être deux blocs séparés (Firefox ignore
+   la règle entière si les deux sont groupés dans un même sélecteur).
+   ============================================================ */
+::selection {
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+::-moz-selection {
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
 ::-webkit-scrollbar {

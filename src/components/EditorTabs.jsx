@@ -2,6 +2,23 @@ import { useEffect, useRef, useState } from 'react'
 import { FileIcon, CloseIcon, GearIcon, GamepadIcon } from './icons.jsx'
 import ToolLogo from './ToolLogo.jsx'
 
+// Pages « système » de l'explorateur (README, konami-code, victory-snake) :
+// elles partagent la couleur fixe --icon-system, comme dans la Sidebar. Les
+// valeurs correspondent aux tab.type créés dans App.jsx (README_TAB, KONAMI_TAB,
+// VICTORY_SNAKE_TAB).
+const SYSTEM_TAB_TYPES = ['readme', 'konami', 'victory-snake']
+
+// Couleur de l'icône d'un onglet selon son type (alignée sur la Sidebar) :
+// - pages système -> --icon-system (bleu fixe) ;
+// - jeu -> --icon-perso (inchangé) ;
+// - sinon (projets 'pro' / 'perso') -> --icon-<type>.
+// (Les types 'tool' et 'settings' ont leur propre rendu et n'utilisent pas ceci.)
+function tabIconColor(type) {
+  if (SYSTEM_TAB_TYPES.includes(type)) return 'var(--icon-system)'
+  if (type === 'game') return 'var(--icon-perso)'
+  return `var(--icon-${type})`
+}
+
 // Barre d'onglets — pattern WAI-ARIA Tabs.
 // Activation manuelle : flèches gauche/droite déplacent le focus (roving
 // tabindex), Entrée/Espace activent l'onglet focalisé. Chaque onglet est relié
@@ -61,12 +78,7 @@ export default function EditorTabs({ tabs, activeTab, onActivate, onClose, focus
   return (
     <div className="editor-tabs" role="tablist" aria-label="Onglets ouverts">
       {tabs.map((tab, i) => {
-        const color =
-          tab.type === 'readme'
-            ? 'var(--accent)'
-            : tab.type === 'konami' || tab.type === 'game'
-              ? 'var(--icon-perso)'
-              : `var(--icon-${tab.type})`
+        const color = tabIconColor(tab.type)
         const selected = activeTab === tab.id
         const roving = i === focusIndex ? 0 : -1
         return (

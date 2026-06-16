@@ -38,7 +38,7 @@ const GraphView = lazy(() => import('./components/GraphView.jsx'))
 const README_TAB = { id: 'readme', name: 'README', type: 'readme' }
 const SETTINGS_TAB = { id: 'settings', name: 'Settings', type: 'settings' }
 const KONAMI_TAB = { id: 'konami', name: 'konami-code', type: 'konami' }
-const VICTORY_SNAKE_TAB = { id: 'victory-snake', name: 'victory_snake', type: 'victory-snake' }
+const VICTORY_SNAKE_TAB = { id: 'victory-snake', name: 'victory-snake', type: 'victory-snake' }
 
 export default function App() {
   const { profile, projects, tools = {}, readme = {} } = data

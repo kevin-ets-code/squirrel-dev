@@ -1,7 +1,7 @@
 import ContentPage from './ContentPage.jsx'
 import MarkdownView from './MarkdownView.jsx'
 
-// Page victory_snake.md — récompense de la « grille parfaite » au Snake.
+// Page victory-snake.md — récompense de la « grille parfaite » au Snake.
 // Même modèle que KonamiView/ReadmeView : la prose passe par MarkdownView et le
 // toggle Preview/Raw vient de ContentPage. Purement statique (pas de partie
 // dynamique) : le Raw expose la SOURCE markdown ci-dessous telle quelle.
@@ -32,7 +32,7 @@ export default function VictorySnakeView() {
     <>
       <span className="crumb">src</span>
       <span className="crumb-sep">›</span>
-      <span className="crumb crumb-active">victory_snake.md</span>
+      <span className="crumb crumb-active">victory-snake.md</span>
     </>
   )
 

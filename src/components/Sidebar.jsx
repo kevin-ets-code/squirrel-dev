@@ -31,7 +31,7 @@ export default function Sidebar({
   const perso = projects.filter((p) => p.type === 'perso')
 
   // Total de fichiers de l'explorateur = README + tous les projets (pro + perso),
-  // + konami-code.md une fois le mode Jeux débloqué, + victory_snake.md une fois
+  // + konami-code.md une fois le mode Jeux débloqué, + victory-snake.md une fois
   // la « grille parfaite » du Snake atteinte. Dérivé de la source : un projet
   // ajouté à projects.json est compté automatiquement.
   const fileCount =
@@ -67,7 +67,7 @@ export default function Sidebar({
           className={'file-row file-readme' + (activeTab === 'readme' ? ' active' : '')}
           onClick={onOpenReadme}
         >
-          <FileIcon color="var(--accent)" />
+          <FileIcon color="var(--icon-system)" />
           <span className="file-name">README.md</span>
         </button>
 
@@ -76,7 +76,7 @@ export default function Sidebar({
             className={'file-row file-readme' + (activeTab === 'konami' ? ' active' : '')}
             onClick={onOpenKonami}
           >
-            <FileIcon color="var(--icon-perso)" />
+            <FileIcon color="var(--icon-system)" />
             <span className="file-name">konami-code.md</span>
           </button>
         )}
@@ -86,8 +86,8 @@ export default function Sidebar({
             className={'file-row file-readme' + (activeTab === 'victory-snake' ? ' active' : '')}
             onClick={onOpenVictorySnake}
           >
-            <FileIcon color="var(--accent)" />
-            <span className="file-name">victory_snake.md</span>
+            <FileIcon color="var(--icon-system)" />
+            <span className="file-name">victory-snake.md</span>
           </button>
         )}
 
