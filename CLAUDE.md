@@ -23,7 +23,7 @@ Structure (clés racine de `projects.json`) :
 
 - `profile` — identité : `name`, `role`, `tagline`, `location`, `email`, `links` (github, linkedin). Alimente l'onglet README (en-tête + section « Me contacter »).
 - `readme` — texte d'accueil en markdown : `intro`, `approach`, `navigation` (un champ vide masque sa section).
-- `projects[]` — un objet par projet : `id`, `name` (slug nu, affiché avec l'extension `.json`), `type` (`"pro"` | `"perso"`), `year`, `status`, `title`, `oneliner`, `problem`, `solution`, `stack` (ids d'outils), `metrics[]` (optionnel), `highlights[]` (optionnel), `demo`, `repo`.
+- `projects[]` — un objet par projet : `id`, `name` (slug nu, affiché avec l'extension `.json`), `type` (`"pro"` | `"perso"`), `year`, `status`, `title`, `oneliner`, `problem`, `solution`, `stack` (ids d'outils), `metrics[]` (optionnel), `highlights[]` (optionnel), `kinds[]` (natures du projet, **liste ouverte** : `"site-vitrine"`, `"webapp"`, `"app-native"`, `"automatisation"`…), `platforms[]` (objets `{ store, url }`, `store` **liste ouverte** : `"web"`, `"ios"`, `"android"`…), `repo`. **`demo` a été remplacé par `platforms[{ store: "web" }]`** — il n'existe plus.
 - `tools{}` — **map `id` → métadonnées** : `{ label, category, color, logo, url, description }`. `category` (optionnel) = nom de la catégorie d'affichage dans le panneau Outils (groupes repliables) ; absent/vide = groupe « Autres ».
 
 ### Système d'ids outils

@@ -1013,6 +1013,38 @@ textarea:focus-visible,
   border-color: var(--status-gray);
 }
 
+/* Badge "nature" (kinds) : teinté accent pour se distinguer du chip type/année.
+   Libellé dérivé de la valeur (cf. src/lib/kinds.js) — liste ouverte. */
+.kind-chip {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  font-weight: 600;
+}
+
+/* Tag plateforme (platforms) : même famille visuelle que .kind-chip.
+   Sans URL → simple <span class="meta-chip kind-chip"> (informatif).
+   Avec URL → <a> cliquable : icône "ouvrir dans un nouvel onglet" + hover accent
+   pour signaler l'interactivité. Qualifié par `a` (spécificité 0,1,1) pour battre
+   `.markdown-body a { border-bottom: 1px solid transparent }` qui, sinon, rendrait
+   la bordure BASSE transparente (bord coupé) — on rétablit donc la bordure complète
+   (même teinte que .kind-chip) et on neutralise le soulignement. */
+a.platform-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--border));
+  text-decoration: none;
+}
+a.platform-tag:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+a.platform-tag svg {
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
 /* Compteur d'utilisations dans le panneau Outils */
 .tool-count {
   margin-left: auto;

@@ -32,7 +32,12 @@ Ouvre [`src/projects.json`](src/projects.json) et ajoute un objet dans le tablea
     "Un fait marquant qualitatif, quand un chiffre n'a pas de sens",
     "Une autre réussite notable du projet"
   ],
-  "demo": "https://exemple.com",
+  "kinds": ["webapp", "app-native"],
+  "platforms": [
+    { "store": "web", "url": "https://exemple.com" },
+    { "store": "ios", "url": "https://apps.apple.com/app/id000000000" },
+    { "store": "android", "url": "https://play.google.com/store/apps/details?id=com.exemple" }
+  ],
   "repo": "https://github.com/moi/mon-projet"
 }
 ```
@@ -53,8 +58,9 @@ Ouvre [`src/projects.json`](src/projects.json) et ajoute un objet dans le tablea
 | `stack`    | string[] (ids d'outils)      | **Ids** d'outils (pas les noms) — voir « Outils : système id / label ». |
 | `metrics`  | `{ label, value }[]`         | **Optionnel.** Résultats chiffrés → section "Résultats" (tableau label/valeur). Absent ou `[]` = section masquée. |
 | `highlights` | string[]                   | **Optionnel.** Faits marquants qualitatifs → section "Points clés" (liste à puces). Absent ou `[]` = section masquée. |
-| `demo`     | string (URL) ou `null`       | Lien démo. `null` = pas affiché.                             |
-| `repo`     | string (URL) ou `null`       | Lien code. `null` = pas affiché.                             |
+| `kinds`    | string[]                     | **Optionnel.** Nature(s) du projet → **badges** dans l'en-tête (un projet peut en cumuler plusieurs). **Liste ouverte** (voir ci-dessous). Absent ou `[]` = aucun badge. |
+| `platforms` | `{ store, url }[]`          | **Optionnel.** Plateformes de distribution → **liens cliquables** (icône store) dans l'en-tête. `store` est une **liste ouverte** (`"web"`, `"ios"`, `"android"`…). Absent ou `[]` = aucun lien. **Remplace l'ancien champ `demo`** (un lien `demo` devient `{ store: "web", url }`). |
+| `repo`     | string (URL) ou `null`       | Lien code (distinct des plateformes) → section "Liens". `null`/`""` = pas affiché. |
 
 > Les couleurs d'icônes sont **fixes** (indépendantes de l'accent) : `pro` = **ambre**,
 > `perso` = **teal**. Changer l'accent ne les modifie pas. (L'accent par défaut étant
@@ -81,6 +87,52 @@ Valeurs reconnues et code couleur (défini dans `src/lib/status.js`) :
 Toute autre valeur s'affiche en **gris** (neutre). Pour ajouter une valeur ou
 changer une couleur : édite les listes dans `src/lib/status.js` et les variables
 `--status-green` / `--status-warn` / `--status-gray` en haut de `src/styles.css`.
+
+### Le champ `kinds` (nature du projet)
+
+`kinds` est un **tableau** : un projet peut avoir **plusieurs natures** à la fois
+(ex. une app à la fois `webapp` et `app-native`). Chaque valeur s'affiche en
+**badge** dans l'en-tête de la fiche, à côté du badge type/année et du statut.
+
+C'est une **liste ouverte** : tu peux mettre **n'importe quelle valeur**, elle
+s'affichera. Valeurs déjà utilisées :
+
+| Valeur            | Libellé affiché |
+| ----------------- | --------------- |
+| `"site-vitrine"`  | Site vitrine    |
+| `"webapp"`        | Web app         |
+| `"app-native"`    | App native      |
+| `"automatisation"`| Automatisation  |
+
+Le libellé est dérivé automatiquement (majuscule + tirets remplacés par des
+espaces) pour toute valeur inconnue ; `src/lib/kinds.js` ne contient qu'une
+petite table d'embellissement pour les libellés ci-dessus (ex. `webapp` →
+« Web app »). Pas besoin de toucher au code pour ajouter une nature : il suffit
+de l'écrire dans `kinds`. Absent ou `[]` = aucun badge.
+
+### Le champ `platforms` (où c'est distribué)
+
+`platforms` est un **tableau d'objets** `{ "store": "...", "url": "..." }`. Chaque
+entrée devient un **lien cliquable** (icône + libellé) dans l'en-tête de la fiche,
+ouvert dans un nouvel onglet. C'est ici qu'on met le lien **public** vers le
+produit (site en ligne, fiche App Store, fiche Play Store).
+
+`store` est une **liste ouverte**. Stores reconnus (avec icône dédiée) :
+
+| `store`     | Icône          | Libellé   |
+| ----------- | -------------- | --------- |
+| `"web"`     | 🌐 globe       | Web       |
+| `"ios"`     | 🍎 pomme       | iOS       |
+| `"android"` | ▶️ triangle Play | Android |
+
+Un `store` inconnu reste affiché : il utilise une **icône générique de lien
+externe** et un libellé dérivé automatiquement (`src/lib/platforms.js`). Pour
+ajouter une vraie icône à un nouveau store, ajoute-la dans `src/components/icons.jsx`
+et référence-la dans la table `STORE_ICONS` de `src/components/ProjectView.jsx`.
+
+> **Migration depuis `demo`** : l'ancien champ `demo` (lien démo unique) n'existe
+> plus. Un lien démo devient une entrée `platforms` avec `store: "web"`. Le champ
+> `repo` (lien code) est **inchangé** et reste affiché dans la section « Liens ».
 
 ### Résultats : chiffres (`metrics`) ou faits qualitatifs (`highlights`)
 
@@ -557,7 +609,7 @@ Le portfolio est entièrement utilisable au clavier, **sans jamais piéger le fo
   atteignable. Focus visible net (anneau teal).
 - **Tab suit l'onglet actif** : seul le contenu de l'onglet **affiché** est dans le
   DOM, donc après les onglets, `Tab` entre dans le contenu réellement visible
-  (les liens démo/repo de l'onglet actif sont atteignables). Les contenus des
+  (les liens plateformes/repo de l'onglet actif sont atteignables). Les contenus des
   onglets inactifs ne sont pas rendus, donc jamais focusables.
 - **Focus déplacé à l'ouverture** : activer un fichier dans l'explorateur ou un
   outil dans le panneau Tools (clic ou Entrée) déplace le focus vers le contenu

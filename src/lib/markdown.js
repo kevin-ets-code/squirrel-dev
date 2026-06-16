@@ -51,12 +51,13 @@ export function projectToMarkdown(project, tools) {
     lines.push('')
   }
 
-  const hasLinks = project.demo || project.repo
-  if (hasLinks) {
+  // Les plateformes de distribution (web/ios/android) sont rendues en riche
+  // dans l'en-tête React de ProjectView (icônes cliquables). La section markdown
+  // "Liens" ne garde donc que le lien `repo` (code), distinct des plateformes.
+  if (project.repo) {
     lines.push('## Liens')
     lines.push('')
-    if (project.demo) lines.push(`- [Voir la démo](${project.demo})`)
-    if (project.repo) lines.push(`- [Voir le code](${project.repo})`)
+    lines.push(`- [Voir le code](${project.repo})`)
     lines.push('')
   }
 

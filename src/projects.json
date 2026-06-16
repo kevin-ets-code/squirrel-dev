@@ -41,7 +41,10 @@
         "Prise de rendez-vous Doctolib intégrée sur l'ensemble du site",
         "Conforme RGPD : aucun tracker tiers, pas de bandeau cookies"
       ],
-      "demo": "https://cyberaddictologie.fr",
+      "kinds": ["site-vitrine"],
+      "platforms": [
+        { "store": "web", "url": "https://cyberaddictologie.fr" }
+      ],
       "repo": null
     },
     {
@@ -76,7 +79,8 @@
         "Backend Supabase sur-mesure avec Edge Functions",
         "Import/export CSV et export RGPD"
       ],
-      "demo": null,
+      "kinds": ["app-native"],
+      "platforms": [],
       "repo": null
     },
     {
@@ -105,7 +109,10 @@
         "Overlay de territoires via projection texture Canvas 2D (dataset Cliopatria/Seshat).",
         "UI mobile optimisée (textures 2K) et contrôle artistique manuel via globals window._*."
       ],
-      "demo": "https://squirrel-app-chronos-humanite.vercel.app/",
+      "kinds": ["webapp"],
+      "platforms": [
+        { "store": "web", "url": "https://squirrel-app-chronos-humanite.vercel.app/" }
+      ],
       "repo": "https://github.com/kevin-ets-code/chronos-humanite"
     },
     {
@@ -134,7 +141,10 @@
         "Direction artistique DEAD DROP complète : effets CRT (scanlines, flicker, glow phosphore), polices VT323 + Space Mono, palette terminal vert.",
         "Carte d'agent partageable avec QR code, export PNG via html2canvas, et Web Share API."
       ],
-      "demo": "https://squirrel-game-prisoners-dilemma.vercel.app/",
+      "kinds": ["webapp","jeu"],
+      "platforms": [
+        { "store": "web", "url": "https://squirrel-game-prisoners-dilemma.vercel.app/" }
+      ],
       "repo": ""
     },
     {
@@ -153,7 +163,10 @@
   "highlights": [
     "Création page pricing custom pour des prix dynamiques"
   ],
-  "demo": "https://www.pharow.com/",
+  "kinds": ["site-vitrine"],
+  "platforms": [
+    { "store": "web", "url": "https://www.pharow.com/" }
+  ],
   "repo": ""
 },
 {
@@ -172,7 +185,10 @@
   "highlights": [
     "Création page pricing custom pour des prix dynamiques"
   ],
-  "demo": "https://www.neobrain.io/",
+  "kinds": ["site-vitrine"],
+  "platforms": [
+    { "store": "web", "url": "https://www.neobrain.io/" }
+  ],
   "repo": ""
 }
   ],

@@ -183,6 +183,18 @@ export function LockOpenIcon({ size = 14, color = 'currentColor' }) {
   )
 }
 
+// Icône générique "lien externe" (d'après lucide `external-link`). Signale qu'un
+// tag plateforme avec URL s'ouvre dans un nouvel onglet (cf. ProjectView).
+export function ExternalLinkIcon({ size = 14 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 3h6v6" />
+      <path d="M10 14 21 3" />
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+    </svg>
+  )
+}
+
 export function GitBranchIcon({ size = 14 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
