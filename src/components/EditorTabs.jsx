@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { FileIcon, CloseIcon, GearIcon, GamepadIcon } from './icons.jsx'
 import ToolLogo from './ToolLogo.jsx'
+import { fileName } from '../lib/fileName.js'
 
 // Pages « système » de l'explorateur (README, konami-code, victory-snake) :
 // elles partagent la couleur fixe --icon-system, comme dans la Sidebar. Les
@@ -81,6 +82,10 @@ export default function EditorTabs({ tabs, activeTab, onActivate, onClose, focus
         const color = tabIconColor(tab.type)
         const selected = activeTab === tab.id
         const roving = i === focusIndex ? 0 : -1
+        // Nom affiché = nom nu (tab.name) + extension reflétant la source brute,
+        // via le helper central (même chaîne que sidebar/breadcrumb). tab.name
+        // reste nu pour le fallback d'initiale de ToolLogo.
+        const label = fileName(tab.type, tab.name)
         return (
           <div
             key={tab.id}
@@ -105,11 +110,11 @@ export default function EditorTabs({ tabs, activeTab, onActivate, onClose, focus
             ) : (
               <FileIcon size={14} color={color} />
             )}
-            <span className="tab-name">{tab.name}</span>
+            <span className="tab-name">{label}</span>
             <button
               className="tab-close"
               tabIndex={roving}
-              aria-label={`Fermer ${tab.name}`}
+              aria-label={`Fermer ${label}`}
               onClick={(e) => {
                 e.stopPropagation()
                 onClose(tab.id)

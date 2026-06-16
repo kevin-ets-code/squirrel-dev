@@ -42,7 +42,7 @@ Ouvre [`src/projects.json`](src/projects.json) et ajoute un objet dans le tablea
 | Champ      | Type                         | Notes                                                        |
 | ---------- | ---------------------------- | ------------------------------------------------------------ |
 | `id`       | string (unique)              | Identifiant interne. Doit être unique.                       |
-| `name`     | string (slug)                | Nom de fichier affiché (`name.md`). Format `mon-projet`.     |
+| `name`     | string (slug)                | Nom de fichier affiché (`name.json`). Format `mon-projet`.   |
 | `type`     | `"pro"` ou `"perso"`         | Range le projet dans le dossier correspondant + couleur d'icône. |
 | `year`     | number                       | Année du projet.                                             |
 | `status`   | string                       | État du projet, affiché en badge coloré (voir ci-dessous).   |
@@ -277,7 +277,7 @@ historique git** : une timeline des projets présentée comme un `git log`. C'es
 - la liste des « commits » = **tous les projets**, triés par **année décroissante**,
   puis par `id` (ordre **stable et déterministe**, jamais de hasard) ;
 - chaque ligne affiche un **hash court** (7 caractères hex), le `name` du projet
-  (le slug `.md`) comme **message de commit**, un **badge** `pro`/`perso` (mêmes couleurs que les
+  (le slug nu, sans extension) comme **message de commit**, un **badge** `pro`/`perso` (mêmes couleurs que les
   icônes de l'explorateur : ambre / teal) et l'**année** en méta ;
 - le libellé de section **HISTORIQUE** porte un **compteur** = nombre de commits =
   nombre de projets (dérivé de la même source que les compteurs PROJETS / OUTILS) ;

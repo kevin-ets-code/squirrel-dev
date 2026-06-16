@@ -1,5 +1,6 @@
 import ContentPage from './ContentPage.jsx'
 import ToolLogo from './ToolLogo.jsx'
+import { fileName } from '../lib/fileName.js'
 
 // Fiche détail d'un outil, ouverte en onglet dans l'éditeur.
 // Reçoit l'outil résolu { id, label, description, url, logo, color } : l'id sert à
@@ -15,7 +16,7 @@ export default function ToolView({ tool, projects, onOpenProject }) {
     <>
       <span className="crumb">tools</span>
       <span className="crumb-sep">›</span>
-      <span className="crumb crumb-active">{label}</span>
+      <span className="crumb crumb-active">{fileName('tool', label)}</span>
     </>
   )
 

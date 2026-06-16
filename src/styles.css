@@ -2125,6 +2125,31 @@ a.contact-link .contact-value {
   font-family: var(--font-mono);
 }
 
+/* Bandeau de score en direct (coups + temps), même style mono discret que Snake. */
+.memory-stats {
+  margin: 6px 0 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+.memory-stats strong {
+  color: var(--fg-heading);
+}
+.memory-stats-sep {
+  margin: 0 8px;
+  opacity: 0.6;
+}
+.memory-records {
+  margin: 2px 0 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  opacity: 0.85;
+}
+.memory-records strong {
+  color: var(--fg);
+}
+
 .memory-win {
   display: flex;
   align-items: center;
@@ -2154,6 +2179,39 @@ a.contact-link .contact-value {
 }
 .memory-replay:hover {
   filter: brightness(1.08);
+}
+/* Résultat final de la partie (coups · temps) dans le bandeau de victoire. */
+.memory-win-stats {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+/* Célébration : un (ou les deux) record(s) battu(s). Style accent + pulse discret. */
+.memory-record-flash {
+  flex: 1 0 100%;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  animation: memory-record-pulse 0.6s ease;
+}
+@keyframes memory-record-pulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  60% {
+    transform: scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .memory-record-flash {
+    animation: none;
+  }
 }
 
 .memory-grid {
@@ -2403,6 +2461,148 @@ a.contact-link .contact-value {
   .snake-stage.is-eating,
   .snake-stage.is-over,
   .snake-stage.is-won {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   Jeu Squirrel (runner endless type Dino Chrome)
+   Réutilise les patterns du bloc Snake (head, overlays, pad, anims).
+   ============================================================ */
+.squirrel-game {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 8px 4px 24px;
+}
+.squirrel-head {
+  margin-bottom: 16px;
+}
+.squirrel-title {
+  margin: 0 0 4px;
+  font-size: 20px;
+  color: var(--fg-heading);
+}
+.squirrel-scores {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+.squirrel-scores strong {
+  color: var(--fg-heading);
+}
+
+.squirrel-stage {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-editor);
+  overflow: hidden;
+  line-height: 0; /* supprime l'espace sous le canvas inline */
+}
+.squirrel-stage:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.squirrel-stage.is-over {
+  animation: squirrel-shake 0.3s ease;
+}
+@keyframes squirrel-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+.squirrel-canvas {
+  display: block;
+  touch-action: none; /* pas de scroll/zoom au doigt sur la zone de jeu */
+}
+
+.squirrel-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  line-height: 1.4;
+  background: color-mix(in srgb, var(--bg-editor) 78%, transparent);
+  text-align: center;
+  padding: 16px;
+}
+.squirrel-overlay-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--fg-heading);
+}
+.squirrel-overlay-sub {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+.squirrel-btn {
+  margin-top: 4px;
+  padding: 8px 18px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--accent);
+  color: var(--bg-editor);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.squirrel-btn:hover {
+  filter: brightness(1.08);
+}
+
+/* Deux boutons « maintien » tactiles (mobile uniquement). */
+.squirrel-pad {
+  margin: 16px auto 0;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+.squirrel-pad-btn {
+  min-width: 120px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-sidebar);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+}
+.squirrel-pad-btn:active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-editor);
+}
+.squirrel-pad-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .squirrel-stage.is-over {
     animation: none;
   }
 }

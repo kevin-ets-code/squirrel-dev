@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ChevronIcon, FileIcon } from './icons.jsx'
 import { statusColor } from '../lib/status.js'
+import { fileName } from '../lib/fileName.js'
 
 function Folder({ label, count, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen)
@@ -44,7 +45,7 @@ export default function Sidebar({
       onClick={() => onOpenProject(project)}
     >
       <FileIcon color={`var(--icon-${project.type})`} />
-      <span className="file-name">{project.name}.md</span>
+      <span className="file-name">{fileName(project.type, project.name)}</span>
       {project.status && (
         <span
           className="file-status-dot"
@@ -68,7 +69,7 @@ export default function Sidebar({
           onClick={onOpenReadme}
         >
           <FileIcon color="var(--icon-system)" />
-          <span className="file-name">README.md</span>
+          <span className="file-name">{fileName('readme', 'README')}</span>
         </button>
 
         {easterEggUnlocked && (
@@ -77,7 +78,7 @@ export default function Sidebar({
             onClick={onOpenKonami}
           >
             <FileIcon color="var(--icon-system)" />
-            <span className="file-name">konami-code.md</span>
+            <span className="file-name">{fileName('konami', 'konami-code')}</span>
           </button>
         )}
 
@@ -87,7 +88,7 @@ export default function Sidebar({
             onClick={onOpenVictorySnake}
           >
             <FileIcon color="var(--icon-system)" />
-            <span className="file-name">victory-snake.md</span>
+            <span className="file-name">{fileName('victory-snake', 'victory-snake')}</span>
           </button>
         )}
 

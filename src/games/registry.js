@@ -14,11 +14,9 @@
 //             solution (gameIdForAnswer renvoie le premier match).
 //   component composant jouable (rendu dans un onglet via openGame), ou `null`
 //             tant que le jeu est un placeholder.
-//
-// PLACEHOLDER : Pong reste verrouillé (solution/riddle temporaires,
-// component: null) — il sera implémenté plus tard.
 import MemoryGame from '../components/games/MemoryGame.jsx'
 import SnakeGame from '../components/games/SnakeGame.jsx'
+import SquirrelGame from '../components/games/SquirrelGame.jsx'
 
 export const GAMES = [
   {
@@ -38,11 +36,12 @@ export const GAMES = [
     component: MemoryGame,
   },
   {
-    id: 'pong',
-    label: 'Pong',
-    riddle: 'PLACEHOLDER — énigme du Pong (à affiner ensemble).',
-    solutions: ['placeholder-pong'],
-    component: null,
+    id: 'squirrel',
+    label: 'Squirrel',
+    riddle:
+      'Je file sur les branches, je fais des bonds, et l’hiver je vis de ce que j’ai mis de côté. Qui suis-je ?',
+    solutions: ['ecureuil', 'squirrel'],
+    component: SquirrelGame,
   },
 ]
 

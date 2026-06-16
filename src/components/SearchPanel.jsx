@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { FileIcon } from './icons.jsx'
 import ToolLogo from './ToolLogo.jsx'
 import { buildTools } from '../lib/tools.js'
+import { fileName } from '../lib/fileName.js'
 
 // Panneau de recherche : filtre projets ET outils par nom, titre, stack…
 //
@@ -17,7 +18,7 @@ export default function SearchPanel({ projects, tools, onOpenProject, onOpenTool
   const items = useMemo(() => {
     const projectItems = projects.map((p) => ({
       key: 'project:' + p.id,
-      label: `${p.name}.md`,
+      label: fileName(p.type, p.name),
       haystack: [p.name, p.title, p.oneliner, p.type, ...(p.stack || [])]
         .join(' ')
         .toLowerCase(),
@@ -27,7 +28,7 @@ export default function SearchPanel({ projects, tools, onOpenProject, onOpenTool
 
     const toolItems = buildTools(projects, tools).map((t) => ({
       key: 'tool:' + t.id,
-      label: t.label,
+      label: fileName('tool', t.label),
       haystack: `${t.label} ${t.count} projet${t.count > 1 ? 's' : ''}`.toLowerCase(),
       icon: <ToolLogo logo={t.logo} color={t.color} label={t.label} shape="square" size={18} />,
       open: () => onOpenTool(t.id),

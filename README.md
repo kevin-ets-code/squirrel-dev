@@ -1,8 +1,10 @@
 # Portfolio "IDE"
 
 Portfolio personnel présenté comme un éditeur de code (thème sombre type VS Code).
-Les projets sont des fichiers `.md` rangés dans des dossiers, ouvrables en onglets,
-avec un toggle **Preview / Raw**.
+Les projets sont définis en JSON (dans [`src/projects.json`](src/projects.json)) et
+s'affichent comme des fichiers `.json` rangés dans des dossiers, ouvrables en onglets
+avec un toggle **Preview / Raw** : la **source** est le JSON brut, le **Preview** en
+rend une vue markdown lisible.
 
 ## Stack
 

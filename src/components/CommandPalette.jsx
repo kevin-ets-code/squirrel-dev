@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { FileIcon, CommandIcon } from './icons.jsx'
 import ToolLogo from './ToolLogo.jsx'
 import { buildTools } from '../lib/tools.js'
+import { fileName } from '../lib/fileName.js'
 import { usePreferences } from '../lib/preferences.jsx'
 
 // Palette de commandes (style VS Code, Ctrl/Cmd+K).
@@ -100,7 +101,7 @@ function CommandPaletteInner({
   const { actionItems, projectItems, toolItems } = useMemo(() => {
     const projectItems = projects.map((p) => ({
       key: 'project:' + p.id,
-      label: `${p.name}.md`,
+      label: fileName(p.type, p.name),
       hint: p.title,
       icon: <FileIcon color={`var(--icon-${p.type})`} />,
       run: () => onOpenProject(p),
@@ -108,7 +109,7 @@ function CommandPaletteInner({
 
     const toolItems = buildTools(projects, tools).map((t) => ({
       key: 'tool:' + t.id,
-      label: t.label,
+      label: fileName('tool', t.label),
       hint: `${t.count} projet${t.count > 1 ? 's' : ''}`,
       icon: <ToolLogo logo={t.logo} color={t.color} label={t.label} shape="square" size={18} />,
       run: () => onOpenTool(t.id),

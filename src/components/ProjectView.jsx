@@ -2,6 +2,7 @@ import ContentPage from './ContentPage.jsx'
 import MarkdownView from './MarkdownView.jsx'
 import { projectToMarkdown } from '../lib/markdown.js'
 import { statusVariant } from '../lib/status.js'
+import { fileName } from '../lib/fileName.js'
 
 // Fiche projet. Preview = en-tête React + markdown ; Raw = JSON brut de l'objet.
 // Le toggle Preview/Raw et la copie sont fournis par ContentPage.
@@ -12,7 +13,7 @@ export default function ProjectView({ project, tools }) {
       <span className="crumb-sep">›</span>
       <span className="crumb">{project.type}</span>
       <span className="crumb-sep">›</span>
-      <span className="crumb crumb-active">{project.name}.md</span>
+      <span className="crumb crumb-active">{fileName(project.type, project.name)}</span>
     </>
   )
 
