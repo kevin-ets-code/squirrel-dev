@@ -7,14 +7,19 @@ import { fileName } from '../lib/fileName.js'
 // l'identité, le label à l'affichage. Preview = fiche lisible ; Raw = JSON de l'objet.
 // Le toggle Preview/Raw et la copie sont fournis par ContentPage.
 export default function ToolView({ tool, projects, onOpenProject }) {
-  const { label, description, url, logo, color } = tool
+  const { label, category, description, url, logo, color } = tool
   const count = projects.length
   const hasDescription = typeof description === 'string' && description.trim() !== ''
   const hasUrl = typeof url === 'string' && url.trim() !== ''
+  // Segment intermédiaire = catégorie de l'outil ; cohérent avec le groupe
+  // « Autres » du panneau Outils quand category est vide/absent.
+  const categoryCrumb = category && category.trim() !== '' ? category : 'Autres'
 
   const breadcrumb = (
     <>
       <span className="crumb">tools</span>
+      <span className="crumb-sep">›</span>
+      <span className="crumb">{categoryCrumb}</span>
       <span className="crumb-sep">›</span>
       <span className="crumb crumb-active">{fileName('tool', label)}</span>
     </>

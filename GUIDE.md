@@ -168,7 +168,14 @@ fichiers par la **liste de tous les outils** :
   uniques (dérivé de la même source que la liste, donc toujours à jour) ;
 - chaque outil affiche son nom + un badge indiquant **le nombre de projets** qui
   l'utilisent ;
-- la liste est triée par **utilisations décroissantes** (les plus centraux en haut).
+- les outils sont **groupés par catégorie** (champ `category` de l'outil) dans des
+  **dossiers repliables**, comme les dossiers `pro`/`perso` de l'explorateur :
+  chaque groupe porte son nom + un compteur (nombre d'outils du groupe). L'ordre
+  des groupes est **alphabétique par nom de catégorie**, le groupe **« Autres »**
+  (outils sans `category`) toujours en **dernier** ; dans chaque groupe, les outils
+  sont triés **alphabétiquement par label**. Les catégories sont **dérivées de la
+  donnée** : une nouvelle valeur de `category` dans le JSON crée son groupe
+  automatiquement (rien en dur).
 
 > L'explorateur de fichiers suit la même logique : son libellé de section
 > **PROJETS** porte un compteur = **README + tous les projets** (pro + perso),
@@ -195,12 +202,13 @@ Deux endroits travaillent ensemble :
    "tools": {
      "flutter": {
        "label": "Flutter",
+       "category": "Frontend",
        "description": "Framework UI multiplateforme de Google (Dart).",
        "url": "https://flutter.dev",
        "logo": "/logos/flutter.svg",
        "color": "#02569B"
      },
-     "css": { "label": "CSS", "description": "", "url": "", "logo": "", "color": "" }
+     "css": { "label": "CSS", "category": "Frontend", "description": "", "url": "", "logo": "", "color": "" }
    }
    ```
 
@@ -208,6 +216,7 @@ Deux endroits travaillent ensemble :
    | ------------- | -------------------------------------------------------------------- |
    | _(la clé)_    | **id** de l'outil (slug minuscule). C'est lui qu'on met dans `stack`.|
    | `label`       | **Obligatoire.** Nom affiché partout (chips, graphe, fiche outil).   |
+   | `category`    | Optionnel. Nom de la catégorie de regroupement dans le **panneau Outils** (dossier repliable). Absent/vide = groupe **« Autres »**. |
    | `description` | Optionnel. Affiché en section « Description » de la fiche outil (vide/absent = masqué). |
    | `url`         | Optionnel. Affiché en chip « Site officiel ↗ » sur la fiche outil.   |
    | `logo`        | Optionnel. Chemin du logo SVG (voir « Logos » ci-dessous).          |
@@ -254,7 +263,7 @@ la console.
 1. Crée une entrée dans `tools` avec un **id** unique et au moins un `label`
    (et, si tu as le logo, dépose `public/logos/rust.svg` puis renseigne `logo`/`color`) :
    ```json
-   "rust": { "label": "Rust", "description": "", "url": "", "logo": "/logos/rust.svg", "color": "#DEA584" }
+   "rust": { "label": "Rust", "category": "Backend", "description": "", "url": "", "logo": "/logos/rust.svg", "color": "#DEA584" }
    ```
 2. Référence cet **id** dans le `stack` des projets concernés :
    ```json

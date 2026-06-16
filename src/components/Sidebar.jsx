@@ -1,21 +1,7 @@
-import { useState } from 'react'
-import { ChevronIcon, FileIcon } from './icons.jsx'
+import { FileIcon } from './icons.jsx'
 import { statusColor } from '../lib/status.js'
 import { fileName } from '../lib/fileName.js'
-
-function Folder({ label, count, children, defaultOpen = true }) {
-  const [open, setOpen] = useState(defaultOpen)
-  return (
-    <div className="folder">
-      <button className="folder-row" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
-        <ChevronIcon open={open} />
-        <span className="folder-name">{label}</span>
-        <span className="folder-count">{count}</span>
-      </button>
-      {open && <div className="folder-children">{children}</div>}
-    </div>
-  )
-}
+import Folder from './Folder.jsx'
 
 export default function Sidebar({
   profile,

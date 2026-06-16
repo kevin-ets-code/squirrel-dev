@@ -41,6 +41,7 @@ export function toolEntry(tools, id) {
     url: entry.url || '',
     logo: entry.logo || '',
     color: entry.color || '',
+    category: entry.category || '',
   }
 }
 
@@ -62,6 +63,7 @@ export function buildTools(projects, tools) {
         label: toolLabel(tools, id),
         logo: entry.logo || '',
         color: entry.color || '',
+        category: entry.category || '',
         projects: projs,
         count: projs.length,
       }
