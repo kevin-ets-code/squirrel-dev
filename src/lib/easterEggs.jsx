@@ -15,7 +15,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 
 const STORAGE_KEY = 'squirrel-dev:easter-eggs'
 
-const DEFAULT_STATE = { easterEggUnlocked: false, gamesUnlocked: {} }
+const DEFAULT_STATE = { easterEggUnlocked: false, gamesUnlocked: {}, snakeVictory: false }
 
 // Lecture défensive : localStorage peut throw (mode privé, quota) et le JSON
 // peut être absent/corrompu → on retombe toujours sur l'état par défaut.
@@ -30,6 +30,7 @@ function readStored() {
         parsed.gamesUnlocked && typeof parsed.gamesUnlocked === 'object'
           ? parsed.gamesUnlocked
           : {},
+      snakeVictory: !!parsed.snakeVictory,
     }
   } catch {
     return DEFAULT_STATE
@@ -63,11 +64,19 @@ export function EasterEggsProvider({ children }) {
     )
   }, [])
 
+  // Victoire « grille parfaite » du Snake : débloque la page victory_snake.md.
+  // Persisté dans le MÊME objet localStorage que les autres flags. Idempotent.
+  const unlockSnakeVictory = useCallback(() => {
+    setState((s) => (s.snakeVictory ? s : { ...s, snakeVictory: true }))
+  }, [])
+
   const value = {
     easterEggUnlocked: state.easterEggUnlocked,
     gamesUnlocked: state.gamesUnlocked,
+    snakeVictory: state.snakeVictory,
     unlockKonami,
     unlockGame,
+    unlockSnakeVictory,
   }
 
   return <EasterEggsContext.Provider value={value}>{children}</EasterEggsContext.Provider>

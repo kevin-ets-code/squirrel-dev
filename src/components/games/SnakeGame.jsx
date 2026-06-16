@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import useIsMobile from '../../lib/useIsMobile.js'
+import { buildTools } from '../../lib/tools.js'
 
 // Jeu Snake — second jeu débloquable.
 //
@@ -24,10 +25,22 @@ import useIsMobile from '../../lib/useIsMobile.js'
 // vrais <button>. Les flèches/ZQSD ne scrollent pas la page pendant la partie.
 
 const GRID = 20 // cellules par côté
+const TOTAL_CELLS = GRID * GRID // victoire « grille parfaite » : serpent occupant TOUTE la grille
 const BASE_MS = 130 // intervalle de départ (ms)
 const MIN_MS = 70 // intervalle le plus rapide
 const MAX_CANVAS_PX = 480 // taille max du canvas sur desktop
 const BEST_KEY = 'squirrel-dev:snake-best'
+
+// Rendu de la nourriture (ESSAI réversible) :
+//   'logo' = un logo d'outil aléatoire (blanc) posé sur un halo accent ;
+//   'ring' = ancien rendu (anneau accent évidé).
+// Repasser à 'ring' restaure EXACTEMENT le rendu d'origine en un mot. Si aucun
+// outil n'a de logo (ou aucun chargé), le mode 'logo' retombe seul sur 'ring'.
+const FOOD_MODE = 'logo'
+
+// Résolution de bake des silhouettes blanches (px) : assez haute pour rester
+// nette une fois redimensionnée dans une cellule à n'importe quel devicePixelRatio.
+const LOGO_BAKE_PX = 128
 
 const DIRS = {
   up: { x: 0, y: -1 },
@@ -66,6 +79,11 @@ function randomFood(snake) {
   return free[Math.floor(Math.random() * free.length)]
 }
 
+function pickRandom(arr) {
+  if (!arr || arr.length === 0) return null
+  return arr[Math.floor(Math.random() * arr.length)]
+}
+
 // Dessine un rectangle arrondi (repli fillRect si roundRect indisponible).
 function fillRound(ctx, x, y, w, h, r) {
   if (typeof ctx.roundRect === 'function') {
@@ -77,10 +95,10 @@ function fillRound(ctx, x, y, w, h, r) {
   }
 }
 
-export default function SnakeGame(/* { projects, tools } */) {
+export default function SnakeGame({ projects, tools, onVictory }) {
   const isMobile = useIsMobile()
 
-  const [status, setStatus] = useState('idle') // 'idle' | 'playing' | 'over'
+  const [status, setStatus] = useState('idle') // 'idle' | 'playing' | 'over' | 'won'
   const [score, setScore] = useState(0)
   const [best, setBest] = useState(readBest)
   const [eatPulse, setEatPulse] = useState(0) // re-déclenche le flash CSS à chaque prise
@@ -90,6 +108,7 @@ export default function SnakeGame(/* { projects, tools } */) {
   const dirRef = useRef(DIRS.right) // direction effectivement appliquée au dernier pas
   const nextDirRef = useRef(DIRS.right) // direction en attente (anti demi-tour)
   const foodRef = useRef({ x: 0, y: 0 })
+  const foodLogoRef = useRef(null) // id de l'outil-logo dessiné pour la pomme courante (ou null = rendu anneau)
   const scoreRef = useRef(0)
   const statusRef = useRef('idle')
   const intervalRef = useRef(null)
@@ -100,10 +119,67 @@ export default function SnakeGame(/* { projects, tools } */) {
   const wrapRef = useRef(null)
   const sizeRef = useRef(MAX_CANVAS_PX) // taille CSS courante (carré)
 
+  // Logos préchargés et déjà reteintés en BLANC (silhouette), prêts à dessiner.
+  const logoSpritesRef = useRef(new Map()) // id -> <canvas> offscreen (silhouette blanche)
+  const logoColorsRef = useRef(new Map()) // id -> color de marque (hex), '' si absente
+  const logoIdsRef = useRef([]) // ids effectivement chargés (pool de tirage)
+
   // statusRef suit l'état (utilisé dans les handlers clavier/tactiles sans closure périmée).
   useEffect(() => {
     statusRef.current = status
   }, [status])
+
+  // onVictory en ref : appelée depuis la boucle sans la faire entrer dans les
+  // dépendances des useCallback (évite de recréer la boucle si la prop change).
+  const onVictoryRef = useRef(onVictory)
+  useEffect(() => {
+    onVictoryRef.current = onVictory
+  }, [onVictory])
+
+  // Préchargement des logos d'outils (mode 'logo' uniquement). On ne tire QUE
+  // parmi les outils-avec-logo (champ logo non vide), et seulement une fois leur
+  // image chargée. PIÈGE résolu : drawImage ignore les filtres CSS, donc on
+  // pré-cuit chaque logo en silhouette BLANCHE via globalCompositeOperation
+  // 'source-in' (approche a) — fait UNE fois au chargement, le draw reste léger.
+  // L'aspect est préservé (contain), comme .tool-logo-img (62 %, object-fit:contain).
+  useEffect(() => {
+    if (FOOD_MODE !== 'logo') return
+    const withLogo = buildTools(projects, tools).filter((t) => t.logo)
+    let cancelled = false
+    for (const t of withLogo) {
+      const img = new Image()
+      img.onload = () => {
+        if (cancelled) return
+        try {
+          const off = document.createElement('canvas')
+          off.width = LOGO_BAKE_PX
+          off.height = LOGO_BAKE_PX
+          const octx = off.getContext('2d')
+          // Contain : on fait tenir le logo dans le carré sans le déformer.
+          const iw = img.naturalWidth || LOGO_BAKE_PX
+          const ih = img.naturalHeight || LOGO_BAKE_PX
+          const scale = Math.min(LOGO_BAKE_PX / iw, LOGO_BAKE_PX / ih)
+          const dw = iw * scale
+          const dh = ih * scale
+          octx.drawImage(img, (LOGO_BAKE_PX - dw) / 2, (LOGO_BAKE_PX - dh) / 2, dw, dh)
+          // Reteinte BLANCHE : on ne garde que la silhouette (alpha) remplie de blanc.
+          octx.globalCompositeOperation = 'source-in'
+          octx.fillStyle = '#ffffff'
+          octx.fillRect(0, 0, LOGO_BAKE_PX, LOGO_BAKE_PX)
+          logoSpritesRef.current.set(t.id, off)
+          // Mémorise la color de marque (peut être vide -> repli fallback au draw).
+          logoColorsRef.current.set(t.id, t.color || '')
+          if (!logoIdsRef.current.includes(t.id)) logoIdsRef.current.push(t.id)
+        } catch {
+          /* image problématique (taint, SVG vide…) : on l'ignore, fallback anneau */
+        }
+      }
+      img.src = t.logo
+    }
+    return () => {
+      cancelled = true
+    }
+  }, [projects, tools])
 
   // --- Rendu canvas ----------------------------------------------------------
   const draw = useCallback(() => {
@@ -114,6 +190,9 @@ export default function SnakeGame(/* { projects, tools } */) {
     const accent = css.getPropertyValue('--accent').trim() || '#4ec9b0'
     const bg = css.getPropertyValue('--bg-editor').trim() || '#1e1e1e'
     const grid = css.getPropertyValue('--border-soft').trim() || '#2b2b2b'
+    // Repli du halo quand l'outil tiré n'a pas de color (même règle que ToolLogo).
+    // Résolu ici car le canvas n'accepte pas fillStyle = 'var(--…)'.
+    const toolBadgeFallback = css.getPropertyValue('--tool-badge-fallback').trim() || '#5a5a5a'
 
     const size = sizeRef.current
     const cell = size / GRID
@@ -135,15 +214,32 @@ export default function SnakeGame(/* { projects, tools } */) {
     }
     ctx.stroke()
 
-    // Nourriture : carré accent évidé (anneau) pour la distinguer du corps plein.
+    // Nourriture.
     const f = foodRef.current
     const fx = f.x * cell
     const fy = f.y * cell
-    ctx.fillStyle = accent
-    fillRound(ctx, fx + 2, fy + 2, cell - 4, cell - 4, Math.max(2, cell * 0.18))
-    ctx.fillStyle = bg
-    const hole = cell * 0.34
-    fillRound(ctx, fx + (cell - hole) / 2, fy + (cell - hole) / 2, hole, hole, hole * 0.3)
+    const sprite =
+      FOOD_MODE === 'logo' && foodLogoRef.current
+        ? logoSpritesRef.current.get(foodLogoRef.current)
+        : null
+
+    if (sprite) {
+      // Mode 'logo' : halo de la COULEUR DE MARQUE de l'outil tiré (repli gris
+      // fallback si vide, comme ToolLogo) + logo blanc centré ~62 %. Le halo varie
+      // donc à chaque pomme et distingue la nourriture du serpent (qui reste accent).
+      const haloColor = logoColorsRef.current.get(foodLogoRef.current) || toolBadgeFallback
+      ctx.fillStyle = haloColor
+      fillRound(ctx, fx + 1, fy + 1, cell - 2, cell - 2, Math.max(2, cell * 0.22))
+      const pad = cell * 0.19 // (1 - 0.62) / 2 ≈ 0.19 -> contenu ~62 % de la cellule
+      ctx.drawImage(sprite, fx + pad, fy + pad, cell - pad * 2, cell - pad * 2)
+    } else {
+      // Mode 'ring' (ou fallback : aucun logo dispo) : carré accent évidé (anneau).
+      ctx.fillStyle = accent
+      fillRound(ctx, fx + 2, fy + 2, cell - 4, cell - 4, Math.max(2, cell * 0.18))
+      ctx.fillStyle = bg
+      const hole = cell * 0.34
+      fillRound(ctx, fx + (cell - hole) / 2, fy + (cell - hole) / 2, hole, hole, hole * 0.3)
+    }
 
     // Serpent : corps plein accent ; tête éclaircie d'un voile blanc translucide.
     const snake = snakeRef.current
@@ -211,13 +307,31 @@ export default function SnakeGame(/* { projects, tools } */) {
     draw()
   }, [stopLoop, draw])
 
+  // Victoire « grille parfaite » : le serpent a rempli toute la grille. Distinct
+  // de la mort (statut 'won'). Met à jour le meilleur score normalement et
+  // déclenche le déblocage persistant de victory_snake.md (onVictory).
+  const victory = useCallback(() => {
+    stopLoop()
+    statusRef.current = 'won'
+    setStatus('won')
+    setBest((prev) => {
+      const next = Math.max(prev, scoreRef.current)
+      if (next > prev) writeBest(next)
+      return next
+    })
+    onVictoryRef.current?.()
+    draw()
+  }, [stopLoop, draw])
+
   const step = useCallback(() => {
     const dir = nextDirRef.current
     dirRef.current = dir
     const snake = snakeRef.current
     const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y }
 
-    // Murs mortels.
+    // Ordre des vérifications du dernier tick (1) mur → (2) victoire → (3) corps.
+
+    // (1) Mur mortel.
     if (head.x < 0 || head.y < 0 || head.x >= GRID || head.y >= GRID) {
       gameOver()
       return
@@ -226,12 +340,29 @@ export default function SnakeGame(/* { projects, tools } */) {
     const willEat = head.x === foodRef.current.x && head.y === foodRef.current.y
     // Corps qui occupera l'espace après le pas : la queue se libère si on ne mange pas.
     const occupied = willEat ? snake : snake.slice(0, snake.length - 1)
+    const newSnake = [head, ...occupied]
+
+    // (2) VICTOIRE « grille parfaite » : si manger cette pomme remplit toute la
+    // grille, c'est gagné — AVANT la détection d'auto-collision. Au tout dernier
+    // coup la tête arrive forcément au contact du corps ; ça ne doit PAS être lu
+    // comme une mort.
+    if (willEat && newSnake.length === TOTAL_CELLS) {
+      snakeRef.current = newSnake
+      const newScore = scoreRef.current + 1
+      scoreRef.current = newScore
+      setScore(newScore)
+      setEatPulse((p) => p + 1)
+      victory()
+      return
+    }
+
+    // (3) Auto-collision mortelle.
     if (occupied.some((c) => c.x === head.x && c.y === head.y)) {
       gameOver()
       return
     }
 
-    snakeRef.current = [head, ...occupied]
+    snakeRef.current = newSnake
 
     if (willEat) {
       const newScore = scoreRef.current + 1
@@ -240,11 +371,14 @@ export default function SnakeGame(/* { projects, tools } */) {
       setEatPulse((p) => p + 1)
       const food = randomFood(snakeRef.current)
       if (!food) {
-        // Grille pleine : victoire — on s'arrête proprement.
-        gameOver()
+        // Filet de sécurité : plus aucune cellule libre (ne devrait pas arriver
+        // ici, le cas « grille pleine » étant déjà traité en (2)) -> victoire propre.
+        victory()
         return
       }
       foodRef.current = food
+      // Nouveau logo tiré au hasard parmi les logos chargés (null => anneau).
+      foodLogoRef.current = FOOD_MODE === 'logo' ? pickRandom(logoIdsRef.current) : null
       // Accélération douce : relance l'intervalle si le pas de temps change.
       const nextMs = Math.max(MIN_MS, BASE_MS - newScore * 4)
       if (nextMs !== tickMsRef.current) {
@@ -255,7 +389,7 @@ export default function SnakeGame(/* { projects, tools } */) {
     }
 
     draw()
-  }, [gameOver, stopLoop, draw])
+  }, [gameOver, victory, stopLoop, draw])
 
   const start = useCallback(
     (initialDir) => {
@@ -271,6 +405,7 @@ export default function SnakeGame(/* { projects, tools } */) {
       dirRef.current = dir
       nextDirRef.current = dir
       foodRef.current = randomFood(snakeRef.current) || { x: 0, y: 0 }
+      foodLogoRef.current = FOOD_MODE === 'logo' ? pickRandom(logoIdsRef.current) : null
       scoreRef.current = 0
       tickMsRef.current = BASE_MS
       setScore(0)
@@ -389,7 +524,12 @@ export default function SnakeGame(/* { projects, tools } */) {
 
       <div
         ref={wrapRef}
-        className={'snake-stage' + (flashOn ? ' is-eating' : '') + (status === 'over' ? ' is-over' : '')}
+        className={
+          'snake-stage' +
+          (flashOn ? ' is-eating' : '') +
+          (status === 'over' ? ' is-over' : '') +
+          (status === 'won' ? ' is-won' : '')
+        }
         tabIndex={0}
         role="application"
         aria-label="Jeu Snake. Flèches ou ZQSD pour diriger le serpent. Espace pour démarrer ou rejouer."
@@ -412,6 +552,18 @@ export default function SnakeGame(/* { projects, tools } */) {
         {status === 'over' && (
           <div className="snake-overlay" role="status" aria-live="polite">
             <p className="snake-overlay-title">Game Over</p>
+            <p className="snake-overlay-sub">
+              Score {score} / meilleur {best}
+            </p>
+            <button type="button" className="snake-btn" onClick={() => start()}>
+              Rejouer
+            </button>
+          </div>
+        )}
+
+        {status === 'won' && (
+          <div className="snake-overlay" role="status" aria-live="polite">
+            <p className="snake-overlay-title is-win">Grille parfaite ! 🐍</p>
             <p className="snake-overlay-sub">
               Score {score} / meilleur {best}
             </p>

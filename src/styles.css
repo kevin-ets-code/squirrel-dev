@@ -2258,6 +2258,20 @@ a.contact-link .contact-value {
 .snake-stage.is-over {
   animation: snake-shake 0.3s ease;
 }
+.snake-stage.is-won {
+  animation: snake-win 0.5s ease;
+}
+@keyframes snake-win {
+  0% {
+    box-shadow: inset 0 0 0 0 transparent;
+  }
+  50% {
+    box-shadow: inset 0 0 0 3px var(--accent);
+  }
+  100% {
+    box-shadow: inset 0 0 0 0 transparent;
+  }
+}
 @keyframes snake-flash {
   0% {
     box-shadow: inset 0 0 0 0 transparent;
@@ -2305,6 +2319,9 @@ a.contact-link .contact-value {
   font-size: 22px;
   font-weight: 700;
   color: var(--fg-heading);
+}
+.snake-overlay-title.is-win {
+  color: var(--accent);
 }
 .snake-overlay-sub {
   margin: 0;
@@ -2368,7 +2385,8 @@ a.contact-link .contact-value {
 
 @media (prefers-reduced-motion: reduce) {
   .snake-stage.is-eating,
-  .snake-stage.is-over {
+  .snake-stage.is-over,
+  .snake-stage.is-won {
     animation: none;
   }
 }

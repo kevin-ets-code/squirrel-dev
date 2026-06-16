@@ -21,17 +21,21 @@ export default function Sidebar({
   projects,
   activeTab,
   easterEggUnlocked,
+  snakeVictory,
   onOpenReadme,
   onOpenProject,
   onOpenKonami,
+  onOpenVictorySnake,
 }) {
   const pro = projects.filter((p) => p.type === 'pro')
   const perso = projects.filter((p) => p.type === 'perso')
 
   // Total de fichiers de l'explorateur = README + tous les projets (pro + perso),
-  // + konami-code.md une fois le mode Jeux débloqué. Dérivé de la source : un
-  // projet ajouté à projects.json est compté automatiquement.
-  const fileCount = 1 + projects.length + (easterEggUnlocked ? 1 : 0)
+  // + konami-code.md une fois le mode Jeux débloqué, + victory_snake.md une fois
+  // la « grille parfaite » du Snake atteinte. Dérivé de la source : un projet
+  // ajouté à projects.json est compté automatiquement.
+  const fileCount =
+    1 + projects.length + (easterEggUnlocked ? 1 : 0) + (snakeVictory ? 1 : 0)
 
   const renderFile = (project) => (
     <button
@@ -74,6 +78,16 @@ export default function Sidebar({
           >
             <FileIcon color="var(--icon-perso)" />
             <span className="file-name">konami-code.md</span>
+          </button>
+        )}
+
+        {snakeVictory && (
+          <button
+            className={'file-row file-readme' + (activeTab === 'victory-snake' ? ' active' : '')}
+            onClick={onOpenVictorySnake}
+          >
+            <FileIcon color="var(--accent)" />
+            <span className="file-name">victory_snake.md</span>
           </button>
         )}
 

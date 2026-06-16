@@ -17,12 +17,13 @@ import ToolView from './components/ToolView.jsx'
 import ReadmeView from './components/ReadmeView.jsx'
 import SettingsView from './components/SettingsView.jsx'
 import KonamiView from './components/KonamiView.jsx'
+import VictorySnakeView from './components/VictorySnakeView.jsx'
 import CommandPalette from './components/CommandPalette.jsx'
 import Toast from './components/Toast.jsx'
 import NotFound from './components/NotFound.jsx'
 import useIsMobile from './lib/useIsMobile.js'
 import { useEasterEggs } from './lib/easterEggs.jsx'
-import { gameById, gameTabId, gameIdForAnswer } from './games/registry.js'
+import { gameById, gameTabId, gameIdForAnswer, normalizeAnswer } from './games/registry.js'
 import {
   toolTabId,
   isToolTab,
@@ -37,10 +38,12 @@ const GraphView = lazy(() => import('./components/GraphView.jsx'))
 const README_TAB = { id: 'readme', name: 'README', type: 'readme' }
 const SETTINGS_TAB = { id: 'settings', name: 'Settings', type: 'settings' }
 const KONAMI_TAB = { id: 'konami', name: 'konami-code', type: 'konami' }
+const VICTORY_SNAKE_TAB = { id: 'victory-snake', name: 'victory_snake', type: 'victory-snake' }
 
 export default function App() {
   const { profile, projects, tools = {}, readme = {} } = data
-  const { easterEggUnlocked, gamesUnlocked, unlockKonami, unlockGame } = useEasterEggs()
+  const { easterEggUnlocked, gamesUnlocked, snakeVictory, unlockKonami, unlockGame, unlockSnakeVictory } =
+    useEasterEggs()
 
   const [tabs, setTabs] = useState([README_TAB])
   const [activeTab, setActiveTab] = useState('readme')
@@ -79,6 +82,17 @@ export default function App() {
   const openKonami = useCallback(() => {
     setTabs((prev) => (prev.some((t) => t.id === 'konami') ? prev : [...prev, KONAMI_TAB]))
     setActiveTab('konami')
+    setView('ide')
+    setSidebarOpen(false)
+    focusPanel()
+  }, [focusPanel])
+
+  // Ouvre l'onglet victory_snake.md (sans doublon) — même mécanisme qu'openKonami.
+  const openVictorySnake = useCallback(() => {
+    setTabs((prev) =>
+      prev.some((t) => t.id === 'victory-snake') ? prev : [...prev, VICTORY_SNAKE_TAB],
+    )
+    setActiveTab('victory-snake')
     setView('ide')
     setSidebarOpen(false)
     focusPanel()
@@ -185,6 +199,27 @@ export default function App() {
   // déjà débloqué, discret si mauvaise réponse.
   const solveRiddle = useCallback(
     (answer) => {
+      // CAS SPÉCIAL prioritaire : « solve serpent victory » / « solve snake victory »
+      // débloque la « grille parfaite » (victory_snake.md) sans remplir la grille.
+      // Testé sur la chaîne COMPLÈTE normalisée AVANT gameIdForAnswer, sinon le
+      // mot « serpent » seul serait capturé par l'énigme Snake.
+      const norm = normalizeAnswer(answer)
+      if (norm === 'serpent victory' || norm === 'snake victory') {
+        // Garde-fou : n'a de sens qu'une fois Snake débloqué. Sinon, on traite
+        // ça comme une mauvaise réponse (ne révèle pas l'existence de la commande).
+        if (!gamesUnlocked.snake) {
+          setToastMessage('Mauvaise réponse…')
+          return
+        }
+        if (snakeVictory) {
+          setToastMessage('Déjà débloqué.')
+          return
+        }
+        unlockSnakeVictory()
+        setToastMessage('🐍 Grille parfaite débloquée !')
+        return
+      }
+
       const id = gameIdForAnswer(answer)
       if (!id) {
         setToastMessage('Mauvaise réponse…')
@@ -197,7 +232,7 @@ export default function App() {
       unlockGame(id)
       setToastMessage(`🎉 Énigme résolue ! ${gameById(id).label} débloqué.`)
     },
-    [gamesUnlocked, unlockGame],
+    [gamesUnlocked, snakeVictory, unlockGame, unlockSnakeVictory],
   )
 
   const dismissToast = useCallback(() => setToastMessage(null), [])
@@ -379,9 +414,11 @@ export default function App() {
               projects={projects}
               activeTab={activeTab}
               easterEggUnlocked={easterEggUnlocked}
+              snakeVictory={snakeVictory}
               onOpenReadme={openReadme}
               onOpenProject={openProject}
               onOpenKonami={openKonami}
+              onOpenVictorySnake={openVictorySnake}
             />
           )}
         </div>
@@ -426,8 +463,14 @@ export default function App() {
 
                 {activeTab === 'konami' && <KonamiView />}
 
+                {activeTab === 'victory-snake' && <VictorySnakeView />}
+
                 {ActiveGameComponent && (
-                  <ActiveGameComponent projects={projects} tools={tools} />
+                  <ActiveGameComponent
+                    projects={projects}
+                    tools={tools}
+                    onVictory={activeGameTab?.gameId === 'snake' ? unlockSnakeVictory : undefined}
+                  />
                 )}
 
                 {activeProject && <ProjectView project={activeProject} tools={tools} />}
