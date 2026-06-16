@@ -1294,27 +1294,26 @@ a.contact-link .contact-value {
   background: var(--bg-graph);
 }
 
-/* Barre de filtres */
-.graph-toolbar {
+/* Sidebar Graph : contrôles (filtres + recherche + hint), layout vertical */
+.graph-panel-body {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 12px;
-  flex-wrap: wrap;
-  padding: 8px 14px;
-  background: var(--bg-tabbar);
-  border-bottom: 1px solid var(--border-soft);
+  padding: 10px 16px;
 }
+/* Filtres catégories : segmented control pleine largeur du panneau */
 .gfilter-group {
   display: flex;
   border: 1px solid var(--border);
   border-radius: 5px;
   overflow: hidden;
-  flex-shrink: 0;
 }
 .gfilter-btn {
+  flex: 1;
+  text-align: center;
   font-family: var(--font-mono);
   font-size: 12px;
-  padding: 4px 12px;
+  padding: 5px 6px;
   color: var(--fg-muted);
   background: var(--bg-toggle);
   transition: background 0.12s ease, color 0.12s ease;
@@ -1335,19 +1334,20 @@ a.contact-link .contact-value {
   color: var(--fg);
   font-family: var(--font-mono);
   font-size: 12px;
-  padding: 5px 10px;
+  padding: 6px 10px;
   border-radius: 4px;
   outline: none;
-  width: 200px;
-  max-width: 100%;
+  width: 100%;
 }
 .gfilter-search:focus {
   border-color: var(--accent);
 }
-.graph-toolbar-hint {
-  margin-left: auto;
+.graph-panel-hint {
+  margin-top: auto;
+  padding: 10px 16px;
   font-family: var(--font-mono);
   font-size: 11px;
+  line-height: 1.5;
   color: var(--fg-muted);
 }
 .graph-loading {
@@ -1852,13 +1852,6 @@ a.contact-link .contact-value {
     inset: 0;
     background: rgba(0, 0, 0, 0.45);
     z-index: 20;
-  }
-
-  .graph-toolbar-hint {
-    display: none;
-  }
-  .gfilter-search {
-    flex: 1;
   }
 
   .content-scroll {

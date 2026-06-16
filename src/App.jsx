@@ -7,6 +7,7 @@ import SearchPanel from './components/SearchPanel.jsx'
 import ToolsPanel from './components/ToolsPanel.jsx'
 import SourceControlPanel from './components/SourceControlPanel.jsx'
 import GamesPanel from './components/GamesPanel.jsx'
+import GraphPanel from './components/GraphPanel.jsx'
 import MobilePanelTabs from './components/MobilePanelTabs.jsx'
 import GraphUnavailable from './components/GraphUnavailable.jsx'
 import EditorTabs from './components/EditorTabs.jsx'
@@ -49,6 +50,11 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('readme')
   const [panel, setPanel] = useState('explorer')
   const [view, setView] = useState('ide') // "ide" | "graph"
+  // Filtres du Graph remontés ici (état partagé) : la sidebar GraphPanel les
+  // pilote, GraphView les consomme pour calculer la visibilité. focusedNodeId
+  // reste local à GraphView (interaction du canvas, pas un filtre).
+  const [graphCats, setGraphCats] = useState({ pro: true, perso: true, tools: true })
+  const [graphSearch, setGraphSearch] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false) // mobile drawer
   const [tabFocusKey, setTabFocusKey] = useState(0) // signal pour focaliser l'onglet actif
   const [paletteOpen, setPaletteOpen] = useState(false) // palette de commandes (Ctrl/Cmd+K)
@@ -176,6 +182,16 @@ export default function App() {
     setView('graph')
     setSidebarOpen(false)
   }, [])
+
+  // Handlers des filtres du Graph (pilotés par GraphPanel).
+  const toggleGraphCat = useCallback(
+    (key) => setGraphCats((c) => ({ ...c, [key]: !c[key] })),
+    [],
+  )
+  const showAllGraphCats = useCallback(
+    () => setGraphCats({ pro: true, perso: true, tools: true }),
+    [],
+  )
 
   // Bascule IDE <-> Graph (action de la palette de commandes).
   const toggleView = useCallback(() => {
@@ -386,7 +402,15 @@ export default function App() {
             onSelectGraph={selectGraph}
             onSelectSettings={openSettings}
           />
-          {panel === 'search' ? (
+          {view === 'graph' && !isMobile ? (
+            <GraphPanel
+              cats={graphCats}
+              search={graphSearch}
+              onToggleCat={toggleGraphCat}
+              onShowAll={showAllGraphCats}
+              onSearchChange={setGraphSearch}
+            />
+          ) : panel === 'search' ? (
             <SearchPanel
               projects={projects}
               tools={tools}
@@ -434,6 +458,8 @@ export default function App() {
                 <GraphView
                   projects={projects}
                   tools={tools}
+                  cats={graphCats}
+                  search={graphSearch}
                   onOpenProject={openProject}
                   onOpenTool={openTool}
                 />

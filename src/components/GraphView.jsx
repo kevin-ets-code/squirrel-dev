@@ -27,7 +27,7 @@ function nodeColor(n) {
   return n.project.type === 'pro' ? COLOR_PRO : COLOR_PERSO
 }
 
-function GraphInner({ projects, tools, onOpenProject, onOpenTool }) {
+function GraphInner({ projects, tools, cats, search, onOpenProject, onOpenTool }) {
   // Graphe brut, auto-généré depuis projects.json (positions + structure).
   const { nodes: rawNodes, edges: rawEdges } = useMemo(
     () => buildGraph(projects, tools),
@@ -74,11 +74,9 @@ function GraphInner({ projects, tools, onOpenProject, onOpenTool }) {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
   // --- État d'exploration -------------------------------------------------
+  // focusedNodeId reste local : c'est une interaction du canvas, pas un filtre.
+  // cats/search arrivent en props (état partagé avec la sidebar GraphPanel).
   const [focusedNodeId, setFocusedNodeId] = useState(null)
-  const [cats, setCats] = useState({ pro: true, perso: true, tools: true })
-  const [search, setSearch] = useState('')
-
-  const allOn = cats.pro && cats.perso && cats.tools
 
   // Ensemble des nœuds visibles selon catégories + recherche + focus.
   const visible = useMemo(() => {
@@ -178,52 +176,8 @@ function GraphInner({ projects, tools, onOpenProject, onOpenTool }) {
 
   useEffect(() => () => clickTimer.current && clearTimeout(clickTimer.current), [])
 
-  const toggleCat = (key) => setCats((c) => ({ ...c, [key]: !c[key] }))
-  const showAll = () => setCats({ pro: true, perso: true, tools: true })
-
   return (
     <div className="graph-view">
-      <div className="graph-toolbar">
-        <div className="gfilter-group" role="group" aria-label="Filtrer par catégorie">
-          <button
-            className={'gfilter-btn' + (allOn ? ' active' : '')}
-            onClick={showAll}
-          >
-            Tous
-          </button>
-          <button
-            className={'gfilter-btn' + (cats.pro ? ' active' : '')}
-            onClick={() => toggleCat('pro')}
-          >
-            Pro
-          </button>
-          <button
-            className={'gfilter-btn' + (cats.perso ? ' active' : '')}
-            onClick={() => toggleCat('perso')}
-          >
-            Perso
-          </button>
-          <button
-            className={'gfilter-btn' + (cats.tools ? ' active' : '')}
-            onClick={() => toggleCat('tools')}
-          >
-            Outils
-          </button>
-        </div>
-
-        <input
-          className="gfilter-search"
-          type="text"
-          value={search}
-          placeholder="Filtrer les nœuds…"
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
-        <span className="graph-toolbar-hint">
-          simple clic = focus · double-clic = ouvrir
-        </span>
-      </div>
-
       <div className="graph-canvas">
         <ReactFlow
           nodes={nodes}
