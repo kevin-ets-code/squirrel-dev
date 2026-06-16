@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 
 // Toast maison (zéro dépendance) : un seul toast à la fois, piloté depuis App
-// (state toastMessage). Auto-dismiss après ~3s. Même mécanique de feedback
+// (state toastMessage). Auto-dismiss après ~4s. Même mécanique de feedback
 // temporaire que CopyEmail (effet + setTimeout), mais déclenchée d'en haut.
 // Accessible (role="status" + aria-live) ; l'animation d'entrée respecte
 // prefers-reduced-motion (gérée en CSS).
-export default function Toast({ message, onDismiss, duration = 3000 }) {
+export default function Toast({ message, onDismiss, duration = 4000 }) {
   useEffect(() => {
     if (!message) return
     const t = setTimeout(onDismiss, duration)

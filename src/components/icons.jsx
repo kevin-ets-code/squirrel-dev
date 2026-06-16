@@ -160,6 +160,29 @@ export function GamepadIcon({ size = 24 }) {
   )
 }
 
+// Cadenas FERMÉ (d'après lucide `lock`) — état verrouillé du panneau Jeux.
+// Même corps que LockOpenIcon ; seule l'anse change, pour que la transition
+// verrouillé→débloqué se lise comme le même objet qui s'ouvre.
+export function LockIcon({ size = 14, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </svg>
+  )
+}
+
+// Cadenas OUVERT (d'après lucide `lock-open`) — état débloqué du panneau Jeux.
+// Corps identique à LockIcon ; l'anse est décalée/ouverte sur un côté.
+export function LockOpenIcon({ size = 14, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2" />
+      <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+    </svg>
+  )
+}
+
 export function GitBranchIcon({ size = 14 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

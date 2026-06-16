@@ -1,5 +1,6 @@
 import ContentPage from './ContentPage.jsx'
 import MarkdownView from './MarkdownView.jsx'
+import { LockIcon, LockOpenIcon } from './icons.jsx'
 import { GAMES } from '../games/registry.js'
 import { useEasterEggs } from '../lib/easterEggs.jsx'
 
@@ -67,8 +68,12 @@ export default function KonamiView() {
             return (
               <li key={g.id} className={'konami-riddle' + (ok ? ' is-solved' : '')}>
                 <div className="konami-riddle-head">
-                  <span className="konami-riddle-status" aria-hidden="true">
-                    {ok ? '✅' : '❌'}
+                  <span className="konami-riddle-status" aria-hidden="true" style={{ display: 'inline-flex' }}>
+                    {ok ? (
+                      <LockOpenIcon size={14} color="var(--accent)" />
+                    ) : (
+                      <LockIcon size={14} color="var(--fg-muted)" />
+                    )}
                   </span>
                   <span className="konami-riddle-name">
                     {ok ? g.label : `Énigme n°${i + 1}`}

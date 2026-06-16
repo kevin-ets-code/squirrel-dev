@@ -1,10 +1,11 @@
 import { GAMES, gameTabId } from '../games/registry.js'
 import { useEasterEggs } from '../lib/easterEggs.jsx'
+import { LockIcon, LockOpenIcon } from './icons.jsx'
 
 // Panneau « Jeux » (sidebar) — rôle = LAUNCHER. Liste les jeux du registre
 // (source unique : games/registry.js, rien en dur). Un jeu est :
-//   - verrouillé (🔒, non cliquable) tant que son énigme n'est pas résolue ;
-//   - débloqué (✅, cliquable → openGame) une fois gamesUnlocked[id] = true.
+//   - verrouillé (cadenas fermé, non cliquable) tant que son énigme n'est pas résolue ;
+//   - débloqué (cadenas ouvert, cliquable → openGame) une fois gamesUnlocked[id] = true.
 // À cette étape aucune énigme n'est résolvable : tous les jeux s'affichent
 // verrouillés, mais le rendu débloqué/cliquable est prêt pour l'étape 2.
 // Les énigmes elles-mêmes ne sont PAS dupliquées ici : elles vivent dans
@@ -33,7 +34,7 @@ export default function GamesPanel({ activeTab, onOpenGame }) {
                 title="Jeu verrouillé — résous son énigme (voir konami-code.md)"
               >
                 <span className="game-status" aria-hidden="true">
-                  🔒
+                  <LockIcon size={14} color="var(--fg-muted)" />
                 </span>
                 <span className="file-name">Jeu n°{i + 1}</span>
               </div>
@@ -47,7 +48,7 @@ export default function GamesPanel({ activeTab, onOpenGame }) {
               onClick={() => onOpenGame(g.id)}
             >
               <span className="game-status" aria-hidden="true">
-                ✅
+                <LockOpenIcon size={14} color="var(--accent)" />
               </span>
               <span className="file-name">{g.label}</span>
             </button>

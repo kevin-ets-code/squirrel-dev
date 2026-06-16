@@ -1968,24 +1968,24 @@ a.contact-link .contact-value {
 .toast {
   position: fixed;
   left: 50%;
-  bottom: calc(var(--h-statusbar) + 16px);
+  /* Haut-centre, ancré sous la title bar pour ne pas la chevaucher */
+  top: calc(var(--h-titlebar) + 12px);
   transform: translateX(-50%);
-  z-index: 500; /* au-dessus du contenu/statusbar (90), sous la palette (1000) */
+  z-index: 95; /* au-dessus du contenu/drawer (30)/statusbar (90), sous la palette (1000) */
   display: flex;
   align-items: center;
   gap: 10px;
-  max-width: min(440px, 92vw);
-  padding: 10px 16px;
+  max-width: min(420px, 92vw);
+  padding: 12px 18px;
   background: var(--bg-sidebar);
   color: var(--fg);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
+  border: 1px solid var(--accent);
   border-radius: 6px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
   font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.4;
-  animation: toast-in 0.22s ease-out;
+  animation: toast-in 0.2s ease-out;
 }
 .toast-icon {
   flex-shrink: 0;
@@ -1997,7 +1997,7 @@ a.contact-link .contact-value {
 @keyframes toast-in {
   from {
     opacity: 0;
-    transform: translate(-50%, 12px);
+    transform: translate(-50%, -12px);
   }
   to {
     opacity: 1;
@@ -2050,7 +2050,8 @@ a.contact-link .contact-value {
   background: var(--overlay-2);
 }
 .konami-riddle.is-solved {
-  border-color: var(--status-green);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
 }
 .konami-riddle-head {
   display: flex;
