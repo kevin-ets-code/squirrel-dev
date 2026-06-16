@@ -2211,3 +2211,164 @@ a.contact-link .contact-value {
     gap: 7px;
   }
 }
+
+/* ============================================================
+   Jeu Snake
+   ============================================================ */
+.snake-game {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 8px 4px 24px;
+}
+.snake-head {
+  margin-bottom: 16px;
+}
+.snake-title {
+  margin: 0 0 4px;
+  font-size: 20px;
+  color: var(--fg-heading);
+}
+.snake-scores {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+.snake-scores strong {
+  color: var(--fg-heading);
+}
+
+.snake-stage {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-editor);
+  overflow: hidden;
+  line-height: 0; /* supprime l'espace sous le canvas inline */
+}
+.snake-stage:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.snake-stage.is-eating {
+  animation: snake-flash 0.18s ease;
+}
+.snake-stage.is-over {
+  animation: snake-shake 0.3s ease;
+}
+@keyframes snake-flash {
+  0% {
+    box-shadow: inset 0 0 0 0 transparent;
+  }
+  40% {
+    box-shadow: inset 0 0 0 2px var(--accent);
+  }
+  100% {
+    box-shadow: inset 0 0 0 0 transparent;
+  }
+}
+@keyframes snake-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+.snake-canvas {
+  display: block;
+  touch-action: none; /* pas de scroll/zoom au doigt sur la zone de jeu */
+}
+
+.snake-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  line-height: 1.4;
+  background: color-mix(in srgb, var(--bg-editor) 78%, transparent);
+  text-align: center;
+  padding: 16px;
+}
+.snake-overlay-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--fg-heading);
+}
+.snake-overlay-sub {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+.snake-btn {
+  margin-top: 4px;
+  padding: 8px 18px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--accent);
+  color: var(--bg-editor);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.snake-btn:hover {
+  filter: brightness(1.08);
+}
+
+/* Pad directionnel tactile (mobile uniquement). */
+.snake-pad {
+  margin: 16px auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.snake-pad-row {
+  display: flex;
+  gap: 8px;
+}
+.snake-pad-btn {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-sidebar);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 18px;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+}
+.snake-pad-btn:active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-editor);
+}
+.snake-pad-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .snake-stage.is-eating,
+  .snake-stage.is-over {
+    animation: none;
+  }
+}

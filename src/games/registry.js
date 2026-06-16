@@ -15,17 +15,19 @@
 //   component composant jouable (rendu dans un onglet via openGame), ou `null`
 //             tant que le jeu est un placeholder.
 //
-// PLACEHOLDERS : Snake et Pong restent verrouillés (solutions/riddle temporaires,
-// component: null) — ils seront implémentés plus tard.
+// PLACEHOLDER : Pong reste verrouillé (solution/riddle temporaires,
+// component: null) — il sera implémenté plus tard.
 import MemoryGame from '../components/games/MemoryGame.jsx'
+import SnakeGame from '../components/games/SnakeGame.jsx'
 
 export const GAMES = [
   {
     id: 'snake',
     label: 'Snake',
-    riddle: 'PLACEHOLDER — énigme du Snake (à affiner ensemble).',
-    solutions: ['placeholder-snake'],
-    component: null,
+    riddle:
+      'J’avance sans patte, je grandis en mangeant, et le pire ennemi de ma faim, c’est moi-même. Qui suis-je ?',
+    solutions: ['serpent', 'snake'],
+    component: SnakeGame,
   },
   {
     id: 'memory',
