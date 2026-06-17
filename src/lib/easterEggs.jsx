@@ -15,7 +15,16 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 
 const STORAGE_KEY = 'squirrel-dev:easter-eggs'
 
-const DEFAULT_STATE = { easterEggUnlocked: false, gamesUnlocked: {}, snakeVictory: false }
+const DEFAULT_STATE = {
+  easterEggUnlocked: false,
+  gamesUnlocked: {},
+  // Pages-récompense persistantes, une par jeu (flags à PLAT, même objet
+  // localStorage). Rétrocompat : un état stocké ancien n'a que snakeVictory ; les
+  // deux autres retombent sur false via la lecture défensive de readStored.
+  snakeVictory: false,
+  memoryVictory: false,
+  squirrelVictory: false,
+}
 
 // Lecture défensive : localStorage peut throw (mode privé, quota) et le JSON
 // peut être absent/corrompu → on retombe toujours sur l'état par défaut.
@@ -31,6 +40,8 @@ function readStored() {
           ? parsed.gamesUnlocked
           : {},
       snakeVictory: !!parsed.snakeVictory,
+      memoryVictory: !!parsed.memoryVictory,
+      squirrelVictory: !!parsed.squirrelVictory,
     }
   } catch {
     return DEFAULT_STATE
@@ -64,18 +75,27 @@ export function EasterEggsProvider({ children }) {
     )
   }, [])
 
-  // Victoire « grille parfaite » du Snake : débloque la page victory_snake.md.
-  // Persisté dans le MÊME objet localStorage que les autres flags. Idempotent.
-  const unlockSnakeVictory = useCallback(() => {
-    setState((s) => (s.snakeVictory ? s : { ...s, snakeVictory: true }))
+  // Victoire-récompense d'un jeu (grille parfaite Snake, partie parfaite Memory,
+  // palier Squirrel) : débloque la page victory-<jeu>.md. Primitive GÉNÉRIQUE
+  // paramétrée par l'id du jeu → flag à plat `<id>Victory`. Persisté dans le MÊME
+  // objet localStorage que les autres flags. Idempotent.
+  const unlockVictory = useCallback((id) => {
+    const key = id + 'Victory'
+    setState((s) => (s[key] ? s : { ...s, [key]: true }))
   }, [])
+
+  // Alias conservé pour la rétrocompat de l'API (anciens appels Snake).
+  const unlockSnakeVictory = useCallback(() => unlockVictory('snake'), [unlockVictory])
 
   const value = {
     easterEggUnlocked: state.easterEggUnlocked,
     gamesUnlocked: state.gamesUnlocked,
     snakeVictory: state.snakeVictory,
+    memoryVictory: state.memoryVictory,
+    squirrelVictory: state.squirrelVictory,
     unlockKonami,
     unlockGame,
+    unlockVictory,
     unlockSnakeVictory,
   }
 

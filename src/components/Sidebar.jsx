@@ -9,20 +9,29 @@ export default function Sidebar({
   activeTab,
   easterEggUnlocked,
   snakeVictory,
+  memoryVictory,
+  squirrelVictory,
   onOpenReadme,
   onOpenProject,
   onOpenKonami,
   onOpenVictorySnake,
+  onOpenVictoryMemory,
+  onOpenVictorySquirrel,
 }) {
   const pro = projects.filter((p) => p.type === 'pro')
   const perso = projects.filter((p) => p.type === 'perso')
 
   // Total de fichiers de l'explorateur = README + tous les projets (pro + perso),
-  // + konami-code.md une fois le mode Jeux débloqué, + victory-snake.md une fois
-  // la « grille parfaite » du Snake atteinte. Dérivé de la source : un projet
-  // ajouté à projects.json est compté automatiquement.
+  // + konami-code.md une fois le mode Jeux débloqué, + une page victory-<jeu>.md
+  // par victoire-récompense atteinte (Snake / Memory / Squirrel). Dérivé de la
+  // source : un projet ajouté à projects.json est compté automatiquement.
   const fileCount =
-    1 + projects.length + (easterEggUnlocked ? 1 : 0) + (snakeVictory ? 1 : 0)
+    1 +
+    projects.length +
+    (easterEggUnlocked ? 1 : 0) +
+    (snakeVictory ? 1 : 0) +
+    (memoryVictory ? 1 : 0) +
+    (squirrelVictory ? 1 : 0)
 
   const renderFile = (project) => (
     <button
@@ -75,6 +84,26 @@ export default function Sidebar({
           >
             <FileIcon color="var(--icon-system)" />
             <span className="file-name">{fileName('victory-snake', 'victory-snake')}</span>
+          </button>
+        )}
+
+        {memoryVictory && (
+          <button
+            className={'file-row file-readme' + (activeTab === 'victory-memory' ? ' active' : '')}
+            onClick={onOpenVictoryMemory}
+          >
+            <FileIcon color="var(--icon-system)" />
+            <span className="file-name">{fileName('victory-memory', 'victory-memory')}</span>
+          </button>
+        )}
+
+        {squirrelVictory && (
+          <button
+            className={'file-row file-readme' + (activeTab === 'victory-squirrel' ? ' active' : '')}
+            onClick={onOpenVictorySquirrel}
+          >
+            <FileIcon color="var(--icon-system)" />
+            <span className="file-name">{fileName('victory-squirrel', 'victory-squirrel')}</span>
           </button>
         )}
 

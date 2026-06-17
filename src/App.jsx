@@ -19,6 +19,8 @@ import ReadmeView from './components/ReadmeView.jsx'
 import SettingsView from './components/SettingsView.jsx'
 import KonamiView from './components/KonamiView.jsx'
 import VictorySnakeView from './components/VictorySnakeView.jsx'
+import VictoryMemoryView from './components/VictoryMemoryView.jsx'
+import VictorySquirrelView from './components/VictorySquirrelView.jsx'
 import CommandPalette from './components/CommandPalette.jsx'
 import Toast from './components/Toast.jsx'
 import NotFound from './components/NotFound.jsx'
@@ -40,11 +42,25 @@ const README_TAB = { id: 'readme', name: 'README', type: 'readme' }
 const SETTINGS_TAB = { id: 'settings', name: 'Settings', type: 'settings' }
 const KONAMI_TAB = { id: 'konami', name: 'konami-code', type: 'konami' }
 const VICTORY_SNAKE_TAB = { id: 'victory-snake', name: 'victory-snake', type: 'victory-snake' }
+const VICTORY_MEMORY_TAB = { id: 'victory-memory', name: 'victory-memory', type: 'victory-memory' }
+const VICTORY_SQUIRREL_TAB = {
+  id: 'victory-squirrel',
+  name: 'victory-squirrel',
+  type: 'victory-squirrel',
+}
 
 export default function App() {
   const { profile, projects, tools = {}, readme = {} } = data
-  const { easterEggUnlocked, gamesUnlocked, snakeVictory, unlockKonami, unlockGame, unlockSnakeVictory } =
-    useEasterEggs()
+  const {
+    easterEggUnlocked,
+    gamesUnlocked,
+    snakeVictory,
+    memoryVictory,
+    squirrelVictory,
+    unlockKonami,
+    unlockGame,
+    unlockSnakeVictory,
+  } = useEasterEggs()
 
   const [tabs, setTabs] = useState([README_TAB])
   const [activeTab, setActiveTab] = useState('readme')
@@ -99,6 +115,27 @@ export default function App() {
       prev.some((t) => t.id === 'victory-snake') ? prev : [...prev, VICTORY_SNAKE_TAB],
     )
     setActiveTab('victory-snake')
+    setView('ide')
+    setSidebarOpen(false)
+    focusPanel()
+  }, [focusPanel])
+
+  // Ouvre victory-memory.md / victory-squirrel.md (sans doublon) — même mécanisme.
+  const openVictoryMemory = useCallback(() => {
+    setTabs((prev) =>
+      prev.some((t) => t.id === 'victory-memory') ? prev : [...prev, VICTORY_MEMORY_TAB],
+    )
+    setActiveTab('victory-memory')
+    setView('ide')
+    setSidebarOpen(false)
+    focusPanel()
+  }, [focusPanel])
+
+  const openVictorySquirrel = useCallback(() => {
+    setTabs((prev) =>
+      prev.some((t) => t.id === 'victory-squirrel') ? prev : [...prev, VICTORY_SQUIRREL_TAB],
+    )
+    setActiveTab('victory-squirrel')
     setView('ide')
     setSidebarOpen(false)
     focusPanel()
@@ -439,10 +476,14 @@ export default function App() {
               activeTab={activeTab}
               easterEggUnlocked={easterEggUnlocked}
               snakeVictory={snakeVictory}
+              memoryVictory={memoryVictory}
+              squirrelVictory={squirrelVictory}
               onOpenReadme={openReadme}
               onOpenProject={openProject}
               onOpenKonami={openKonami}
               onOpenVictorySnake={openVictorySnake}
+              onOpenVictoryMemory={openVictoryMemory}
+              onOpenVictorySquirrel={openVictorySquirrel}
             />
           )}
         </div>
@@ -490,6 +531,10 @@ export default function App() {
                 {activeTab === 'konami' && <KonamiView />}
 
                 {activeTab === 'victory-snake' && <VictorySnakeView />}
+
+                {activeTab === 'victory-memory' && <VictoryMemoryView />}
+
+                {activeTab === 'victory-squirrel' && <VictorySquirrelView />}
 
                 {ActiveGameComponent && (
                   <ActiveGameComponent
