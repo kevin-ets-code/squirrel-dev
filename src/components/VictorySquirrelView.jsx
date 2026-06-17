@@ -6,22 +6,21 @@ import MarkdownView from './MarkdownView.jsx'
 // Preview/Raw vient de ContentPage. Purement statique : le Raw expose la SOURCE
 // markdown ci-dessous telle quelle.
 // N'apparaît dans l'explorateur que si squirrelVictory === true (cf. Sidebar/App).
-//
-// CONTENU À FINALISER — placeholder court et thématique, à personnaliser (ton Kevin,
-// façon victory-snake.md). Ne pas considérer ce texte comme définitif.
-const VICTORY_MD = `# 🐿️ Provision parfaite
+const VICTORY_MD = `# 🐿️ Dix mille
 
-Le palier est tombé. Assez de noisettes pour passer dix hivers, ramassées un bond après l'autre sans jamais lâcher.
+Tu sais ce qui est dur, dans ce jeu ? Pas l'obstacle. Le neuf-centième. Quand ça fait des minutes que tu cours, que la vitesse a doublé, et qu'une seconde d'inattention efface tout. La plupart des gens ont fermé l'onglet bien avant d'arriver là.
 
-Soyons honnêtes : courir après un score dans un faux terminal ne paiera aucune facture. Et pourtant te voilà, et me voilà à t'avoir écrit une page rien que pour toi.
+Pas toi.
 
-C'est exactement pour ce genre de ténacité que j'ai construit ce portfolio.
+Soyons clairs : ça ne sert à rien, et c'est très bien comme ça. Personne ne décerne de médaille pour avoir esquivé dix mille points de cactus. À part cette page. Considère-la comme ta médaille.
 
-**Écris-moi avec « 🐿️ » dans l'objet** — je saurai exactement d'où tu viens.
+Et elle se mérite : trouver la console, réveiller un vieux code de triche, résoudre l'énigme, débloquer l'écureuil — puis tenir. Longtemps. Sans lâcher. Très peu de gens descendent aussi loin dans le terrier.
 
 GG. 🎮
 
-Kevin
+---
+
+*Envie de savoir qui a planqué tout ça ? Un « 🐿️ » dans l'objet d'un mail, et je saurai d'où tu sors.*
 `
 
 export default function VictorySquirrelView() {

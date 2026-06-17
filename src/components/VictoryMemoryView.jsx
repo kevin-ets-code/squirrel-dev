@@ -6,22 +6,19 @@ import MarkdownView from './MarkdownView.jsx'
 // passe par MarkdownView et le toggle Preview/Raw vient de ContentPage. Purement
 // statique : le Raw expose la SOURCE markdown ci-dessous telle quelle.
 // N'apparaît dans l'explorateur que si memoryVictory === true (cf. Sidebar/App).
-//
-// CONTENU À FINALISER — placeholder court et thématique, à personnaliser (ton Kevin,
-// façon victory-snake.md). Ne pas considérer ce texte comme définitif.
-const VICTORY_MD = `# 🧠 Mémoire parfaite
+const VICTORY_MD = `# 🧠 Sans faute
 
-Toutes les paires retrouvées, sans la moindre erreur, et plus vite que de raison.
+Toutes les paires, zéro erreur, et plus vite que de raison. Tu n'as pas joué, tu as récité.
 
-Soyons honnêtes : retenir une grille de logos ne figurera jamais sur un CV. Et pourtant te voilà, et me voilà à t'avoir écrit une page rien que pour toi.
+Soyons clairs : ça ne sert strictement à rien. C'est précisément ce qui rend la chose délicieuse. Quelque part, un coin de ton cerveau a décidé que mémoriser l'emplacement de cartes décoratives valait le coup. Il avait raison.
 
-C'est exactement pour ce genre d'attention au détail que j'ai construit ce portfolio.
+Très peu de gens voient cet écran. Il a fallu trouver la console, réveiller un vieux code de triche, résoudre une énigme, débloquer le jeu — et *ensuite* le gagner à la perfection. Autant dire que tu fais partie d'un club assez vide.
 
-**Écris-moi avec « 🧠 » dans l'objet** — je saurai exactement d'où tu viens.
+Bienvenue dedans. 🎮
 
-GG. 🎮
+---
 
-Kevin
+*Curieux de savoir qui se cache derrière ce portfolio ? Glisse un « 🧠 » dans l'objet d'un mail, je reconnaîtrai un membre du club.*
 `
 
 export default function VictoryMemoryView() {
