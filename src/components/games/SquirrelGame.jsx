@@ -33,6 +33,11 @@ const ASPECT = 0.42 // hauteur = largeur × ASPECT (bande horizontale type Dino)
 const BEST_KEY = 'squirrel-dev:squirrel-best'
 const SCORE_DIV = 10 // distance px ÷ SCORE_DIV = score affiché
 
+// Palier de victoire : dès que le score affiché atteint WIN_SCORE, on passe en
+// état 'won' (distinct de 'over'), on arrête la boucle et on affiche un écran de
+// victoire dédié. Distinct du game over (collision) et de l'endless sans fin.
+const WIN_SCORE = 10000
+
 // Résolution de bake des silhouettes blanches (px) : assez haute pour rester
 // nette une fois redimensionnée dans un bloc-obstacle à n'importe quel DPR.
 // Même approche que la nourriture du Snake (cf. SnakeGame).
@@ -107,7 +112,7 @@ function metrics(W, H) {
 export default function SquirrelGame({ projects, tools }) {
   const isMobile = useIsMobile()
 
-  const [status, setStatus] = useState('idle') // 'idle' | 'playing' | 'over'
+  const [status, setStatus] = useState('idle') // 'idle' | 'playing' | 'over' | 'won'
   const [score, setScore] = useState(0)
   const [best, setBest] = useState(readBest)
 
@@ -317,6 +322,21 @@ export default function SquirrelGame({ projects, tools }) {
     draw()
   }, [stopLoop, draw])
 
+  // Victoire : palier WIN_SCORE atteint. Statut 'won' distinct de 'over'. Arrête
+  // la boucle et met à jour le meilleur score EXACTEMENT comme gameOver — on lit
+  // scoreShownRef.current (valeur synchrone fiable), jamais le state `score` (async).
+  const victory = useCallback(() => {
+    stopLoop()
+    statusRef.current = 'won'
+    setStatus('won')
+    setBest((prev) => {
+      const next = Math.max(prev, scoreShownRef.current)
+      if (next > prev) writeBest(next)
+      return next
+    })
+    draw()
+  }, [stopLoop, draw])
+
   // Crée un obstacle au bord droit. Deux types :
   //   'ground' = posé au sol, hauteur variable → à SAUTER (la hauteur variable
   //              justifie le saut à charge variable) ;
@@ -411,8 +431,16 @@ export default function SquirrelGame({ projects, tools }) {
         scoreShownRef.current = shown
         setScore(shown)
       }
+
+      // Victoire : palier atteint. On teste la valeur LOCALE `shown` (déjà
+      // synchronisée dans scoreShownRef juste au-dessus), pas le state `score`
+      // (asynchrone). victory() arrête la boucle proprement.
+      if (shown >= WIN_SCORE) {
+        victory()
+        return
+      }
     },
-    [spawnObstacle, gameOver],
+    [spawnObstacle, gameOver, victory],
   )
 
   const frame = useCallback(
@@ -546,7 +574,11 @@ export default function SquirrelGame({ projects, tools }) {
 
       <div
         ref={wrapRef}
-        className={'squirrel-stage' + (status === 'over' ? ' is-over' : '')}
+        className={
+          'squirrel-stage' +
+          (status === 'over' ? ' is-over' : '') +
+          (status === 'won' ? ' is-won' : '')
+        }
         tabIndex={0}
         role="application"
         aria-label="Jeu Squirrel, un runner sans fin. Espace ou flèche haut pour sauter (maintenir = sauter plus haut), flèche bas pour s’accroupir et passer sous les obstacles volants."
@@ -554,8 +586,10 @@ export default function SquirrelGame({ projects, tools }) {
         onKeyUp={onKeyUp}
         onPointerDown={(e) => {
           // Tap sur la zone : démarre/rejoue (le saut en jeu passe par les boutons
-          // tactiles dédiés ou le clavier, pas par un tap sur le canvas).
-          if (statusRef.current !== 'playing') {
+          // tactiles dédiés ou le clavier, pas par un tap sur le canvas). EXCLUT
+          // 'won' : l'écran de victoire reste affiché jusqu'au clic explicite sur
+          // Rejouer (aligné sur Snake), un tap accidentel ne le court-circuite pas.
+          if (statusRef.current !== 'playing' && statusRef.current !== 'won') {
             e.preventDefault()
             start()
           }
@@ -582,6 +616,18 @@ export default function SquirrelGame({ projects, tools }) {
             <p className="squirrel-overlay-title">Game Over</p>
             <p className="squirrel-overlay-sub">
               Score {score} / meilleur {best}
+            </p>
+            <button type="button" className="squirrel-btn" onClick={() => start()}>
+              Rejouer
+            </button>
+          </div>
+        )}
+
+        {status === 'won' && (
+          <div className="squirrel-overlay" role="status" aria-live="polite">
+            <p className="squirrel-overlay-title is-win">Tu as gagné ! 🐿️</p>
+            <p className="squirrel-overlay-sub">
+              Palier {WIN_SCORE} atteint · score {score} / meilleur {best}
             </p>
             <button type="button" className="squirrel-btn" onClick={() => start()}>
               Rejouer

@@ -2566,6 +2566,10 @@ a.contact-link .contact-value {
 .squirrel-stage.is-over {
   animation: squirrel-shake 0.3s ease;
 }
+/* Victoire (palier WIN_SCORE) : réutilise le halo accent du Snake (thème-agnostique). */
+.squirrel-stage.is-won {
+  animation: snake-win 0.5s ease;
+}
 @keyframes squirrel-shake {
   0%,
   100% {
@@ -2602,6 +2606,9 @@ a.contact-link .contact-value {
   font-size: 22px;
   font-weight: 700;
   color: var(--fg-heading);
+}
+.squirrel-overlay-title.is-win {
+  color: var(--accent);
 }
 .squirrel-overlay-sub {
   margin: 0;
@@ -2659,7 +2666,8 @@ a.contact-link .contact-value {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .squirrel-stage.is-over {
+  .squirrel-stage.is-over,
+  .squirrel-stage.is-won {
     animation: none;
   }
 }
