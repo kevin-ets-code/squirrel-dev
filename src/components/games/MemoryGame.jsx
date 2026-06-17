@@ -30,6 +30,14 @@ const PAIR_COUNT = 8
 const FLIP_BACK_MS = 800
 const TICK_MS = 250 // rafraîchissement de l'affichage du chrono
 
+// Victoire « parfaite » (écran festif distinct de la fin normale) : zéro erreur
+// ET temps total sous un seuil dérivé DYNAMIQUEMENT, jamais codé en dur. FLIP_MS =
+// durée de la transition CSS de flip (.memory-card-inner, transition 0.4s dans
+// styles.css). TOLERANCE = marge appliquée au seuil. Seuil = pairs × 2 × FLIP_MS ×
+// TOLERANCE → s'ajuste seul si le nombre de paires ou la vitesse de flip change.
+const FLIP_MS = 400
+const TOLERANCE = 2.5
+
 // Records persistants (localStorage). Lecture/écriture en try/catch comme Snake.
 // Différence assumée avec Snake : ce sont des MINIMUMS à battre, pas des maximums.
 const BEST_MOVES_KEY = 'squirrel-dev:memory-best-moves'
@@ -102,6 +110,9 @@ export default function MemoryGame({ projects, tools }) {
   const [newMovesRecord, setNewMovesRecord] = useState(false)
   const [newTimeRecord, setNewTimeRecord] = useState(false)
 
+  // Partie parfaite (zéro erreur + temps sous le seuil) → écran de victoire spécial.
+  const [isPerfect, setIsPerfect] = useState(false)
+
   const timerRef = useRef(null) // timer de recachage des cartes non appariées
   const chronoRef = useRef(null) // intervalle du chronomètre
   const startRef = useRef(null) // timestamp du premier flip (null tant que pas démarré)
@@ -141,6 +152,7 @@ export default function MemoryGame({ projects, tools }) {
     setElapsedMs(0)
     setNewMovesRecord(false)
     setNewTimeRecord(false)
+    setIsPerfect(false)
   }, [projects, tools])
 
   const pairs = deck.length / 2
@@ -158,6 +170,11 @@ export default function MemoryGame({ projects, tools }) {
     const finalMs = startRef.current !== null ? Date.now() - startRef.current : 0
     setElapsedMs(finalMs)
 
+    // Partie parfaite : zéro erreur (un seul coup par paire ⇒ moves === pairs) ET
+    // temps total ≤ seuil dérivé. On lit finalMs (figé ici), PAS le state elapsedMs
+    // (asynchrone). pairs > 0 garanti ici (won implique des paires).
+    setIsPerfect(moves === pairs && finalMs <= pairs * 2 * FLIP_MS * TOLERANCE)
+
     const movesBeat = bestMoves == null || moves < bestMoves
     const timeBeat = bestTime == null || finalMs < bestTime
     if (movesBeat) {
@@ -170,7 +187,7 @@ export default function MemoryGame({ projects, tools }) {
     }
     setNewMovesRecord(movesBeat)
     setNewTimeRecord(timeBeat)
-  }, [won, moves, bestMoves, bestTime])
+  }, [won, moves, pairs, bestMoves, bestTime])
 
   const handleFlip = (index) => {
     if (lock || won) return
@@ -251,7 +268,25 @@ export default function MemoryGame({ projects, tools }) {
         </p>
       </div>
 
-      {won && (
+      {/* Victoire parfaite : écran festif dédié (zéro erreur + temps sous le seuil). */}
+      {won && isPerfect && (
+        <div className="memory-win is-perfect" role="status" aria-live="polite">
+          <span className="memory-win-emoji" aria-hidden="true">
+            🏆
+          </span>
+          <span className="memory-win-perfect-msg">Partie parfaite — sans la moindre erreur !</span>
+          <span className="memory-win-stats">
+            {moves} coups · {formatTime(elapsedMs)}
+          </span>
+          {recordMessage && <span className="memory-record-flash">{recordMessage}</span>}
+          <button type="button" className="memory-replay" onClick={reset}>
+            Rejouer
+          </button>
+        </div>
+      )}
+
+      {/* Fin normale (toutes les paires trouvées, hors condition parfaite) : bandeau inchangé. */}
+      {won && !isPerfect && (
         <div className="memory-win" role="status" aria-live="polite">
           <span className="memory-win-emoji" aria-hidden="true">
             🎉

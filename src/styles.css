@@ -2241,6 +2241,36 @@ a.contact-link .contact-value {
   }
 }
 
+/* Écran de victoire « partie parfaite » : variante festive accent, distincte du
+   bandeau de fin normale. Couleurs 100 % via variables de thème (clair + sombre). */
+.memory-win.is-perfect {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--overlay-2));
+  animation: memory-perfect-pop 0.5s ease;
+}
+.memory-win-perfect-msg {
+  color: var(--accent);
+  font-weight: 600;
+}
+@keyframes memory-perfect-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  60% {
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .memory-win.is-perfect {
+    animation: none;
+  }
+}
+
 .memory-grid {
   display: grid;
   grid-template-columns: repeat(var(--memory-cols, 4), 1fr);
