@@ -115,6 +115,18 @@ export function CommandIcon({ size = 16 }) {
   )
 }
 
+// Icône "API" — accolades { } (d'après lucide `braces`). Sert au bouton API de
+// l'activity bar (et au placeholder de la console). Symbole code/JSON, cohérent
+// avec le style codicon (trait fin) des autres icônes de l'activity bar.
+export function BracesIcon({ size = 24 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1" />
+      <path d="M16 3h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2 2 2 0 0 0-2 2v5a2 2 0 0 1-2 2h-1" />
+    </svg>
+  )
+}
+
 export function GraphIcon({ size = 24 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">

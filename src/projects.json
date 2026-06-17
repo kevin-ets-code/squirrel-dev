@@ -135,7 +135,8 @@
         "supabase",
         "vercel",
         "javascript",
-        "css"
+        "css",
+        "github"
       ],
       "highlights": [
         "Matchmaking asynchrone : un joueur crée une partie waiting ou rejoint celle d'un inconnu, résultats calculés instantanément à la jonction.",

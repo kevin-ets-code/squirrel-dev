@@ -3,14 +3,15 @@ import {
   PackageIcon,
   SearchIcon,
   GraphIcon,
+  BracesIcon,
   GearIcon,
   GitBranchIcon,
   GamepadIcon,
 } from './icons.jsx'
 
 // Rangée d'onglets en haut du drawer mobile : remplace l'activity bar (masquée
-// sous 720px) pour basculer entre les panneaux de la sidebar + le Graph, et
-// ouvrir les Paramètres (l'engrenage de l'activity bar n'existant pas en mobile).
+// sous 720px) pour basculer entre les panneaux de la sidebar + le Graph + l'API,
+// et ouvrir les Paramètres (l'engrenage de l'activity bar n'existant pas en mobile).
 // L'onglet « Jeux » n'apparaît QUE si le mode Jeux est débloqué (easterEggUnlocked).
 export default function MobilePanelTabs({
   view,
@@ -19,6 +20,7 @@ export default function MobilePanelTabs({
   easterEggUnlocked,
   onSelectPanel,
   onSelectGraph,
+  onSelectApi,
   onSelectSettings,
 }) {
   const isPanel = (p) => view === 'ide' && panel === p
@@ -62,6 +64,13 @@ export default function MobilePanelTabs({
           <span>Jeux</span>
         </button>
       )}
+      <button
+        className={'mpt-btn' + (view === 'api' ? ' active' : '')}
+        onClick={onSelectApi}
+      >
+        <BracesIcon size={18} />
+        <span>API</span>
+      </button>
       <button
         className={'mpt-btn' + (view === 'graph' ? ' active' : '')}
         onClick={onSelectGraph}

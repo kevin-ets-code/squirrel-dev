@@ -3,14 +3,16 @@ import {
   PackageIcon,
   SearchIcon,
   GraphIcon,
+  BracesIcon,
   GearIcon,
   GitBranchIcon,
   GamepadIcon,
 } from './icons.jsx'
 
 // Activity bar (48px). Explorateur / Recherche / Tools basculent le panneau (et la
-// vue IDE), Graph bascule en vue graphe, et l'engrenage (en bas) ouvre l'onglet
-// Paramètres. (Le GitHub du profil reste accessible depuis le README.)
+// vue IDE), Graph bascule en vue graphe, API bascule en vue API, et l'engrenage
+// (en bas) ouvre l'onglet Paramètres. (Le GitHub du profil reste accessible depuis
+// le README.)
 // L'icône « Jeux » n'apparaît QUE si le mode Jeux est débloqué (easterEggUnlocked).
 export default function ActivityBar({
   view,
@@ -19,6 +21,7 @@ export default function ActivityBar({
   easterEggUnlocked,
   onSelectPanel,
   onSelectGraph,
+  onSelectApi,
   onSelectSettings,
 }) {
   return (
@@ -65,6 +68,14 @@ export default function ActivityBar({
           <GamepadIcon />
         </button>
       )}
+      <button
+        className={'activity-btn' + (view === 'api' ? ' active' : '')}
+        onClick={onSelectApi}
+        aria-label="API"
+        title="API"
+      >
+        <BracesIcon />
+      </button>
       <button
         className={'activity-btn' + (view === 'graph' ? ' active' : '')}
         onClick={onSelectGraph}

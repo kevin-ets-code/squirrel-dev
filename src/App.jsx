@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect, lazy, Suspense } from 'react'
+import { useState, useCallback, useRef, useEffect, useMemo, lazy, Suspense } from 'react'
 import data from './projects.json'
 import TitleBar from './components/TitleBar.jsx'
 import ActivityBar from './components/ActivityBar.jsx'
@@ -8,6 +8,8 @@ import ToolsPanel from './components/ToolsPanel.jsx'
 import SourceControlPanel from './components/SourceControlPanel.jsx'
 import GamesPanel from './components/GamesPanel.jsx'
 import GraphPanel from './components/GraphPanel.jsx'
+import ApiPanel from './components/ApiPanel.jsx'
+import ApiView from './components/ApiView.jsx'
 import MobilePanelTabs from './components/MobilePanelTabs.jsx'
 import GraphUnavailable from './components/GraphUnavailable.jsx'
 import EditorTabs from './components/EditorTabs.jsx'
@@ -39,6 +41,7 @@ import {
   toolProjects,
   toolEntry,
 } from './lib/tools.js'
+import { executeRequest, resolveExample } from './lib/api-engine.js'
 
 // React Flow est lourd : on ne le charge que quand la vue Graph est ouverte.
 const GraphView = lazy(() => import('./components/GraphView.jsx'))
@@ -70,7 +73,7 @@ export default function App() {
   const [tabs, setTabs] = useState([README_TAB])
   const [activeTab, setActiveTab] = useState('readme')
   const [panel, setPanel] = useState('explorer')
-  const [view, setView] = useState('ide') // "ide" | "graph"
+  const [view, setView] = useState('ide') // "ide" | "graph" | "api"
   // Filtres du Graph remontés ici (état partagé) : la sidebar GraphPanel les
   // pilote, GraphView les consomme pour calculer la visibilité. focusedNodeId
   // reste local à GraphView (interaction du canvas, pas un filtre).
@@ -80,6 +83,16 @@ export default function App() {
   const [tabFocusKey, setTabFocusKey] = useState(0) // signal pour focaliser l'onglet actif
   const [paletteOpen, setPaletteOpen] = useState(false) // palette de commandes (Ctrl/Cmd+K)
   const [toastMessage, setToastMessage] = useState(null) // toast (un seul à la fois)
+  // Vue API : état remonté ici (App = parent commun d'ApiPanel et ApiView).
+  // Tout est en mémoire de SESSION (pas de localStorage : réservé aux préférences).
+  const [apiInput, setApiInput] = useState('') // ligne de requête (ex. "GET /projects")
+  const [apiResult, setApiResult] = useState(null) // dernière réponse { method, path, status… }
+  const [apiLogs, setApiLogs] = useState([]) // historique de session (plus récent en tête)
+  const [apiFocusKey, setApiFocusKey] = useState(0) // signal pour focaliser le champ requête
+  // Sous-état d'onglet INTERNE à la vue API (console / doc / logs). Local à la
+  // vue API, distinct du système d'onglets de fichiers IDE (tabs/activeTab).
+  const [apiTab, setApiTab] = useState('console')
+  const apiLogId = useRef(0)
   // L'app n'a pas de routeur (pilotée par onglets) : Vercel renvoie toute route
   // vers index.html (cf. vercel.json), donc toute URL autre que la racine est
   // une route inconnue => écran 404.
@@ -224,6 +237,71 @@ export default function App() {
     setView('graph')
     setSidebarOpen(false)
   }, [])
+
+  // Bascule vers la vue API. Contrairement au Graph, on NE ferme PAS le drawer
+  // mobile : la sidebar API (endpoints/doc) est le contenu utile sur petit écran
+  // — la zone principale n'est qu'une console placeholder. Cohérent avec
+  // selectPanel (changer de panneau ne ferme pas le drawer).
+  const selectApi = useCallback(() => setView('api'), [])
+
+  // Jeu de données interrogé par la fausse API (même source que tout le reste).
+  const apiData = useMemo(() => ({ profile, projects, tools }), [profile, projects, tools])
+
+  // Exécute une requête : parse + route via le moteur, met à jour la réponse et
+  // empile un log de session (plus récent en tête, borné à 50). Utilisé par le
+  // bouton Send / Entrée ET par le rejeu d'un log.
+  const runApiRequest = useCallback(
+    (input) => {
+      const text = (input ?? '').trim()
+      if (!text) return
+      const result = executeRequest(text, apiData)
+      setApiResult(result)
+      setApiLogs((prev) => {
+        const entry = {
+          id: ++apiLogId.current,
+          input: text,
+          method: result.method,
+          path: result.path,
+          status: result.status,
+          statusText: result.statusText,
+          // On stocke le corps à la création : le panneau de détail (onglet Logs)
+          // l'affiche SANS ré-exécuter la requête.
+          body: result.body,
+        }
+        return [entry, ...prev].slice(0, 50)
+      })
+    },
+    [apiData],
+  )
+
+  // Clic sur un endpoint dans le panneau API : PRÉ-REMPLIT le champ avec l'URL
+  // d'exemple (méthode + path résolu) sans exécuter, bascule en vue API + onglet
+  // interne Console et focalise le champ. On ferme le drawer mobile pour révéler
+  // la console.
+  const selectEndpoint = useCallback(
+    (ep) => {
+      setApiInput(`${ep.method} ${resolveExample(ep, apiData)}`)
+      setView('api')
+      setApiTab('console')
+      setSidebarOpen(false)
+      setApiFocusKey((k) => k + 1)
+    },
+    [apiData],
+  )
+
+  // Rejoue un log (bouton « Rejouer » du panneau de détail, onglet Logs) :
+  // ré-affiche sa ligne dans le champ, bascule sur l'onglet Console et ré-exécute
+  // la requête. C'est le SEUL chemin qui ré-exécute depuis les logs.
+  const replayLog = useCallback(
+    (entry) => {
+      setApiInput(entry.input)
+      setView('api')
+      setApiTab('console')
+      setSidebarOpen(false)
+      runApiRequest(entry.input)
+    },
+    [runApiRequest],
+  )
 
   // Handlers des filtres du Graph (pilotés par GraphPanel).
   const toggleGraphCat = useCallback(
@@ -439,6 +517,7 @@ export default function App() {
           easterEggUnlocked={easterEggUnlocked}
           onSelectPanel={selectPanel}
           onSelectGraph={selectGraph}
+          onSelectApi={selectApi}
           onSelectSettings={openSettings}
         />
 
@@ -450,9 +529,12 @@ export default function App() {
             easterEggUnlocked={easterEggUnlocked}
             onSelectPanel={selectPanel}
             onSelectGraph={selectGraph}
+            onSelectApi={selectApi}
             onSelectSettings={openSettings}
           />
-          {view === 'graph' && !isMobile ? (
+          {view === 'api' ? (
+            <ApiPanel onSelectEndpoint={selectEndpoint} />
+          ) : view === 'graph' && !isMobile ? (
             <GraphPanel
               cats={graphCats}
               search={graphSearch}
@@ -504,7 +586,21 @@ export default function App() {
         {sidebarOpen && <div className="scrim" onClick={() => setSidebarOpen(false)} />}
 
         <main className="editor" id="main-content" tabIndex={-1}>
-          {view === 'graph' ? (
+          {view === 'api' ? (
+            <ApiView
+              apiTab={apiTab}
+              onApiTab={setApiTab}
+              value={apiInput}
+              onChange={setApiInput}
+              onSend={runApiRequest}
+              result={apiResult}
+              focusSignal={apiFocusKey}
+              apiData={apiData}
+              onSelectEndpoint={selectEndpoint}
+              logs={apiLogs}
+              onReplay={replayLog}
+            />
+          ) : view === 'graph' ? (
             isMobile ? (
               <GraphUnavailable onOpenTools={openToolsPanel} />
             ) : (

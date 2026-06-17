@@ -173,8 +173,9 @@ gouttière/coloration et un **bouton copier** en vue Raw. Le mécanisme est
 
 ### Le graphe se met à jour tout seul
 
-Le portfolio a deux vues, basculables depuis la barre d'activité à gauche :
-l'**IDE** (onglets + fiches) et le **Graph** (icône en forme de réseau).
+Le portfolio a trois vues, basculables depuis la barre d'activité à gauche :
+l'**IDE** (onglets + fiches), le **Graph** (icône en forme de réseau) et l'**API**
+(icône accolades `{ }`, voir « La vue API » plus bas).
 
 La vue Graph est **entièrement auto-générée depuis `projects.json`** — il n'y a
 **rien à maintenir à la main** :
@@ -359,13 +360,119 @@ automatiquement à l'historique (nouveau commit, hash dérivé, compteur à jour
 panneau est repris dans la **rangée d'onglets du drawer mobile** (onglet « Git »),
 comme les autres panneaux.
 
+### La vue API
+
+La barre d'activité propose, **entre les Jeux/Source Control et le Graph**, une icône
+**API** (accolades `{ }`). C'est un petit **client REST jouable** : le portfolio
+expose ses données (projets, outils, profil, stats) comme une API, qu'on interroge
+depuis une console intégrée.
+
+> **Fausse API, 100 % côté client.** Aucune vraie requête réseau : tout est calculé
+> à partir de `projects.json`. L'API est **en lecture seule** (méthode `GET`
+> uniquement) — rien n'est jamais modifié.
+
+#### La zone principale : trois onglets internes
+
+La zone principale a sa **propre barre d'onglets** (interne à la vue API, sans
+rapport avec les onglets de fichiers de l'éditeur) : **Console**, **Documentation**
+et **Logs**. On bascule à la souris ou au clavier (flèches gauche/droite, Entrée).
+
+- **Console** — l'outil principal :
+  - **Zone requête** : un champ où l'on tape une requête, par exemple
+    `GET /projects?type=pro`, puis **Entrée** (ou le bouton **Send**).
+  - **Autocomplétion** : pendant la frappe, un menu suggère ce qui est valide à ce
+    point précis — la méthode (`GET`), les ressources (`/projects`, `/tools`,
+    `/profile`, `/stats`), puis les **ids réels** des projets (`/projects/…`) et des
+    outils (`/tools/…`). Tout est **dérivé** des endpoints et de `projects.json` :
+    rien n'est codé en dur (un projet ajouté au JSON apparaît tout seul dans les
+    suggestions). Clavier : **↑ / ↓** naviguer, **Tab** compléter, **Entrée** =
+    *compléter* tant que le menu est ouvert (jamais d'exécution accidentelle) puis
+    *exécuter* une fois le menu fermé, **Échap** ferme le menu sans rien effacer.
+    Choisir une suggestion **complète le champ sans exécuter** : on continue de
+    taper ou on appuie sur Entrée. (v1 : chemins et ids ; la complétion des filtres
+    `?type=`/`?kind=` viendra ensuite.)
+  - **Zone réponse** : une ligne de statut (méthode + code HTTP, **colorée** — vert
+    pour `2xx`, orange pour `4xx`) suivie du **corps JSON** (coloré, avec numéros de
+    ligne et un **bouton copier**).
+  - Avant la première requête, un écran d'accueil invite à essayer `GET /projects`.
+- **Documentation** — la doc de l'API dans un rendu **inspiré de Swagger UI** :
+  un encart en tête rappelle que l'API est **en lecture seule** (`GET` uniquement) ;
+  les endpoints sont groupés par ressource (Projects / Tools / Profile / Stats),
+  chaque endpoint étant une **carte dépliable** légèrement **teintée par sa méthode**
+  (badge de méthode, chemin, description). Au dépli, deux bandes distinctes :
+  - **Paramètres** : chaque paramètre avec son tag **requis** (segment de chemin
+    `:id`) ou **optionnel** (filtre de query) et ses valeurs possibles ; « Aucun
+    paramètre » si l'endpoint n'en prend pas.
+  - **Réponses** : un petit **tableau Code / Description** (codes colorés, dérivés
+    de la forme de l'endpoint : `200` toujours, `400` si filtres, `404` si `:id`)
+    suivi d'un **exemple de réponse** (corps JSON réel, avec coloration, numéros de
+    ligne et bouton copier).
+
+  Chaque carte porte un bouton **« Essayer dans la console »** qui **bascule sur
+  l'onglet Console** en **pré-remplissant** le champ avec l'URL d'exemple de
+  l'endpoint, **sans l'exécuter** (on appuie ensuite sur Entrée) — exactement comme
+  un clic dans la sidebar. La doc ne fait **rien exécuter** elle-même : la Console
+  reste le seul lieu d'exécution. Tout est **généré depuis la même source** que les
+  endpoints — jamais une liste à maintenir à la main.
+- **Logs** — l'historique des requêtes de la **session** (méthode + chemin + code
+  coloré, plus récent en tête). **Cliquer une ligne ouvre un panneau de détail à
+  droite** (statut, chemin complet, query, corps JSON + bouton copier) — **sans
+  rejouer** la requête. Un bouton **« Rejouer »** dans ce détail (et lui seul)
+  ré-exécute la requête. Le panneau de détail reste **dans la zone éditeur** (il ne
+  déborde jamais sur la barre latérale) ; sur un écran étroit il s'empile sous la
+  liste. Fermeture au bouton × ou avec **Échap**. L'historique se vide au
+  rechargement de la page (rien n'est stocké).
+
+#### Les routes disponibles
+
+| Requête | Effet |
+| --- | --- |
+| `GET /projects` | Tous les projets. `?type=pro\|perso` filtre par type ; `?kind=webapp` filtre par nature ; `?stack=webflow` filtre par outil (id de stack). Les filtres se **combinent** (`?type=pro&stack=webflow`). |
+| `GET /projects/:id` | Un projet par son id (id inconnu → `404`). |
+| `GET /tools` | Tous les outils. `?category=no-code` filtre par catégorie. |
+| `GET /tools/:id` | Un outil et les projets qui l'utilisent (id inconnu → `404`). |
+| `GET /profile` | Le profil (identité + liens). |
+| `GET /stats` | Compteurs **calculés** : nb de projets, répartition pro/perso, nb d'outils, etc. |
+
+Les **codes d'erreur** : méthode autre que `GET` → `405`, route inconnue → `404`,
+valeur de filtre invalide → `400`. La réponse est toujours un JSON cohérent (les
+erreurs aussi : `{ error, message }`).
+
+> **Forme des réponses-liste.** Les endpoints qui renvoient une **liste**
+> (`GET /projects` et ses variantes filtrées, `GET /tools`) répondent avec une
+> **enveloppe** `{ "count": N, "results": [ … ] }` — `count` est le nombre
+> d'éléments retournés (dérivé, donc cohérent avec les filtres). Les endpoints qui
+> renvoient un **objet unique** (`/projects/:id`, `/tools/:id`, `/profile`,
+> `/stats`) renvoient cet objet **tel quel**, sans enveloppe.
+
+#### La sidebar API (les endpoints)
+
+La sidebar ne contient qu'une seule section : **Endpoints** — la liste, **groupée
+par ressource** (Projects / Tools / Profile / Stats) dans des dossiers repliables
+(mêmes que l'explorateur). **Cliquer un endpoint pré-remplit** le champ de la
+console avec une URL d'exemple, **sans l'exécuter** (et bascule sur l'onglet
+Console) : on appuie ensuite sur Entrée. La documentation et les logs ne sont plus
+dans la sidebar — ils vivent dans les onglets internes de la zone principale.
+
+> **Tout part d'un seul fichier** : [`src/lib/api-endpoints.js`](src/lib/api-endpoints.js)
+> définit chaque endpoint **avec sa logique** (un `handler` qui lit `projects.json`).
+> La console, la sidebar **et** l'onglet Documentation lisent **cette même source** —
+> pour ajouter ou modifier un endpoint, on touche **uniquement** ce fichier,
+> exactement comme le reste du portfolio est piloté par `projects.json`. Le routage
+> et les codes de status vivent dans [`src/lib/api-engine.js`](src/lib/api-engine.js).
+
+La vue API **fonctionne sur mobile** : la sidebar reste la liste d'endpoints, et la
+zone principale garde ses onglets internes (console = champ + réponse empilés ; le
+détail des logs s'empile sous la liste). Elle apparaît dans la rangée d'onglets du
+drawer (onglet « API »).
+
 ### Navigation mobile (sous 720px)
 
 Sous **720px**, l'activity bar verticale est masquée. La sidebar devient un
 **drawer coulissant** ouvert par le bouton **« ☰ Explorer »** de la title bar.
 
 Pour ne jamais se retrouver coincé, le drawer affiche en haut une **rangée
-d'onglets** qui remplace l'activity bar : **Explorer / Tools / Recherche / Git / Graph**.
+d'onglets** qui remplace l'activity bar : **Explorer / Tools / Recherche / Git / API / Graph**.
 On peut donc basculer entre tous les panneaux à tout moment (le panneau actif est
 surligné, et changer de panneau ne ferme pas le drawer).
 
@@ -627,7 +734,8 @@ Le portfolio est entièrement utilisable au clavier, **sans jamais piéger le fo
 - **Graph hors tabulation** : l'icône Graph de l'activity bar n'est pas atteignable
   au `Tab` (`tabindex="-1"`) — un graphe de nœuds n'a pas de parcours clavier utile
   — mais reste cliquable à la souris. Les autres icônes (Explorateur, Tools,
-  Recherche, **Paramètres**) restent tabulables.
+  Recherche, **API**, **Paramètres**) restent tabulables — l'API, elle, se navigue
+  au clavier (liste d'endpoints).
 - **Paramètres** : l'engrenage de l'activity bar est un bouton avec `aria-label`,
   tabulable et avec focus visible. Dans la page Settings, l'interrupteur de thème est
   un `role="switch"` (`aria-checked`), et les pastilles d'accent un
