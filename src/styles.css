@@ -315,7 +315,8 @@ textarea:focus-visible,
 .app {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100vh; /* repli vieux navigateurs */
+  height: 100dvh; /* hauteur dynamique : exclut les barres natives mobiles */
 }
 
 .body {
@@ -1445,7 +1446,8 @@ a.contact-link .contact-value {
    Tout dérive des variables de thème => marche en clair ET en sombre.
    ============================================================ */
 .notfound {
-  min-height: 100vh;
+  min-height: 100vh; /* repli vieux navigateurs */
+  min-height: 100dvh; /* hauteur dynamique : exclut les barres natives mobiles */
   display: flex;
   align-items: center;
   justify-content: center;
