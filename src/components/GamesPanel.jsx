@@ -1,5 +1,6 @@
 import { GAMES, gameTabId } from '../games/registry.js'
 import { useEasterEggs } from '../lib/easterEggs.jsx'
+import { fileName } from '../lib/fileName.js'
 import { LockIcon, LockOpenIcon } from './icons.jsx'
 
 // Panneau « Jeux » (sidebar) — rôle = LAUNCHER. Liste les jeux du registre
@@ -50,7 +51,7 @@ export default function GamesPanel({ activeTab, onOpenGame }) {
               <span className="game-status" aria-hidden="true">
                 <LockOpenIcon size={14} color="var(--accent)" />
               </span>
-              <span className="file-name">{g.label}</span>
+              <span className="file-name">{fileName('game', g.label)}</span>
             </button>
           )
         })}
