@@ -3,11 +3,17 @@ import { FileIcon, CloseIcon, GearIcon, GamepadIcon } from './icons.jsx'
 import ToolLogo from './ToolLogo.jsx'
 import { fileName } from '../lib/fileName.js'
 
-// Pages « système » de l'explorateur (README, konami-code, victory-snake) :
-// elles partagent la couleur fixe --icon-system, comme dans la Sidebar. Les
-// valeurs correspondent aux tab.type créés dans App.jsx (README_TAB, KONAMI_TAB,
-// VICTORY_SNAKE_TAB).
-const SYSTEM_TAB_TYPES = ['readme', 'konami', 'victory-snake']
+// Pages « système » de l'explorateur (README, konami-code, et toute page
+// victory-<jeu>) : elles partagent la couleur fixe --icon-system, comme dans la
+// Sidebar. Dérivé (pas une liste en dur) pour que tout futur type 'victory-x'
+// hérite automatiquement de la couleur système — sinon il retomberait sur une
+// var CSS --icon-victory-x inexistante (l'icône perdrait sa couleur).
+// NB : asymétrie assumée avec fileName.js, qui garde une table explicite
+// EXT_BY_TYPE. Les deux répondent à des besoins distincts (couleur système ici,
+// extension là) ; ne pas « harmoniser » par réflexe — il n'y a rien à réparer
+// côté fileName.js, sa table est la source unique lisible des extensions.
+const isSystemTabType = (type) =>
+  type === 'readme' || type === 'konami' || type.startsWith('victory-')
 
 // Couleur de l'icône d'un onglet selon son type (alignée sur la Sidebar) :
 // - pages système -> --icon-system (bleu fixe) ;
@@ -15,7 +21,7 @@ const SYSTEM_TAB_TYPES = ['readme', 'konami', 'victory-snake']
 // - sinon (projets 'pro' / 'perso') -> --icon-<type>.
 // (Les types 'tool' et 'settings' ont leur propre rendu et n'utilisent pas ceci.)
 function tabIconColor(type) {
-  if (SYSTEM_TAB_TYPES.includes(type)) return 'var(--icon-system)'
+  if (isSystemTabType(type)) return 'var(--icon-system)'
   if (type === 'game') return 'var(--icon-perso)'
   return `var(--icon-${type})`
 }
