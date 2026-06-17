@@ -280,8 +280,9 @@ export default function App() {
           return
         }
         unlockVictory(victoryId)
-        const g = gameById(victoryId)
-        setToastMessage(`🎉 ${g.emoji} Victoire ${g.label} débloquée !`)
+        // Pas d'emoji dans la chaîne : l'icône 🎮 du composant Toast joue ce rôle
+        // (homogène avec les autres toasts).
+        setToastMessage(`Victoire ${gameById(victoryId).label} débloquée !`)
         return
       }
 
@@ -295,7 +296,7 @@ export default function App() {
         return
       }
       unlockGame(id)
-      setToastMessage(`🎉 Énigme résolue ! ${gameById(id).label} débloqué.`)
+      setToastMessage(`Énigme résolue ! ${gameById(id).label} débloqué.`)
     },
     [gamesUnlocked, snakeVictory, memoryVictory, squirrelVictory, unlockGame, unlockVictory],
   )
