@@ -8,6 +8,8 @@
 //   id        identifiant stable (slug minuscule) ; sert de clé dans gamesUnlocked.
 //   label     nom affiché — RÉVÉLÉ UNIQUEMENT une fois le jeu débloqué (le nom ne
 //             doit jamais fuiter avant : ni page konami, ni panneau Jeux, ni palette).
+//   emoji     emoji thématique du jeu — sert au toast de victoire-récompense
+//             (source unique : on ne code pas l'emoji en dur côté App).
 //   riddle    énoncé de l'énigme à résoudre pour débloquer le jeu.
 //   solutions TABLEAU de réponses valides (matchées après normalisation, cf.
 //             normalizeAnswer). Deux énigmes ne doivent JAMAIS partager une
@@ -22,6 +24,7 @@ export const GAMES = [
   {
     id: 'snake',
     label: 'Snake',
+    emoji: '🐍',
     riddle:
       'J’avance sans patte, je grandis en mangeant, et le pire ennemi de ma faim, c’est moi-même. Qui suis-je ?',
     solutions: ['serpent', 'snake'],
@@ -30,6 +33,7 @@ export const GAMES = [
   {
     id: 'memory',
     label: 'Memory',
+    emoji: '🧠',
     riddle:
       'Pour gagner à ce jeu, il faut en avoir une bonne. Les ordinateurs la mesurent en Go, toi en souvenirs. Qu’est-ce ?',
     solutions: ['jeu de paires', 'memory', 'memoire'],
@@ -38,6 +42,7 @@ export const GAMES = [
   {
     id: 'squirrel',
     label: 'Squirrel',
+    emoji: '🐿️',
     riddle:
       'Je file sur les branches, je fais des bonds, et l’hiver je vis de ce que j’ai mis de côté. Qui suis-je ?',
     solutions: ['ecureuil', 'squirrel'],
@@ -74,6 +79,23 @@ export function gameIdForAnswer(answer) {
   if (!norm) return null
   for (const g of GAMES) {
     if ((g.solutions || []).some((sol) => normalizeAnswer(sol) === norm)) return g.id
+  }
+  return null
+}
+
+// Commande fantôme « > solve <jeu> victory » : débloque la page-récompense d'un
+// jeu. Les alias de victoire sont DÉRIVÉS du registre (chaque solution + suffixe
+// « victory »), jamais codés en dur → « serpent victory », « snake victory »,
+// « memory victory », « memoire victory », « jeu de paires victory »,
+// « ecureuil victory », « squirrel victory »… Retourne l'id du jeu, ou null.
+export function victoryGameIdForAnswer(answer) {
+  const norm = normalizeAnswer(answer)
+  const suffix = ' victory'
+  if (!norm.endsWith(suffix)) return null
+  const base = norm.slice(0, -suffix.length).trim()
+  if (!base) return null
+  for (const g of GAMES) {
+    if ((g.solutions || []).some((sol) => normalizeAnswer(sol) === base)) return g.id
   }
   return null
 }

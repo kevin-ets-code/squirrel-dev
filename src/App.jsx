@@ -26,7 +26,12 @@ import Toast from './components/Toast.jsx'
 import NotFound from './components/NotFound.jsx'
 import useIsMobile from './lib/useIsMobile.js'
 import { useEasterEggs } from './lib/easterEggs.jsx'
-import { gameById, gameTabId, gameIdForAnswer, normalizeAnswer } from './games/registry.js'
+import {
+  gameById,
+  gameTabId,
+  gameIdForAnswer,
+  victoryGameIdForAnswer,
+} from './games/registry.js'
 import {
   toolTabId,
   isToolTab,
@@ -60,7 +65,6 @@ export default function App() {
     unlockKonami,
     unlockGame,
     unlockVictory,
-    unlockSnakeVictory,
   } = useEasterEggs()
 
   const [tabs, setTabs] = useState([README_TAB])
@@ -253,24 +257,31 @@ export default function App() {
   // déjà débloqué, discret si mauvaise réponse.
   const solveRiddle = useCallback(
     (answer) => {
-      // CAS SPÉCIAL prioritaire : « solve serpent victory » / « solve snake victory »
-      // débloque la « grille parfaite » (victory_snake.md) sans remplir la grille.
-      // Testé sur la chaîne COMPLÈTE normalisée AVANT gameIdForAnswer, sinon le
-      // mot « serpent » seul serait capturé par l'énigme Snake.
-      const norm = normalizeAnswer(answer)
-      if (norm === 'serpent victory' || norm === 'snake victory') {
-        // Garde-fou : n'a de sens qu'une fois Snake débloqué. Sinon, on traite
-        // ça comme une mauvaise réponse (ne révèle pas l'existence de la commande).
-        if (!gamesUnlocked.snake) {
+      // CAS SPÉCIAL prioritaire : « solve <jeu> victory » débloque la page-récompense
+      // du jeu (victory-<jeu>.md) sans rejouer la condition cachée. Les alias sont
+      // dérivés du registre (victoryGameIdForAnswer). Testé AVANT gameIdForAnswer,
+      // sinon le mot solution seul (« serpent »…) serait capturé par l'énigme.
+      const victoryId = victoryGameIdForAnswer(answer)
+      if (victoryId) {
+        // Garde-fou : n'a de sens qu'une fois le jeu lui-même débloqué. Sinon on
+        // traite ça comme une mauvaise réponse (ne révèle pas l'existence de la
+        // commande).
+        if (!gamesUnlocked[victoryId]) {
           setToastMessage('Mauvaise réponse…')
           return
         }
-        if (snakeVictory) {
+        const victoryFlags = {
+          snake: snakeVictory,
+          memory: memoryVictory,
+          squirrel: squirrelVictory,
+        }
+        if (victoryFlags[victoryId]) {
           setToastMessage('Déjà débloqué.')
           return
         }
-        unlockSnakeVictory()
-        setToastMessage('🐍 Grille parfaite débloquée !')
+        unlockVictory(victoryId)
+        const g = gameById(victoryId)
+        setToastMessage(`🎉 ${g.emoji} Victoire ${g.label} débloquée !`)
         return
       }
 
@@ -286,7 +297,7 @@ export default function App() {
       unlockGame(id)
       setToastMessage(`🎉 Énigme résolue ! ${gameById(id).label} débloqué.`)
     },
-    [gamesUnlocked, snakeVictory, unlockGame, unlockSnakeVictory],
+    [gamesUnlocked, snakeVictory, memoryVictory, squirrelVictory, unlockGame, unlockVictory],
   )
 
   const dismissToast = useCallback(() => setToastMessage(null), [])
