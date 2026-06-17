@@ -109,7 +109,7 @@ function metrics(W, H) {
   }
 }
 
-export default function SquirrelGame({ projects, tools }) {
+export default function SquirrelGame({ projects, tools, onVictory }) {
   const isMobile = useIsMobile()
 
   const [status, setStatus] = useState('idle') // 'idle' | 'playing' | 'over' | 'won'
@@ -144,6 +144,14 @@ export default function SquirrelGame({ projects, tools }) {
   useEffect(() => {
     statusRef.current = status
   }, [status])
+
+  // onVictory en ref (même pattern que SnakeGame) : appelée depuis victory() dans
+  // la boucle sans entrer dans les deps des useCallback (évite de recréer la
+  // boucle, et de lire un gameId périmé si la prop change d'identité).
+  const onVictoryRef = useRef(onVictory)
+  useEffect(() => {
+    onVictoryRef.current = onVictory
+  }, [onVictory])
 
   // Préchargement des logos d'outils (outils avec champ logo non vide). PIÈGE
   // résolu comme dans SnakeGame : drawImage ignore les filtres CSS, donc on
@@ -334,6 +342,9 @@ export default function SquirrelGame({ projects, tools }) {
       if (next > prev) writeBest(next)
       return next
     })
+    // Débloque la page-récompense persistante (victory-squirrel.md), comme la
+    // victoire « grille parfaite » du Snake. via ref → hors deps de la boucle.
+    onVictoryRef.current?.()
     draw()
   }, [stopLoop, draw])
 

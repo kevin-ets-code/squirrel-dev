@@ -59,6 +59,7 @@ export default function App() {
     squirrelVictory,
     unlockKonami,
     unlockGame,
+    unlockVictory,
     unlockSnakeVictory,
   } = useEasterEggs()
 
@@ -540,7 +541,12 @@ export default function App() {
                   <ActiveGameComponent
                     projects={projects}
                     tools={tools}
-                    onVictory={activeGameTab?.gameId === 'snake' ? unlockSnakeVictory : undefined}
+                    /* Généralisé : chaque jeu décide QUAND appeler onVictory (grille
+                       parfaite Snake, partie parfaite Memory, palier Squirrel) ; ici
+                       on relie juste l'id de l'onglet au flag via unlockVictory. */
+                    onVictory={
+                      activeGameTab ? () => unlockVictory(activeGameTab.gameId) : undefined
+                    }
                   />
                 )}
 

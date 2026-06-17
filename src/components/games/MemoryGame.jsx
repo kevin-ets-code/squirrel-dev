@@ -92,7 +92,7 @@ function buildDeck(projects, tools) {
   return shuffle(cards)
 }
 
-export default function MemoryGame({ projects, tools }) {
+export default function MemoryGame({ projects, tools, onVictory }) {
   const [deck, setDeck] = useState(() => buildDeck(projects, tools))
   const [flipped, setFlipped] = useState([]) // indices retournés en cours (0, 1 ou 2)
   const [matched, setMatched] = useState({}) // pairId -> true
@@ -117,6 +117,14 @@ export default function MemoryGame({ projects, tools }) {
   const chronoRef = useRef(null) // intervalle du chronomètre
   const startRef = useRef(null) // timestamp du premier flip (null tant que pas démarré)
   const finalizedRef = useRef(false) // garde : la victoire n'est finalisée qu'une fois
+
+  // onVictory en ref (même pattern que SnakeGame) : appelée à la finalisation
+  // sans entrer dans les deps de l'effet, ce qui éviterait de relire un gameId
+  // périmé si la prop change d'identité entre deux renders.
+  const onVictoryRef = useRef(onVictory)
+  useEffect(() => {
+    onVictoryRef.current = onVictory
+  }, [onVictory])
 
   // Nettoie les timers en attente au démontage (évite un setState après unmount
   // et un chrono qui fuit).
@@ -173,7 +181,11 @@ export default function MemoryGame({ projects, tools }) {
     // Partie parfaite : zéro erreur (un seul coup par paire ⇒ moves === pairs) ET
     // temps total ≤ seuil dérivé. On lit finalMs (figé ici), PAS le state elapsedMs
     // (asynchrone). pairs > 0 garanti ici (won implique des paires).
-    setIsPerfect(moves === pairs && finalMs <= pairs * 2 * FLIP_MS * TOLERANCE)
+    const perfect = moves === pairs && finalMs <= pairs * 2 * FLIP_MS * TOLERANCE
+    setIsPerfect(perfect)
+    // Partie parfaite uniquement → débloque la page-récompense persistante
+    // (victory-memory.md). finalizedRef garantit l'appel une seule fois.
+    if (perfect) onVictoryRef.current?.()
 
     const movesBeat = bestMoves == null || moves < bestMoves
     const timeBeat = bestTime == null || finalMs < bestTime
