@@ -80,7 +80,9 @@
         "Import/export CSV et export RGPD"
       ],
       "kinds": ["app-native"],
-      "platforms": [],
+      "platforms": [
+        { "store": "Play Store" }
+      ],
       "repo": null
     },
     {
