@@ -12,7 +12,7 @@ Toutes les paires, zéro erreur, et plus vite que de raison. Tu n'as pas joué, 
 
 Soyons clairs : ça ne sert strictement à rien. C'est précisément ce qui rend la chose délicieuse. Quelque part, un coin de ton cerveau a décidé que mémoriser l'emplacement de cartes décoratives valait le coup. Il avait raison.
 
-Très peu de gens voient cet écran. Il a fallu trouver la console, réveiller un vieux code de triche, résoudre une énigme, débloquer le jeu — et *ensuite* le gagner à la perfection. Autant dire que tu fais partie d'un club assez vide.
+Très peu de gens voient cet écran. Il a fallu trouver la console, réveiller un vieux code de triche, résoudre une énigme, débloquer le jeu - et *ensuite* le gagner à la perfection. Autant dire que tu fais partie d'un club assez vide.
 
 Bienvenue dedans. 🎮
 

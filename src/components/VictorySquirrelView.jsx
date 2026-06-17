@@ -14,7 +14,7 @@ Pas toi.
 
 Soyons clairs : ça ne sert à rien, et c'est très bien comme ça. Personne ne décerne de médaille pour avoir esquivé dix mille points de cactus. À part cette page. Considère-la comme ta médaille.
 
-Et elle se mérite : trouver la console, réveiller un vieux code de triche, résoudre l'énigme, débloquer l'écureuil — puis tenir. Longtemps. Sans lâcher. Très peu de gens descendent aussi loin dans le terrier.
+Et elle se mérite : trouver la console, réveiller un vieux code de triche, résoudre l'énigme, débloquer l'écureuil - puis tenir. Longtemps. Sans lâcher. Très peu de gens descendent aussi loin dans le terrier.
 
 GG. 🎮
 

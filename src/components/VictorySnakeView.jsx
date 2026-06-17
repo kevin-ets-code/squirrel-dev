@@ -10,9 +10,9 @@ const VICTORY_MD = `# 🐍 Grille parfaite
 
 Quatre cents cases. Sans toucher un mur, sans te mordre la queue, jusqu'à ce qu'il ne reste plus une seule case libre. Le serpent n'avait littéralement plus nulle part où aller.
 
-Soyons clairs : ça ne sert strictement à rien. C'est bien pour ça que c'est savoureux. Remplir une grille entière demande une patience que la vie récompense rarement — sauf ici, sur cette page que presque personne ne verra.
+Soyons clairs : ça ne sert strictement à rien. C'est bien pour ça que c'est savoureux. Remplir une grille entière demande une patience que la vie récompense rarement - sauf ici, sur cette page que presque personne ne verra.
 
-Et la mériter prend du temps : trouver la console, réveiller un vieux code de triche, résoudre l'énigme, débloquer le serpent — puis ne plus le lâcher jusqu'à la toute dernière case. Autant dire que tu fais partie d'un club minuscule.
+Et la mériter prend du temps : trouver la console, réveiller un vieux code de triche, résoudre l'énigme, débloquer le serpent - puis ne plus le lâcher jusqu'à la toute dernière case. Autant dire que tu fais partie d'un club minuscule.
 
 GG. 🎮
 
