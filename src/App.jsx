@@ -18,6 +18,7 @@ import StatusBar from './components/StatusBar.jsx'
 import ProjectView from './components/ProjectView.jsx'
 import ToolView from './components/ToolView.jsx'
 import ReadmeView from './components/ReadmeView.jsx'
+import AboutView from './components/AboutView.jsx'
 import SettingsView from './components/SettingsView.jsx'
 import KonamiView from './components/KonamiView.jsx'
 import VictorySnakeView from './components/VictorySnakeView.jsx'
@@ -47,6 +48,7 @@ import { executeRequest, resolveExample } from './lib/api-engine.js'
 const GraphView = lazy(() => import('./components/GraphView.jsx'))
 
 const README_TAB = { id: 'readme', name: 'README', type: 'readme' }
+const ABOUT_TAB = { id: 'about', name: 'about-me', type: 'about' }
 const SETTINGS_TAB = { id: 'settings', name: 'Settings', type: 'settings' }
 const KONAMI_TAB = { id: 'konami', name: 'konami-code', type: 'konami' }
 const VICTORY_SNAKE_TAB = { id: 'victory-snake', name: 'victory-snake', type: 'victory-snake' }
@@ -113,6 +115,15 @@ export default function App() {
   const openReadme = useCallback(() => {
     setTabs((prev) => (prev.some((t) => t.id === 'readme') ? prev : [README_TAB, ...prev]))
     setActiveTab('readme')
+    setView('ide')
+    setSidebarOpen(false)
+    focusPanel()
+  }, [focusPanel])
+
+  // Ouvre l'onglet about-me.md (sans doublon) — même mécanisme qu'openReadme.
+  const openAbout = useCallback(() => {
+    setTabs((prev) => (prev.some((t) => t.id === 'about') ? prev : [...prev, ABOUT_TAB]))
+    setActiveTab('about')
     setView('ide')
     setSidebarOpen(false)
     focusPanel()
@@ -574,6 +585,7 @@ export default function App() {
               memoryVictory={memoryVictory}
               squirrelVictory={squirrelVictory}
               onOpenReadme={openReadme}
+              onOpenAbout={openAbout}
               onOpenProject={openProject}
               onOpenKonami={openKonami}
               onOpenVictorySnake={openVictorySnake}
@@ -634,6 +646,8 @@ export default function App() {
                 aria-labelledby={activeTab ? `tab-${activeTab}` : undefined}
               >
                 {activeTab === 'readme' && <ReadmeView profile={profile} readme={readme} />}
+
+                {activeTab === 'about' && <AboutView profile={profile} />}
 
                 {activeTab === 'settings' && <SettingsView />}
 
@@ -698,6 +712,7 @@ export default function App() {
         onOpenProject={openProject}
         onOpenTool={openTool}
         onOpenReadme={openReadme}
+        onOpenAbout={openAbout}
         onOpenSettings={openSettings}
         onToggleView={toggleView}
         onKonami={unlockKonamiWithToast}

@@ -552,9 +552,26 @@ tagline, localisation, email, liens GitHub/LinkedIn de la section « Me contacte
   "links": {
     "github": "https://github.com/toi",
     "linkedin": "https://www.linkedin.com/in/toi"
-  }
+  },
+  "experiences": [
+    {
+      "period": "2020 — aujourd'hui",
+      "role": "Ton poste actuel",
+      "context": "Entreprise / contexte",
+      "description": "Ce que tu y fais, en une phrase."
+    }
+  ]
 }
 ```
+
+#### Le champ `experiences[]` (timeline de la page À propos)
+
+`experiences` est un **tableau d'objets** `{ period, role, context, description }`
+qui alimente la **timeline en cartes** de la page **À propos** (`about-me.md`, voir
+plus bas). L'**ordre du tableau est respecté** (mets le plus récent en haut). Modifie
+la liste et les cartes se mettent à jour automatiquement — **rien n'est codé en
+dur** dans la page. Comme c'est dans `profile`, ces expériences sont aussi
+renvoyées par `GET /profile` (cf. « La vue API »). Absent ou `[]` = section masquée.
 
 ### Le contenu du README (objet `readme`)
 
@@ -577,6 +594,27 @@ niveau racine de `projects.json` (à côté de `profile` et `projects`) :
   `profile.email` et `profile.links`.
 - Le fichier livré contient des **placeholders entre crochets** dans `intro` et
   `approach` : remplace-les par tes vrais textes (le parcours n'est pas inventé).
+
+### La page À propos (`about-me.md`)
+
+À côté du README, l'explorateur propose une page **À propos** (`about-me.md`),
+**toujours visible** (fichier système, comme README). On l'ouvre aussi via la
+**palette de commandes** (Ctrl/Cmd+K → « Ouvrir À propos »). C'est une page de
+contenu classique : elle hérite du toggle **Preview / Raw** et du bouton copier
+(comme toutes les pages de l'éditeur). Le **Raw** est le markdown source de la page.
+
+Elle se compose de trois parties :
+
+1. **Carte d'identité** — en-tête scannable : le **nom** et le **rôle** sont
+   dérivés de `profile` (`name`, `role`), suivis d'une ligne méta de présentation
+   (localisation, années de pratique, outils phares).
+2. **Récit en prose** — un texte de présentation (markdown). Ce texte « vit dans
+   la page » (c'est de la présentation, pas de la donnée structurée) : pour le
+   modifier, voir les constantes `ABOUT_PROSE` / `ABOUT_IDENTITY` dans
+   [`src/lib/markdown.js`](src/lib/markdown.js).
+3. **Timeline d'expériences** — une **carte par expérience**, lue depuis
+   `profile.experiences` (voir « Le champ `experiences[]` »). **Aucune donnée en
+   dur** : modifie le tableau dans `projects.json` et les cartes suivent (même ordre).
 
 ### Bouton « copier l'email »
 

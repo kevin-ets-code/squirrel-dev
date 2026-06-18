@@ -8,7 +8,27 @@
     "links": {
       "github": "https://github.com/kevin-ets-code",
       "linkedin": "https://www.linkedin.com/in/kevin-nicolas201087/"
-    }
+    },
+    "experiences": [
+      {
+        "period": "2020 — aujourd'hui",
+        "role": "Développeur no-code / low-code",
+        "context": "Agence spécialisée",
+        "description": "Sites et applications pour de vrais clients, de la conception à la livraison."
+      },
+      {
+        "period": "2018 — 2020",
+        "role": "Débuts en autodidacte",
+        "context": "Formations & projets personnels",
+        "description": "Apprentissage du no-code / low-code par la pratique, en construisant mes propres projets."
+      },
+      {
+        "period": "2008 — 2020",
+        "role": "Restauration",
+        "context": "Du service à la direction de salle",
+        "description": "Douze ans de relation client, de gestion de la pression et du sens du détail."
+      }
+    ]
   },
   "readme": {
     "intro": "Vous avez un projet digital, site, app, marketplace, SaaS et vous ne savez pas par où commencer, quelle stack choisir, ou comment éviter les erreurs coûteuses ?\n\n Je suis Kevin, développeur No-Code/Low-Code.",

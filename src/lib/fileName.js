@@ -5,20 +5,22 @@
 //
 //   projet (type 'pro' / 'perso') & outil ('tool')   -> .json
 //       (leur vue Raw est le JSON de l'objet, cf. ProjectView / ToolView)
-//   pages système ('readme', 'konami', 'victory-snake', 'victory-memory',
-//       'victory-squirrel') -> .md  (leur vue Raw est du markdown source)
+//   pages système ('readme', 'about', 'konami', 'victory-snake',
+//       'victory-memory', 'victory-squirrel') -> .md  (leur vue Raw est du
+//       markdown source)
 //   jeu ('game')   -> .exe   (clin d'œil « exécutable » ; un jeu n'a pas de Raw)
 //   autres ('settings'…)   -> aucune extension
 //
 // `type`  = type de l'entité : project.type, ou tab.type ('tool', 'readme',
-//           'konami', 'victory-snake', 'victory-memory', 'victory-squirrel',
-//           'game', 'settings').
+//           'about', 'konami', 'victory-snake', 'victory-memory',
+//           'victory-squirrel', 'game', 'settings').
 // `base`  = nom nu, sans extension (project.name, label d'outil, label de jeu…).
 const EXT_BY_TYPE = {
   pro: 'json',
   perso: 'json',
   tool: 'json',
   readme: 'md',
+  about: 'md',
   konami: 'md',
   'victory-snake': 'md',
   'victory-memory': 'md',

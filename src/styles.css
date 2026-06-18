@@ -1312,6 +1312,69 @@ a.contact-link .contact-value {
 }
 
 /* ============================================================
+   Page À propos (about-me)
+   ============================================================ */
+/* Carte d'identité : en-tête scannable (nom/rôle/méta) au-dessus du récit. */
+.about-card {
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--bg-sidebar);
+  padding: 16px 18px;
+  margin-bottom: 8px;
+}
+.about-card h1 {
+  margin-top: 0;
+}
+.about-role {
+  color: var(--accent);
+  font-weight: 600;
+  margin-top: 2px;
+}
+.about-meta {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+
+/* Timeline d'expériences : cartes empilées (façon CV), une par expérience. */
+.about-experiences {
+  margin-top: 20px;
+}
+.exp-timeline {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.exp-card {
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 7px;
+  background: var(--bg-sidebar);
+  padding: 12px 16px;
+}
+.exp-period {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+.exp-role {
+  margin: 4px 0 0;
+}
+.exp-context {
+  color: var(--accent);
+  font-size: 14px;
+  margin: 2px 0 0;
+}
+.exp-description {
+  color: var(--fg);
+  margin: 8px 0 0;
+}
+
+/* ============================================================
    Vue Graph (React Flow)
    ============================================================ */
 .graph-view {

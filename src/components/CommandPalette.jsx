@@ -53,6 +53,7 @@ export default function CommandPalette({
   onOpenProject,
   onOpenTool,
   onOpenReadme,
+  onOpenAbout,
   onOpenSettings,
   onToggleView,
   onKonami,
@@ -67,6 +68,7 @@ export default function CommandPalette({
       onOpenProject={onOpenProject}
       onOpenTool={onOpenTool}
       onOpenReadme={onOpenReadme}
+      onOpenAbout={onOpenAbout}
       onOpenSettings={onOpenSettings}
       onToggleView={onToggleView}
       onKonami={onKonami}
@@ -85,6 +87,7 @@ function CommandPaletteInner({
   onOpenProject,
   onOpenTool,
   onOpenReadme,
+  onOpenAbout,
   onOpenSettings,
   onToggleView,
   onKonami,
@@ -117,6 +120,7 @@ function CommandPaletteInner({
 
     const actionItems = [
       { key: 'action:readme', label: 'Ouvrir le README', run: onOpenReadme },
+      { key: 'action:about', label: 'Ouvrir À propos', run: onOpenAbout },
       { key: 'action:settings', label: 'Ouvrir les paramètres', run: onOpenSettings },
       { key: 'action:view', label: 'Basculer la vue IDE / Graphe', run: onToggleView },
       {
@@ -127,7 +131,7 @@ function CommandPaletteInner({
     ].map((a) => ({ ...a, isAction: true, icon: <CommandIcon size={16} /> }))
 
     return { actionItems, projectItems, toolItems }
-  }, [projects, tools, onOpenProject, onOpenTool, onOpenReadme, onOpenSettings, onToggleView, theme, setTheme])
+  }, [projects, tools, onOpenProject, onOpenTool, onOpenReadme, onOpenAbout, onOpenSettings, onToggleView, theme, setTheme])
 
   // Query normalisée : trimmée, sans le préfixe « > » éventuel, en minuscules.
   // Sert au filtrage ET à la détection de la commande cachée « konami ».
