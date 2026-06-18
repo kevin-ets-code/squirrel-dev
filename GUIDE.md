@@ -432,6 +432,7 @@ et **Logs**. On bascule à la souris ou au clavier (flèches gauche/droite, Entr
 | `GET /tools` | Tous les outils. `?category=no-code` filtre par catégorie. |
 | `GET /tools/:id` | Un outil et les projets qui l'utilisent (id inconnu → `404`). |
 | `GET /profile` | Le profil (identité + liens). |
+| `GET /changelog` | L'historique des versions (antéchronologique). `?category=added\|changed\|fixed` ne garde que les versions concernées **et** ne renvoie que cette catégorie dans chaque entrée. |
 | `GET /stats` | Compteurs **calculés** : nb de projets, répartition pro/perso, nb d'outils, etc. |
 
 Les **codes d'erreur** : méthode autre que `GET` → `405`, route inconnue → `404`,
@@ -615,6 +616,62 @@ Elle se compose de trois parties :
 3. **Timeline d'expériences** — une **carte par expérience**, lue depuis
    `profile.experiences` (voir « Le champ `experiences[]` »). **Aucune donnée en
    dur** : modifie le tableau dans `projects.json` et les cartes suivent (même ordre).
+
+### Le changelog (`CHANGELOG.md` + `GET /changelog`)
+
+L'explorateur propose une page **CHANGELOG.md** (à côté de README et about-me),
+**toujours visible** (fichier système). On l'ouvre aussi via la **palette de
+commandes** (Ctrl/Cmd+K → « Ouvrir le CHANGELOG »). C'est une page de contenu
+classique : toggle **Preview / Raw** + bouton copier. Le **Raw** est le markdown
+source de la page.
+
+Le contenu vient d'un fichier **dédié** : [`src/changelog.json`](src/changelog.json)
+(distinct de `projects.json` — c'est de la donnée versionnée à part). C'est un
+**tableau, du plus récent au plus ancien** (la version la plus récente en haut du
+fichier). Chaque entrée :
+
+```json
+{
+  "version": "1.11.0",
+  "date": "2026-06-18",
+  "changes": {
+    "added": ["Une nouveauté"],
+    "changed": ["Un changement de comportement"],
+    "fixed": ["Une correction"]
+  }
+}
+```
+
+| Champ     | Type                 | Notes                                                                 |
+| --------- | -------------------- | --------------------------------------------------------------------- |
+| `version` | string (semver)      | `major.minor.patch`.                                                  |
+| `date`    | string **optionnel** | `AAAA-MM-JJ`. **À omettre si la date est inconnue** (pas de `null` ni de chaîne vide). |
+| `changes` | objet                | N'inclure **que les catégories non vides**.                           |
+
+**Catégories** reconnues : `added` (Ajouté), `changed` (Modifié), `fixed`
+(Corrigé). La liste est **extensible** : `removed`, `deprecated` et `security`
+sont déjà prévues (libellé + couleur), et **toute autre clé** s'affiche aussi
+(libellé dérivé, couleur neutre). Le rendu n'affiche **que les catégories
+présentes** : une catégorie absente ne crée aucune section.
+
+- **Preview** : un rendu **dense pleine largeur, façon journal** (groupé par
+  version). Chaque version affiche son numéro (et la date à droite si présente),
+  puis **une ligne par changement** : un **tag court** coloré (`ADD` = Ajouté,
+  `CHG` = Modifié, `FIX` = Corrigé, `RM`, `DEP`, `SEC`) suivi du texte. Une
+  **légende** en tête (tag = libellé) rappelle la signification ; elle ne liste
+  que les catégories réellement utilisées et s'enrichit toute seule. Survoler un
+  tag affiche aussi son libellé complet (tooltip).
+- **API** : `GET /changelog` renvoie l'enveloppe `{ count, results }` (comme
+  `/projects` et `/tools`). `?category=added` (ou `changed`/`fixed`/`removed`/
+  `deprecated`/`security`) ne garde que les versions contenant cette catégorie
+  **et** ne renvoie que cette catégorie dans chaque entrée. Toute **catégorie
+  connue** est acceptée même si aucune version ne l'utilise encore (réponse
+  `{ count: 0, results: [] }`, pas une erreur) ; seule une catégorie **inconnue**
+  renvoie `400`.
+
+Pour ajouter une version : ajoute un objet **en tête** du tableau dans
+`changelog.json`. La page et l'API se mettent à jour automatiquement, et le
+compteur de fichiers de l'explorateur suit.
 
 ### Bouton « copier l'email »
 

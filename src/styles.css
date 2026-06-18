@@ -39,6 +39,14 @@
      du bleu de code (suit le thème clair/sombre), distincte de --accent pour que
      GET reste reconnaissable. */
   --api-method-get: var(--code-blue);
+  /* Catégories du Changelog : un token par catégorie, dérivé de la palette
+     existante (pas de couleur arbitraire). Suivent le thème clair/sombre via
+     leurs variables sources. --changelog-default = repli neutre pour une
+     catégorie future inconnue (removed, deprecated, security…). */
+  --changelog-added: var(--status-green);
+  --changelog-changed: var(--api-method-get);
+  --changelog-fixed: var(--status-warn);
+  --changelog-default: var(--fg-muted);
   /* Icônes projets : couleurs FIXES, indépendantes de l'accent (ne bougent pas
      quand l'utilisateur change la couleur d'accent). */
   --icon-pro: #e0b341;          /* ambre (projets pro) */
@@ -876,6 +884,9 @@ textarea:focus-visible,
   font-size: 15px;
   line-height: 1.7;
 }
+.markdown-body.changelog {
+  max-width: 100%;
+}
 .markdown-body h1,
 .markdown-body h2,
 .markdown-body h3 {
@@ -1372,6 +1383,77 @@ a.contact-link .contact-value {
 .exp-description {
   color: var(--fg);
   margin: 8px 0 0;
+}
+
+/* ============================================================
+   Page CHANGELOG.md : rendu DENSE pleine largeur, façon sortie terminal
+   (groupé par version). Une ligne par changement = tag catégorie court + texte.
+   La couleur de catégorie vient de --cat-color (posée en inline par
+   ChangelogView, dérivée des tokens --changelog-*) ; --changelog-default sert de
+   repli pour une catégorie future inconnue. Aucune couleur en dur.
+   ============================================================ */
+/* Légende (tag = libellé), dérivée des catégories présentes. */
+.changelog-legend {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin: 4px 0 16px;
+}
+.changelog-legend-sep {
+  color: var(--border);
+}
+
+/* Liste de versions : pleine largeur, pas de carte encadrée. */
+.changelog-log {
+  display: flex;
+  flex-direction: column;
+}
+.changelog-entry {
+  padding: 10px 0;
+}
+.changelog-entry:not(:last-child) {
+  border-bottom: 1px solid var(--border-soft);
+}
+.changelog-entry-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+.changelog-version {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--accent);
+}
+.changelog-date {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+/* Une ligne de changement : tag aligné (largeur fixe) + texte en police courante. */
+.changelog-line {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 2px 0;
+  padding-left: 12px;
+  line-height: 1.4;
+}
+.changelog-text {
+  color: var(--fg);
+}
+/* Tag catégorie : monospace coloré, largeur fixe pour aligner les textes. */
+.changelog-tag {
+  flex: none;
+  display: inline-block;
+  min-width: 3ch;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--cat-color);
 }
 
 /* ============================================================

@@ -2,6 +2,7 @@
 // C'est la source du mode "Preview" (rendu via react-markdown).
 
 import { toolLabel } from './tools.js'
+import { categoryLabel } from './changelog.js'
 
 // Corps de la fiche (sections), hors en-tête.
 // Le titre, l'oneliner et la ligne de méta (type/année/status) sont rendus
@@ -115,6 +116,28 @@ export function aboutToMarkdown(profile) {
     }
   }
 
+  return lines.join('\n').trimEnd() + '\n'
+}
+
+// Source brute (vue Raw) de la page CHANGELOG, construite depuis changelog.json.
+// Itère sur les ENTRÉES (antéchronologiques) et, pour chacune, sur les CATÉGORIES
+// PRÉSENTES dans `changes` (jamais les trois en dur). Reflète fidèlement le
+// Preview (cartes par version). La `date` n'apparaît que si la clé est présente.
+export function changelogToMarkdown(changelog) {
+  const lines = []
+  lines.push('# Changelog')
+  lines.push('')
+  for (const entry of changelog || []) {
+    lines.push(`## ${entry.version}${entry.date ? ` — ${entry.date}` : ''}`)
+    lines.push('')
+    for (const [key, items] of Object.entries(entry.changes || {})) {
+      if (!Array.isArray(items) || items.length === 0) continue
+      lines.push(`### ${categoryLabel(key)}`)
+      lines.push('')
+      for (const item of items) lines.push(`- ${item}`)
+      lines.push('')
+    }
+  }
   return lines.join('\n').trimEnd() + '\n'
 }
 

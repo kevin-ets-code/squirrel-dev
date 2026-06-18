@@ -25,6 +25,7 @@
 // liste codée en dur ailleurs.
 
 import { buildTools, toolEntry, toolProjects } from './tools.js'
+import { KNOWN_CHANGELOG_CATEGORIES, filterByCategory } from './changelog.js'
 
 const notFound = (message) => ({ status: 404, body: { error: 'Not Found', message } })
 
@@ -149,6 +150,37 @@ export const API_RESOURCES = [
         description: 'Identité, rôle et liens de contact.',
         example: '/profile',
         handler: ({ data }) => ({ status: 200, body: data.profile }),
+      },
+    ],
+  },
+  {
+    resource: 'Changelog',
+    endpoints: [
+      {
+        id: 'changelog-list',
+        method: 'GET',
+        path: '/changelog',
+        label: 'Changelog',
+        description: 'Historique des versions (antéchronologique), filtrable par catégorie.',
+        query: [
+          {
+            param: 'category',
+            // Catégories CONNUES (pas seulement présentes) : une catégorie connue
+            // sans entrée reste valide (→ count: 0) ; seul l'inconnu donne 400.
+            values: KNOWN_CHANGELOG_CATEGORIES,
+            description: 'Filtre par catégorie de changement (added, changed, fixed…).',
+          },
+        ],
+        example: '/changelog',
+        handler: ({ query, data }) => {
+          // Filtre « réduit » : si une catégorie est demandée, chaque version ne
+          // garde que cette catégorie dans `changes` (version/date conservés).
+          const results =
+            query.category != null
+              ? filterByCategory(data.changelog, query.category)
+              : data.changelog
+          return { status: 200, body: { count: results.length, results } }
+        },
       },
     ],
   },

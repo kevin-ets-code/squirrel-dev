@@ -13,6 +13,7 @@ export default function Sidebar({
   squirrelVictory,
   onOpenReadme,
   onOpenAbout,
+  onOpenChangelog,
   onOpenProject,
   onOpenKonami,
   onOpenVictorySnake,
@@ -22,12 +23,12 @@ export default function Sidebar({
   const pro = projects.filter((p) => p.type === 'pro')
   const perso = projects.filter((p) => p.type === 'perso')
 
-  // Total de fichiers de l'explorateur = README + about-me + tous les projets
-  // (pro + perso), + konami-code.md une fois le mode Jeux débloqué, + une page
-  // victory-<jeu>.md par victoire-récompense atteinte (Snake / Memory / Squirrel).
+  // Total de fichiers de l'explorateur = README + about-me + CHANGELOG + tous les
+  // projets (pro + perso), + konami-code.md une fois le mode Jeux débloqué, + une
+  // page victory-<jeu>.md par victoire-récompense atteinte (Snake / Memory / Squirrel).
   // Dérivé de la source : un projet ajouté à projects.json est compté automatiquement.
   const fileCount =
-    2 +
+    3 +
     projects.length +
     (easterEggUnlocked ? 1 : 0) +
     (snakeVictory ? 1 : 0) +
@@ -74,6 +75,14 @@ export default function Sidebar({
         >
           <FileIcon color="var(--icon-system)" />
           <span className="file-name">{fileName('about', 'about-me')}</span>
+        </button>
+
+        <button
+          className={'file-row file-readme' + (activeTab === 'changelog' ? ' active' : '')}
+          onClick={onOpenChangelog}
+        >
+          <FileIcon color="var(--icon-system)" />
+          <span className="file-name">{fileName('changelog', 'changelog')}</span>
         </button>
 
         {easterEggUnlocked && (
