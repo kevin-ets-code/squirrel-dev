@@ -36,6 +36,10 @@ const uniqueStack = (data) =>
   [...new Set(data.projects.flatMap((p) => p.stack || []))].sort()
 const uniqueCategories = (data) =>
   [...new Set(buildTools(data.projects, data.tools).map((t) => t.category).filter(Boolean))].sort()
+// Slugs d'outils réellement présents dans les stacks des services (source du
+// filtre ?stack de /services → validation 400 gratuite). Dérivé, jamais en dur.
+const uniqueServicesStack = (data) =>
+  [...new Set((data.services || []).flatMap((s) => s.stack || []))].sort()
 
 export const API_RESOURCES = [
   {
@@ -180,6 +184,43 @@ export const API_RESOURCES = [
               ? filterByCategory(data.changelog, query.category)
               : data.changelog
           return { status: 200, body: { count: results.length, results } }
+        },
+      },
+    ],
+  },
+  {
+    resource: 'Services',
+    endpoints: [
+      {
+        id: 'services-list',
+        method: 'GET',
+        path: '/services',
+        label: 'Liste des services',
+        description: 'Toutes les prestations proposées, filtrables par outil.',
+        query: [
+          { param: 'stack', derive: uniqueServicesStack, description: 'Filtre par outil (id de stack).' },
+        ],
+        example: '/services',
+        handler: ({ query, data }) => {
+          let list = data.services || []
+          if (query.stack != null) list = list.filter((s) => (s.stack || []).includes(query.stack))
+          return { status: 200, body: { count: list.length, results: list } }
+        },
+      },
+      {
+        id: 'service-detail',
+        method: 'GET',
+        path: '/services/:id',
+        label: 'Détail d’un service',
+        description: 'Une prestation complète par son id (prestations, stack, projets liés…).',
+        params: [
+          { param: 'id', derive: (data) => (data.services || []).map((s) => s.id), description: 'Id d’un service.' },
+        ],
+        example: (data) => `/services/${data.services?.[0]?.id ?? ':id'}`,
+        handler: ({ params, data }) => {
+          const service = (data.services || []).find((s) => s.id === params.id)
+          if (!service) return notFound(`Aucun service avec l'id "${params.id}".`)
+          return { status: 200, body: service }
         },
       },
     ],

@@ -231,8 +231,9 @@ fichiers par la **liste de tous les outils** :
   automatiquement (rien en dur).
 
 > L'explorateur de fichiers suit la même logique : son libellé de section
-> **PROJETS** porte un compteur = **README + tous les projets** (pro + perso),
-> dérivé dynamiquement de `projects.json`.
+> **PAGES** porte un compteur = **les pages système** (README + about-me +
+> CHANGELOG + services) **+ tous les projets** (pro + perso), dérivé
+> dynamiquement.
 
 **Cliquer un outil ouvre un onglet** (comme un projet : fermable, pas de doublon)
 avec une fiche détail : breadcrumb `tools › nom`, le nom en titre, une méta
@@ -433,6 +434,8 @@ et **Logs**. On bascule à la souris ou au clavier (flèches gauche/droite, Entr
 | `GET /tools/:id` | Un outil et les projets qui l'utilisent (id inconnu → `404`). |
 | `GET /profile` | Le profil (identité + liens). |
 | `GET /changelog` | L'historique des versions (antéchronologique). `?category=added\|changed\|fixed` ne garde que les versions concernées **et** ne renvoie que cette catégorie dans chaque entrée. |
+| `GET /services` | Tous les services proposés. `?stack=webflow` filtre par outil (id de stack). |
+| `GET /services/:id` | Un service par son id (id inconnu → `404`). |
 | `GET /stats` | Compteurs **calculés** : nb de projets, répartition pro/perso, nb d'outils, etc. |
 
 Les **codes d'erreur** : méthode autre que `GET` → `405`, route inconnue → `404`,
@@ -440,11 +443,12 @@ valeur de filtre invalide → `400`. La réponse est toujours un JSON cohérent 
 erreurs aussi : `{ error, message }`).
 
 > **Forme des réponses-liste.** Les endpoints qui renvoient une **liste**
-> (`GET /projects` et ses variantes filtrées, `GET /tools`) répondent avec une
-> **enveloppe** `{ "count": N, "results": [ … ] }` — `count` est le nombre
-> d'éléments retournés (dérivé, donc cohérent avec les filtres). Les endpoints qui
-> renvoient un **objet unique** (`/projects/:id`, `/tools/:id`, `/profile`,
-> `/stats`) renvoient cet objet **tel quel**, sans enveloppe.
+> (`GET /projects` et ses variantes filtrées, `GET /tools`, `GET /services`)
+> répondent avec une **enveloppe** `{ "count": N, "results": [ … ] }` — `count`
+> est le nombre d'éléments retournés (dérivé, donc cohérent avec les filtres). Les
+> endpoints qui renvoient un **objet unique** (`/projects/:id`, `/tools/:id`,
+> `/services/:id`, `/profile`, `/stats`) renvoient cet objet **tel quel**, sans
+> enveloppe.
 
 #### La sidebar API (les endpoints)
 
@@ -672,6 +676,57 @@ présentes** : une catégorie absente ne crée aucune section.
 Pour ajouter une version : ajoute un objet **en tête** du tableau dans
 `changelog.json`. La page et l'API se mettent à jour automatiquement, et le
 compteur de fichiers de l'explorateur suit.
+
+### Les services (`services.md` + `GET /services`)
+
+L'explorateur propose une page **services.md** (à côté de README, about-me et
+CHANGELOG), **toujours visible** (fichier système). On l'ouvre aussi via la
+**palette de commandes** (Ctrl/Cmd+K → « Ouvrir les Services »). C'est une page de
+contenu classique : toggle **Preview / Raw** + bouton copier. Le **Raw** est le
+markdown source de la page.
+
+Le contenu vient d'un fichier **dédié** : [`src/services.json`](src/services.json)
+(distinct de `projects.json`). C'est un **tableau de services** ; chaque entrée :
+
+```json
+{
+  "id": "site-vitrine",
+  "title": "Site vitrine & présence web",
+  "tagline": "Un site vitrine professionnel, sur mesure et autonome.",
+  "description": "…",
+  "deliverables": ["Design sur mesure", "…"],
+  "stack": ["webflow", "claudecode"],
+  "forWho": "Indépendants, professions libérales, TPE/PME",
+  "relatedProjects": ["karine-de-leusse"]
+}
+```
+
+| Champ             | Type                | Notes                                                                        |
+| ----------------- | ------------------- | ---------------------------------------------------------------------------- |
+| `id`              | string              | Slug stable (sert d'`:id` à l'API).                                          |
+| `title`           | string              | Titre du service (titre de la carte).                                       |
+| `tagline`         | string              | Accroche courte (sous-titre).                                               |
+| `description`     | string              | Paragraphe de présentation.                                                 |
+| `deliverables`    | string[]            | Les prestations, affichées en liste.                                        |
+| `stack`           | string[] (ids)      | Ids d'outils (mêmes que `projects.json`). **Peut être vide** → section masquée. |
+| `forWho`          | string              | Cible (« Pour qui »).                                                        |
+| `relatedProjects` | string[] (ids)      | Ids de projets de `projects.json`. **Peut être vide** ; id inconnu **ignoré**. |
+
+- **Preview** : **une carte par service** — titre + accroche, description, « Pour
+  qui », prestations, puis (si renseignés) les **outils** en pastilles colorées et
+  les **projets liés** en boutons **cliquables** (ouvrent la fiche projet). Une
+  carte sans outils ni projets liés (ex. *Audit, conseil & accompagnement*) omet
+  simplement ces deux sections.
+- **API** : `GET /services` renvoie l'enveloppe `{ count, results }` (comme
+  `/projects` et `/tools`). `?stack=webflow` (ou tout autre id d'outil présent dans
+  les services) ne garde que les services utilisant cet outil ; un id d'outil
+  inconnu renvoie `400`. `GET /services/:id` renvoie le service brut (id inconnu →
+  `404`).
+
+Pour ajouter un service : ajoute un objet au tableau de `services.json` ; les
+outils dans `stack` doivent exister dans la map `tools` de `projects.json` (sinon
+l'id s'affiche tel quel) et les `relatedProjects` doivent pointer des ids de projets
+existants. La page et l'API se mettent à jour automatiquement.
 
 ### Bouton « copier l'email »
 

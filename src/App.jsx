@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect, useMemo, lazy, Suspense } from 'react'
 import data from './projects.json'
 import changelog from './changelog.json'
+import services from './services.json'
 import TitleBar from './components/TitleBar.jsx'
 import ActivityBar from './components/ActivityBar.jsx'
 import Sidebar from './components/Sidebar.jsx'
@@ -21,6 +22,7 @@ import ToolView from './components/ToolView.jsx'
 import ReadmeView from './components/ReadmeView.jsx'
 import AboutView from './components/AboutView.jsx'
 import ChangelogView from './components/ChangelogView.jsx'
+import ServicesView from './components/ServicesView.jsx'
 import SettingsView from './components/SettingsView.jsx'
 import KonamiView from './components/KonamiView.jsx'
 import VictorySnakeView from './components/VictorySnakeView.jsx'
@@ -52,6 +54,7 @@ const GraphView = lazy(() => import('./components/GraphView.jsx'))
 const README_TAB = { id: 'readme', name: 'README', type: 'readme' }
 const ABOUT_TAB = { id: 'about', name: 'about-me', type: 'about' }
 const CHANGELOG_TAB = { id: 'changelog', name: 'changelog', type: 'changelog' }
+const SERVICES_TAB = { id: 'services', name: 'services', type: 'services' }
 const SETTINGS_TAB = { id: 'settings', name: 'Settings', type: 'settings' }
 const KONAMI_TAB = { id: 'konami', name: 'konami-code', type: 'konami' }
 const VICTORY_SNAKE_TAB = { id: 'victory-snake', name: 'victory-snake', type: 'victory-snake' }
@@ -136,6 +139,15 @@ export default function App() {
   const openChangelog = useCallback(() => {
     setTabs((prev) => (prev.some((t) => t.id === 'changelog') ? prev : [...prev, CHANGELOG_TAB]))
     setActiveTab('changelog')
+    setView('ide')
+    setSidebarOpen(false)
+    focusPanel()
+  }, [focusPanel])
+
+  // Ouvre l'onglet services.md (sans doublon) — même mécanisme qu'openReadme.
+  const openServices = useCallback(() => {
+    setTabs((prev) => (prev.some((t) => t.id === 'services') ? prev : [...prev, SERVICES_TAB]))
+    setActiveTab('services')
     setView('ide')
     setSidebarOpen(false)
     focusPanel()
@@ -269,9 +281,9 @@ export default function App() {
 
   // Jeu de données interrogé par la fausse API (même source que tout le reste).
   const apiData = useMemo(
-    () => ({ profile, projects, tools, changelog }),
+    () => ({ profile, projects, tools, changelog, services }),
     [profile, projects, tools],
-  ) // `changelog` est un import de module (identité stable) → hors deps.
+  ) // `changelog` et `services` sont des imports de module (identité stable) → hors deps.
 
   // Exécute une requête : parse + route via le moteur, met à jour la réponse et
   // empile un log de session (plus récent en tête, borné à 50). Utilisé par le
@@ -602,6 +614,7 @@ export default function App() {
               onOpenReadme={openReadme}
               onOpenAbout={openAbout}
               onOpenChangelog={openChangelog}
+              onOpenServices={openServices}
               onOpenProject={openProject}
               onOpenKonami={openKonami}
               onOpenVictorySnake={openVictorySnake}
@@ -666,6 +679,15 @@ export default function App() {
                 {activeTab === 'about' && <AboutView profile={profile} />}
 
                 {activeTab === 'changelog' && <ChangelogView changelog={changelog} />}
+
+                {activeTab === 'services' && (
+                  <ServicesView
+                    services={services}
+                    tools={tools}
+                    projects={projects}
+                    onOpenProject={openProject}
+                  />
+                )}
 
                 {activeTab === 'settings' && <SettingsView />}
 
@@ -732,6 +754,7 @@ export default function App() {
         onOpenReadme={openReadme}
         onOpenAbout={openAbout}
         onOpenChangelog={openChangelog}
+        onOpenServices={openServices}
         onOpenSettings={openSettings}
         onToggleView={toggleView}
         onKonami={unlockKonamiWithToast}

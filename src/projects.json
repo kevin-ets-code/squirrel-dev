@@ -343,6 +343,22 @@
       "url": "https://www.figma.com",
       "logo": "/logos/figma.svg",
       "color": "#F24E1E"
+    },
+    "n8n": {
+      "label": "n8n",
+      "category": "infra",
+      "description": "Outil d'automatisation.",
+      "url": "https://n8n.io/",
+      "logo": "/logos/n8n.svg",
+      "color": "#EA4B71"
+    },
+    "make": {
+      "label": "make",
+      "category": "infra",
+      "description": "Outil d'automatisation.",
+      "url": "https://www.make.com/en",
+      "logo": "/logos/make.svg",
+      "color": "#6D00CC"
     }
   }
 }

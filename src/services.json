@@ -1,0 +1,63 @@
+[
+  {
+    "id": "site-vitrine",
+    "title": "Site vitrine & présence web",
+    "tagline": "Un site vitrine professionnel, sur mesure et autonome.",
+    "description": "Je conçois et développe des sites vitrines sur mesure : design personnalisé, responsive et optimisé pour le référencement. Selon le projet, je m'appuie sur Webflow ou sur un développement assisté par IA, pour un résultat adapté à vos besoins et facile à faire vivre.",
+    "deliverables": [
+      "Design sur mesure",
+      "Développement Webflow ou site sur mesure assisté par IA",
+      "SEO technique de base",
+      "Mise en ligne et nom de domaine",
+      "Formation à l'autonomie pour la mise à jour des contenus"
+    ],
+    "stack": ["webflow", "claudecode"],
+    "forWho": "Indépendants, professions libérales, TPE/PME",
+    "relatedProjects": ["karine-de-leusse"]
+  },
+  {
+    "id": "application",
+    "title": "Application web & mobile",
+    "tagline": "Des applications web et mobiles fonctionnelles, du concept au déploiement.",
+    "description": "Je conçois et développe des applications web et mobiles, de la réflexion fonctionnelle jusqu'à la mise en ligne. Base de données, authentification, interface soignée : je couvre l'ensemble de la chaîne pour livrer un produit utilisable.",
+    "deliverables": [
+      "Conception fonctionnelle et cadrage",
+      "Développement de l'application (web et/ou mobile)",
+      "Base de données et authentification (Supabase)",
+      "Déploiement et mise en production"
+    ],
+    "stack": ["flutter", "supabase", "claudecode"],
+    "forWho": "Startups, porteurs de projet, TPE",
+    "relatedProjects": ["bibliogo"]
+  },
+  {
+    "id": "automatisation-ia",
+    "title": "Automatisation & intégration IA",
+    "tagline": "Automatiser les tâches répétitives et intégrer l'IA dans vos outils.",
+    "description": "J'identifie les tâches chronophages de votre activité et je les automatise : connexions entre vos applications, workflows sur mesure, intégration de l'IA là où elle fait gagner du temps. L'objectif : vous libérer des opérations manuelles à faible valeur.",
+    "deliverables": [
+      "Audit des tâches automatisables",
+      "Mise en place de workflows et d'automatisations",
+      "Connexion entre vos outils existants",
+      "Intégration de fonctionnalités IA"
+    ],
+    "stack": ["n8n", "make", "claudecode"],
+    "forWho": "TPE/PME, agences, indépendants",
+    "relatedProjects": []
+  },
+  {
+    "id": "audit-conseil",
+    "title": "Audit, conseil & accompagnement",
+    "tagline": "Y voir clair sur vos outils, votre stack et la suite de votre projet.",
+    "description": "Je vous aide à faire les bons choix techniques : audit de l'existant, sélection des outils adaptés, cadrage de projet. Que vous démarriez ou que vous cherchiez à améliorer une solution en place, je vous accompagne pour avancer sereinement.",
+    "deliverables": [
+      "Audit de l'existant",
+      "Recommandation de stack et d'outils",
+      "Cadrage et feuille de route de projet",
+      "Accompagnement et formation"
+    ],
+    "stack": [],
+    "forWho": "Agences (sous-traitance), TPE/PME, porteurs de projet",
+    "relatedProjects": []
+  }
+]

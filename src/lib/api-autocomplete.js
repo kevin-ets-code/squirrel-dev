@@ -64,6 +64,7 @@ function dynamicChild(committedSegs) {
 function buildLabelMap(data) {
   const labels = {}
   for (const p of data.projects) labels[p.id] = p.title || p.name
+  for (const s of data.services || []) labels[s.id] = s.title || s.id
   // Les outils sont énumérés par le `params.derive` des endpoints ; pour le hint
   // on relit le même registre dérivé via le détail d'outil (label inclus).
   // On évite d'importer buildTools ici : le hint outil reste optionnel.
