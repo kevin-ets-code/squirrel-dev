@@ -1,5 +1,13 @@
 [
   {
+    "version": "1.12.0",
+    "date": "2026-06-18",
+    "changes": {
+      "fixed": ["style(services): cartes en grille 2 colonnes"],
+      "added": ["Changelog (page services.md + endpoint GET /services et GET /services/:id)"]
+    }
+  },
+  {
     "version": "1.11.0",
     "date": "2026-06-18",
     "changes": {
@@ -15,6 +23,7 @@
   {
     "version": "1.9.0",
     "changes": {
+      "changed": ["Ajout de l'autocomplétion pour les recherches API"],
       "added": ["Vue API (console, doc Swagger, logs)"]
     }
   },
@@ -69,6 +78,9 @@
   {
     "version": "1.0.0",
     "changes": {
+      "fixed": ["Modification des icons explorateurs.",
+                "Modification des icons onglets de navigations.",
+                "Icons : Choix des couleurs et extension"],
       "added": [
         "Création du portfolio (layout IDE : explorateur, onglets, breadcrumbs, activity bar, sidebar)"
       ]
