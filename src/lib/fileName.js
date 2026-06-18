@@ -34,3 +34,11 @@ export function fileName(type, base) {
   const ext = EXT_BY_TYPE[type]
   return ext ? `${base}.${ext}` : base
 }
+
+// Extension nue d'un type (sans le point), ou '' si le type n'en a pas
+// (ex. 'settings'). Même source que fileName (EXT_BY_TYPE) : la table reste la
+// SOURCE UNIQUE. Sert à dériver le rendu (couleur d'icône d'onglet) de
+// l'extension plutôt que d'une liste de types en dur.
+export function extension(type) {
+  return EXT_BY_TYPE[type] || ''
+}

@@ -712,11 +712,14 @@ Le contenu vient d'un fichier **dédié** : [`src/services.json`](src/services.j
 | `forWho`          | string              | Cible (« Pour qui »).                                                        |
 | `relatedProjects` | string[] (ids)      | Ids de projets de `projects.json`. **Peut être vide** ; id inconnu **ignoré**. |
 
-- **Preview** : **une carte par service** — titre + accroche, description, « Pour
-  qui », prestations, puis (si renseignés) les **outils** en pastilles colorées et
-  les **projets liés** en boutons **cliquables** (ouvrent la fiche projet). Une
-  carte sans outils ni projets liés (ex. *Audit, conseil & accompagnement*) omet
-  simplement ces deux sections.
+- **Preview** : les cartes sont disposées en **grille à 2 colonnes** sur desktop
+  (pour voir l'offre d'un coup) et repassent en **une seule colonne** sur tablette
+  et mobile (≤ 900px). **Une carte par service** — titre + accroche, description,
+  « Pour qui », prestations, puis (si renseignés) les **outils** en pastilles
+  colorées **cliquables** (ouvrent la fiche outil) et les **projets liés** en
+  boutons **cliquables** (ouvrent la fiche projet). Une carte sans outils ni
+  projets liés (ex. *Audit, conseil & accompagnement*) omet simplement ces deux
+  sections.
 - **API** : `GET /services` renvoie l'enveloppe `{ count, results }` (comme
   `/projects` et `/tools`). `?stack=webflow` (ou tout autre id d'outil présent dans
   les services) ne garde que les services utilisant cet outil ; un id d'outil
@@ -832,6 +835,14 @@ choisit manuellement, ce choix est persisté et on **arrête de suivre** le syst
 - Pour ajouter/retirer un accent : éditer `ACCENT_PRESETS` dans
   [`src/lib/preferences.jsx`](src/lib/preferences.jsx). Choisir des teintes de
   luminance proche du teal pour garder un bon contraste en clair **et** en sombre.
+- **Icône d'onglet dérivée de l'extension** : dans la barre d'onglets ouverts, la
+  couleur de l'icône de fichier se déduit de l'**extension** du fichier (calculée
+  par [`fileName.js`](src/lib/fileName.js)), pas d'une liste de types en dur. Les
+  `.md` (README, about-me, changelog, services… et **toute future page `.md`**)
+  prennent l'icône **système** (bleu `--icon-system`) ; les `.json` projets gardent
+  `--icon-pro` / `--icon-perso`. Le **fallback ultime** est `--icon-system` (var
+  garantie existante) : un type imprévu reste **visible** au lieu de disparaître.
+  Une nouvelle page hérite donc automatiquement de la bonne icône d'onglet.
 
 ### Pastilles d'outils en mode clair
 

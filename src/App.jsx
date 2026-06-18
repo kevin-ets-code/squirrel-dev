@@ -686,6 +686,7 @@ export default function App() {
                     tools={tools}
                     projects={projects}
                     onOpenProject={openProject}
+                    onOpenTool={openTool}
                   />
                 )}
 

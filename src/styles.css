@@ -1462,13 +1462,27 @@ a.contact-link .contact-value {
    100 % variables de thème → clair + sombre sans patch. La donnée vient de
    services.json (ServicesView).
    ============================================================ */
+/* Cartes en grille 2 colonnes sur desktop (repli 1 colonne sous 720px, cf.
+   media query plus bas). On élargit la page à 100 % (comme .changelog) pour
+   laisser la place aux deux colonnes — le défaut .markdown-body est à 820px. */
+.markdown-body.services {
+  max-width: 100%;
+}
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
 .services .service-card {
   border: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
   border-radius: 7px;
   background: var(--bg-sidebar);
-  padding: 16px 20px;
-  margin-top: 16px;
+  padding: 1rem;
+  margin: 0;
+}
+.services .service-card:hover {
+  border: 1px solid var(--accent);
 }
 .service-title {
   margin: 0;
@@ -1506,19 +1520,35 @@ a.contact-link .contact-value {
 .service-deliverables li {
   margin: 3px 0;
 }
-/* Outils : pastilles ToolLogo + label, en ligne, qui passent à la ligne. */
+/* Outils : pastilles ToolLogo + label CLIQUABLES (ouvrent la fiche outil),
+   en ligne, qui passent à la ligne. Hover/focus signalent le clic. */
 .service-stack {
   list-style: none;
-  margin: 0;
-  padding: 0;
+  margin: 0 !important;
+  padding: 0 !important;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 14px;
+  gap: 8px 12px;
 }
 .service-tool {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  font: inherit;
+  text-align: left;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+.service-tool:hover {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.service-tool:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 .service-tool-label {
   font-size: 14px;
@@ -1527,8 +1557,8 @@ a.contact-link .contact-value {
 /* Projets liés : chips cliquables (ouvrent le projet). */
 .service-related {
   list-style: none;
-  margin: 0;
-  padding: 0;
+  margin: 0 !important;
+  padding: 0 !important;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -2359,6 +2389,10 @@ a.contact-link .contact-value {
 /* Split des logs trop serré : le détail passe SOUS la liste (empilé), en
    restant dans la zone éditeur (jamais d'overlay / drawer plein écran). */
 @media (max-width: 900px) {
+  /* Services : tablette et plus étroit → cartes en liste (une colonne). */
+  .service-grid {
+    grid-template-columns: 1fr;
+  }
   .api-logs-view.has-detail {
     flex-direction: column;
   }

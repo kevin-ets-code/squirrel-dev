@@ -13,13 +13,14 @@ import { toolEntry } from '../lib/tools.js'
 //  - description ;
 //  - « Pour qui : … » ;
 //  - prestations (deliverables) en liste ;
-//  - stack en pastilles ToolLogo (logo/label/couleur résolus via `tools`) —
-//    SECTION OMISE si la stack est vide ;
+//  - stack en pastilles ToolLogo CLIQUABLES (ouvrent la fiche outil via
+//    onOpenTool ; logo/label/couleur résolus via `tools`) — SECTION OMISE si
+//    la stack est vide ;
 //  - projets liés en chips CLIQUABLES (ouvrent le projet via onOpenProject) —
 //    ids résolus via `projects`, inconnus IGNORÉS, SECTION OMISE si rien.
 //
 // Toute la donnée vient de services.json (prop) — rien en dur.
-export default function ServicesView({ services = [], tools = {}, projects = [], onOpenProject }) {
+export default function ServicesView({ services = [], tools = {}, projects = [], onOpenProject, onOpenTool }) {
   const source = servicesToMarkdown(services, tools, projects)
 
   const breadcrumb = (
@@ -34,73 +35,81 @@ export default function ServicesView({ services = [], tools = {}, projects = [],
     <div className="markdown-body services">
       <h1>Services</h1>
 
-      {services.map((service) => {
-        const stack = Array.isArray(service.stack) ? service.stack : []
-        const related = (Array.isArray(service.relatedProjects) ? service.relatedProjects : [])
-          .map((id) => projects.find((p) => p.id === id))
-          .filter(Boolean)
+      <div className="service-grid">
+        {services.map((service) => {
+          const stack = Array.isArray(service.stack) ? service.stack : []
+          const related = (Array.isArray(service.relatedProjects) ? service.relatedProjects : [])
+            .map((id) => projects.find((p) => p.id === id))
+            .filter(Boolean)
 
-        return (
-          <section className="service-card" key={service.id}>
-            <h2 className="service-title">{service.title}</h2>
-            {service.tagline && <p className="service-tagline">{service.tagline}</p>}
-            {service.description && <p className="service-description">{service.description}</p>}
+          return (
+            <section className="service-card" key={service.id}>
+              <h2 className="service-title">{service.title}</h2>
+              {service.tagline && <p className="service-tagline">{service.tagline}</p>}
+              {service.description && <p className="service-description">{service.description}</p>}
 
-            {service.forWho && (
-              <p className="service-forwho">
-                <span className="service-forwho-label">Pour qui :</span> {service.forWho}
-              </p>
-            )}
+              {service.forWho && (
+                <p className="service-forwho">
+                  <span className="service-forwho-label">Pour qui :</span> {service.forWho}
+                </p>
+              )}
 
-            {Array.isArray(service.deliverables) && service.deliverables.length > 0 && (
-              <>
-                <h3 className="service-subhead">Prestations</h3>
-                <ul className="service-deliverables">
-                  {service.deliverables.map((d, i) => (
-                    <li key={i}>{d}</li>
-                  ))}
-                </ul>
-              </>
-            )}
+              {Array.isArray(service.deliverables) && service.deliverables.length > 0 && (
+                <>
+                  <h3 className="service-subhead">Prestations</h3>
+                  <ul className="service-deliverables">
+                    {service.deliverables.map((d, i) => (
+                      <li key={i}>{d}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
 
-            {stack.length > 0 && (
-              <>
-                <h3 className="service-subhead">Outils</h3>
-                <ul className="service-stack">
-                  {stack.map((id) => {
-                    const t = toolEntry(tools, id)
-                    return (
-                      <li className="service-tool" key={id}>
-                        <ToolLogo logo={t.logo} color={t.color} label={t.label} shape="square" size={20} />
-                        <span className="service-tool-label">{t.label}</span>
+              {stack.length > 0 && (
+                <>
+                  <h3 className="service-subhead">Outils</h3>
+                  <ul className="service-stack">
+                    {stack.map((id) => {
+                      const t = toolEntry(tools, id)
+                      return (
+                        <li key={id}>
+                          <button
+                            type="button"
+                            className="service-tool"
+                            onClick={() => onOpenTool?.(id)}
+                          >
+                            <ToolLogo logo={t.logo} color={t.color} label={t.label} shape="square" size={20} />
+                            <span className="service-tool-label">{t.label}</span>
+                          </button>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </>
+              )}
+
+              {related.length > 0 && (
+                <>
+                  <h3 className="service-subhead">Projets liés</h3>
+                  <ul className="service-related">
+                    {related.map((p) => (
+                      <li key={p.id}>
+                        <button
+                          type="button"
+                          className="service-related-chip"
+                          onClick={() => onOpenProject?.(p)}
+                        >
+                          {p.name}
+                        </button>
                       </li>
-                    )
-                  })}
-                </ul>
-              </>
-            )}
-
-            {related.length > 0 && (
-              <>
-                <h3 className="service-subhead">Projets liés</h3>
-                <ul className="service-related">
-                  {related.map((p) => (
-                    <li key={p.id}>
-                      <button
-                        type="button"
-                        className="service-related-chip"
-                        onClick={() => onOpenProject?.(p)}
-                      >
-                        {p.name}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
-          </section>
-        )
-      })}
+                    ))}
+                  </ul>
+                </>
+              )}
+            </section>
+          )
+        })}
+      </div>
     </div>
   )
 

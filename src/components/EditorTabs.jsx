@@ -1,29 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
 import { FileIcon, CloseIcon, GearIcon, GamepadIcon } from './icons.jsx'
 import ToolLogo from './ToolLogo.jsx'
-import { fileName } from '../lib/fileName.js'
+import { fileName, extension } from '../lib/fileName.js'
 
-// Pages « système » de l'explorateur (README, about-me, konami-code, et toute
-// page victory-<jeu>) : elles partagent la couleur fixe --icon-system, comme dans
-// la Sidebar. Dérivé (pas une liste en dur) pour que tout futur type 'victory-x'
-// hérite automatiquement de la couleur système — sinon il retomberait sur une
-// var CSS --icon-victory-x inexistante (l'icône perdrait sa couleur).
-// NB : asymétrie assumée avec fileName.js, qui garde une table explicite
-// EXT_BY_TYPE. Les deux répondent à des besoins distincts (couleur système ici,
-// extension là) ; ne pas « harmoniser » par réflexe — il n'y a rien à réparer
-// côté fileName.js, sa table est la source unique lisible des extensions.
-const isSystemTabType = (type) =>
-  type === 'readme' || type === 'about' || type === 'konami' || type.startsWith('victory-')
-
-// Couleur de l'icône d'un onglet selon son type (alignée sur la Sidebar) :
-// - pages système -> --icon-system (bleu fixe) ;
-// - jeu -> --icon-perso (inchangé) ;
-// - sinon (projets 'pro' / 'perso') -> --icon-<type>.
+// Couleur de l'icône d'un onglet, DÉRIVÉE DE L'EXTENSION du fichier (source
+// unique : EXT_BY_TYPE via fileName.js) plutôt que d'une liste de types en dur —
+// ainsi toute future page hérite automatiquement de la bonne icône :
+// - 'game' (.exe, branche GamepadIcon) -> --icon-perso (inchangé) ;
+// - extension .md (README, about-me, changelog, services, konami-code,
+//   victory-*, et toute future page .md) -> --icon-system (bleu fixe) ;
+// - projets .json ('pro' / 'perso') -> --icon-<type> (--icon-pro / --icon-perso) ;
+// - FALLBACK ULTIME -> --icon-system : var CSS garantie existante. Un type futur
+//   imprévu retombe sur une icône VISIBLE au lieu d'une var inexistante (qui
+//   rendait l'icône invisible) — le piège est désarmé, pas déplacé.
 // (Les types 'tool' et 'settings' ont leur propre rendu et n'utilisent pas ceci.)
 function tabIconColor(type) {
-  if (isSystemTabType(type)) return 'var(--icon-system)'
   if (type === 'game') return 'var(--icon-perso)'
-  return `var(--icon-${type})`
+  if (extension(type) === 'md') return 'var(--icon-system)'
+  if (type === 'pro' || type === 'perso') return `var(--icon-${type})`
+  return 'var(--icon-system)'
 }
 
 // Barre d'onglets — pattern WAI-ARIA Tabs.
