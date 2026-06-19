@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import ToolLogo from './ToolLogo.jsx'
 import Folder from './Folder.jsx'
-import { buildTools, toolTabId } from '../lib/tools.js'
+import { buildTools, toolTabId, toolCategoryLabel } from '../lib/tools.js'
 import { fileName } from '../lib/fileName.js'
 
 // Libellé du groupe fourre-tout pour les outils sans category.
@@ -45,7 +45,7 @@ export default function ToolsPanel({ projects, tools, activeTab, onOpenTool }) {
       </div>
       <div className="sidebar-tree">
         {groups.map((g) => (
-          <Folder key={g.category} label={g.category} count={g.tools.length}>
+          <Folder key={g.category} label={toolCategoryLabel(g.category)} count={g.tools.length}>
             {g.tools.map((t) => (
               <button
                 key={t.id}

@@ -1,6 +1,7 @@
 import ContentPage from './ContentPage.jsx'
 import ToolLogo from './ToolLogo.jsx'
 import { fileName } from '../lib/fileName.js'
+import { toolCategoryLabel } from '../lib/tools.js'
 
 // Fiche détail d'un outil, ouverte en onglet dans l'éditeur.
 // Reçoit l'outil résolu { id, label, description, url, logo, color } : l'id sert à
@@ -11,9 +12,11 @@ export default function ToolView({ tool, projects, onOpenProject }) {
   const count = projects.length
   const hasDescription = typeof description === 'string' && description.trim() !== ''
   const hasUrl = typeof url === 'string' && url.trim() !== ''
-  // Segment intermédiaire = catégorie de l'outil ; cohérent avec le groupe
-  // « Autres » du panneau Outils quand category est vide/absent.
-  const categoryCrumb = category && category.trim() !== '' ? category : 'Autres'
+  // Segment intermédiaire = catégorie de l'outil (libellé d'affichage dérivé de
+  // l'id minuscule) ; cohérent avec le groupe « Autres » du panneau Outils quand
+  // category est vide/absent.
+  const categoryCrumb =
+    category && category.trim() !== '' ? toolCategoryLabel(category) : 'Autres'
 
   const breadcrumb = (
     <>

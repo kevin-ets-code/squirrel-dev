@@ -3,6 +3,24 @@
 
 export const TOOL_TAB_PREFIX = 'tool:'
 
+// Catégories d'outils = identifiants techniques EN MINUSCULES (slugs) dans
+// tools.json — même convention que les catégories du changelog. L'affichage est
+// dérivé via toolCategoryLabel : la donnée porte l'id, jamais le libellé présenté.
+export const TOOL_CATEGORY_LABELS = {
+  'no-code': 'No-code',
+  frontend: 'Frontend',
+  backend: 'Backend',
+  infra: 'Infra',
+  design: 'Design',
+}
+
+// Libellé d'affichage d'une catégorie d'outil : connue → table ; inconnue →
+// fallback (première lettre capitalisée). Ne casse jamais sur une valeur future.
+export function toolCategoryLabel(key) {
+  if (!key) return key
+  return TOOL_CATEGORY_LABELS[key] || key.charAt(0).toUpperCase() + key.slice(1)
+}
+
 export function toolTabId(name) {
   return TOOL_TAB_PREFIX + name
 }

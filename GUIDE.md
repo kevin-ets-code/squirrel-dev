@@ -265,13 +265,13 @@ Deux endroits travaillent ensemble :
    {
      "flutter": {
        "label": "Flutter",
-       "category": "Frontend",
+       "category": "frontend",
        "description": "Framework UI multiplateforme de Google (Dart).",
        "url": "https://flutter.dev",
        "logo": "/logos/flutter.svg",
        "color": "#02569B"
      },
-     "css": { "label": "CSS", "category": "Frontend", "description": "", "url": "", "logo": "", "color": "" }
+     "css": { "label": "CSS", "category": "frontend", "description": "", "url": "", "logo": "", "color": "" }
    }
    ```
 
@@ -279,7 +279,7 @@ Deux endroits travaillent ensemble :
    | ------------- | -------------------------------------------------------------------- |
    | _(la clé)_    | **id** de l'outil (slug minuscule). C'est lui qu'on met dans `stack`.|
    | `label`       | **Obligatoire.** Nom affiché partout (chips, graphe, fiche outil).   |
-   | `category`    | Optionnel. Nom de la catégorie de regroupement dans le **panneau Outils** (dossier repliable). Absent/vide = groupe **« Autres »**. |
+   | `category`    | Optionnel. **Id minuscule** (slug) de la catégorie de regroupement dans le **panneau Outils** (dossier repliable) ; le **libellé affiché** est dérivé (ex. `no-code` → « No-code »). Absent/vide = groupe **« Autres »**. |
    | `description` | Optionnel. Affiché en section « Description » de la fiche outil (vide/absent = masqué). |
    | `url`         | Optionnel. Affiché en chip « Site officiel ↗ » sur la fiche outil.   |
    | `logo`        | Optionnel. Chemin du logo SVG (voir « Logos » ci-dessous).          |
@@ -326,7 +326,7 @@ la console.
 1. Crée une entrée dans [`src/tools.json`](src/tools.json) avec un **id** unique et au moins un `label`
    (et, si tu as le logo, dépose `public/logos/rust.svg` puis renseigne `logo`/`color`) :
    ```json
-   "rust": { "label": "Rust", "category": "Backend", "description": "", "url": "", "logo": "/logos/rust.svg", "color": "#DEA584" }
+   "rust": { "label": "Rust", "category": "backend", "description": "", "url": "", "logo": "/logos/rust.svg", "color": "#DEA584" }
    ```
 2. Référence cet **id** dans le `stack` des projets concernés (dans `projects.json`) :
    ```json
