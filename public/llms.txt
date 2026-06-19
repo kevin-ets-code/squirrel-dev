@@ -1,0 +1,19 @@
+# Kevin NICOLAS — Développeur no-code / low-code
+
+Portfolio de Kevin NICOLAS, présenté comme un éditeur de code (esthétique VS Code). Sites vitrines et applications sur-mesure, en no-code / low-code. Six ans de pratique (dont quatre en agence spécialisée), deux ans d'usage d'outils IA comme levier de compétence, après une transition autodidacte depuis douze ans en hôtellerie.
+
+Site : [squirrel-dev.vercel.app](https://squirrel-dev.vercel.app)
+
+## Contenu du site
+
+Application monopage organisée comme un IDE. Les sections accessibles incluent :
+
+- README et page « À propos » (parcours, approche, expérience)
+- Les projets réalisés en no-code / low-code
+- Les outils et technologies de la stack
+- Une vue Graph reliant projets et outils
+- Une API REST fictive en lecture seule exposant les données du portfolio (projets, outils, profil, statistiques)
+
+## Approche
+
+Pratique revendiquée du « bon outil pour chaque projet », sans opposition artificielle entre code et no-code. L'IA est utilisée comme pair dirigé et levier de compétence, pas comme raccourci de livraison.
