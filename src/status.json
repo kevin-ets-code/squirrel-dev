@@ -1,0 +1,11 @@
+{
+  "components": [
+    { "id": "ide-engine", "name": "IDE Engine", "status": "operational", "uptime": 99.98 },
+    { "id": "graph-renderer", "name": "Graph Renderer", "status": "operational", "uptime": 99.95 },
+    { "id": "api-gateway", "name": "API Gateway", "status": "operational", "uptime": 99.99 },
+    { "id": "command-palette", "name": "Command Palette Service", "status": "operational", "uptime": 99.97 },
+    { "id": "search-index", "name": "Search Index", "status": "operational", "uptime": 99.96 },
+    { "id": "arcade-subsystem", "name": "Arcade Subsystem", "dynamic": "arcade" }
+  ],
+  "incidents": []
+}

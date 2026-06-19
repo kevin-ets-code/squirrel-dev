@@ -68,6 +68,18 @@
   --status-green: #3fb950;      /* En ligne */
   --status-warn: #d8a128;       /* En cours / En test / Prototype */
   --status-gray: #8a8a8a;       /* Archivé */
+  --status-red: #d9534f;        /* panne majeure (status page) */
+
+  /* Statuts de la status page (status.json) : un token par statut, dérivé de la
+     palette ci-dessus (pas de couleur arbitraire). Set EXTENSIBLE : ajouter un
+     statut = un token --status-<key> ici + une entrée dans statusPage.js.
+     --status-default = repli neutre pour un statut inconnu. */
+  --status-operational: var(--status-green);
+  --status-degraded: var(--status-warn);
+  --status-partial-outage: #e08c3a;   /* orange, entre warn et red */
+  --status-major-outage: var(--status-red);
+  --status-maintenance: var(--api-method-get);
+  --status-default: var(--fg-muted);
 
   /* Bordures */
   --border: #3c3c3c;
@@ -1582,6 +1594,165 @@ a.contact-link .contact-value {
 }
 
 /* ============================================================
+   Page status.json (fausse status page)
+   La couleur de chaque badge/bandeau vient de --status-color (token de statut
+   passé en inline style via statusColorVar) ; le SENS passe par le texte, pas
+   seulement la couleur (a11y).
+   ============================================================ */
+.markdown-body.status {
+  max-width: 100%;
+}
+/* Bandeau global agrégé */
+.status-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 7px;
+  border: 1px solid color-mix(in srgb, var(--status-color) 45%, var(--border));
+  background: color-mix(in srgb, var(--status-color) 10%, transparent);
+}
+.status-banner-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--status-color);
+  flex: none;
+}
+.status-banner-label {
+  font-weight: 600;
+  color: var(--fg-heading);
+}
+.status-subhead {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--fg-muted);
+  margin: 24px 0 8px;
+}
+/* Liste des composants */
+.status-components {
+  list-style: none;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  overflow: hidden;
+}
+.status-component {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  margin: 0 !important;
+  background: var(--bg-sidebar);
+}
+.status-component + .status-component {
+  border-top: 1px solid var(--border-soft);
+}
+.status-component-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.status-component-name {
+  color: var(--fg);
+}
+/* Barre d'historique « 90 jours » (décorative) + légende.
+   NB : préfixe `uptime-bar` et NON `status-bar` — `.status-bar` est déjà la barre
+   de pied de page de l'app (StatusBar.jsx, fond accent + hauteur fixe) ; réutiliser
+   ce nom faisait fuiter ce fond/hauteur ici (track écrasé à 0, légende centrée). */
+.uptime-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.uptime-bar-track {
+  display: flex;
+  gap: 2px;
+  height: 26px;
+}
+.uptime-bar-seg {
+  /* flex-basis 0 → les segments se partagent la largeur et se compressent sans
+     jamais déborder, quelle que soit la largeur de la ligne. */
+  flex: 1 1 0;
+  min-width: 0;
+  background: var(--seg-color);
+  border-radius: 1px;
+}
+.uptime-bar-legend {
+  display: flex;
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+.uptime-bar-legend > span {
+  flex: 1;
+  white-space: nowrap;
+}
+.uptime-bar-legend-start {
+  text-align: left;
+}
+.uptime-bar-legend-uptime {
+  text-align: center;
+  color: var(--fg);
+}
+.uptime-bar-legend-end {
+  text-align: right;
+}
+.status-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--status-color);
+  background: color-mix(in srgb, var(--status-color) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--status-color) 45%, transparent);
+  border-radius: 20px;
+  padding: 2px 10px;
+  white-space: nowrap;
+}
+/* Incidents */
+.status-incidents-empty {
+  color: var(--fg-muted);
+  font-style: italic;
+  margin: 6px 0 0;
+}
+.status-incidents {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.status-incident {
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--bg-sidebar);
+  padding: 12px 14px;
+}
+.status-incident-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.status-incident-title {
+  font-weight: 600;
+  color: var(--fg-heading);
+}
+.status-incident-age {
+  display: block;
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-top: 4px;
+}
+.status-incident-resolution {
+  color: var(--fg);
+  margin: 8px 0 0;
+}
+
+/* ============================================================
    Vue Graph (React Flow)
    ============================================================ */
 .graph-view {
@@ -2392,6 +2563,11 @@ a.contact-link .contact-value {
   /* Services : tablette et plus étroit → cartes en liste (une colonne). */
   .service-grid {
     grid-template-columns: 1fr;
+  }
+  /* Status : barre 90 j → gap plus serré pour garder des segments lisibles. */
+  .uptime-bar-track {
+    gap: 1px;
+    height: 22px;
   }
   .api-logs-view.has-detail {
     flex-direction: column;

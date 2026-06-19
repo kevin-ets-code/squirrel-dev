@@ -3,10 +3,11 @@
     "version": "1.12.1",
     "date": "2026-06-18",
     "changes": {
-      "changed" : [
-          "refactor(pages): changelog et services en .json avec Raw JSON",
-          "extension .json (données structurées) au lieu de .md",
-                "Raw affiche le JSON source (même rendu que les fiches projet)"
+      "changed": [
+        "refactor(icons): forme d'icône dérivée de l'extension",
+        "refactor(pages): changelog et services en .json avec Raw JSON",
+        "extension .json (données structurées) au lieu de .md",
+        "Raw affiche le JSON source (même rendu que les fiches projet)"
       ]
     }
   },
@@ -14,84 +15,114 @@
     "version": "1.12.0",
     "date": "2026-06-18",
     "changes": {
-      "fixed": ["style(services): cartes en grille 2 colonnes"],
-      "added": ["Changelog (page services.md + endpoint GET /services et GET /services/:id)"]
+      "fixed": [
+        "style(services): cartes en grille 2 colonnes"
+      ],
+      "added": [
+        "Changelog (page services.md + endpoint GET /services et GET /services/:id)"
+      ]
     }
   },
   {
     "version": "1.11.0",
     "date": "2026-06-18",
     "changes": {
-      "added": ["Changelog (page CHANGELOG.md + endpoint GET /changelog)"]
+      "added": [
+        "Changelog (page CHANGELOG.md + endpoint GET /changelog)"
+      ]
     }
   },
   {
     "version": "1.10.0",
     "changes": {
-      "added": ["Page À propos (about-me.md, timeline d'expériences)"]
+      "added": [
+        "Page À propos (about-me.md, timeline d'expériences)"
+      ]
     }
   },
   {
     "version": "1.9.0",
     "changes": {
-      "changed": ["Ajout de l'autocomplétion pour les recherches API"],
-      "added": ["Vue API (console, doc Swagger, logs)"]
+      "changed": [
+        "Ajout de l'autocomplétion pour les recherches API"
+      ],
+      "added": [
+        "Vue API (console, doc Swagger, logs)"
+      ]
     }
   },
   {
     "version": "1.8.0",
     "changes": {
-      "added": ["Polish UI (toasts, thèmes, accents)"]
+      "added": [
+        "Polish UI (toasts, thèmes, accents)"
+      ]
     }
   },
   {
     "version": "1.7.0",
     "changes": {
-      "added": ["Vue Graph"]
+      "added": [
+        "Vue Graph"
+      ]
     }
   },
   {
     "version": "1.6.0",
     "changes": {
-      "added": ["Vue Source Control"]
+      "added": [
+        "Vue Source Control"
+      ]
     }
   },
   {
     "version": "1.5.0",
     "changes": {
-      "added": ["Recherche dans l'activity bar"]
+      "added": [
+        "Recherche dans l'activity bar"
+      ]
     }
   },
   {
     "version": "1.4.0",
     "changes": {
-      "added": ["Command palette (Ctrl+K, fuzzy search)"]
+      "added": [
+        "Command palette (Ctrl+K, fuzzy search)"
+      ]
     }
   },
   {
     "version": "1.3.0",
     "changes": {
-      "added": ["Système d'outils (stack par slugs, map tools)"]
+      "added": [
+        "Système d'outils (stack par slugs, map tools)"
+      ]
     }
   },
   {
     "version": "1.2.0",
     "changes": {
-      "added": ["Projets (projects.json, panneau Projects)"]
+      "added": [
+        "Projets (projects.json, panneau Projects)"
+      ]
     }
   },
   {
     "version": "1.1.0",
     "changes": {
-      "added": ["Page paramètres"]
+      "added": [
+        "Page paramètres"
+      ]
     }
   },
   {
     "version": "1.0.0",
     "changes": {
-      "fixed": ["Modification des icons explorateurs.",
-                "Modification des icons onglets de navigations.",
-                "Icons : Choix des couleurs et extension"],
+      "fixed": [
+        "Modification des icons explorateurs.",
+        "Modification des icons onglets de navigations.",
+        "Icons : Choix des couleurs et extension"
+      ],
       "added": [
         "Création du portfolio (layout IDE : explorateur, onglets, breadcrumbs, activity bar, sidebar)"
       ]

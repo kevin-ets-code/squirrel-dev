@@ -160,8 +160,8 @@ gouttière/coloration et un **bouton copier** en vue Raw. Le mécanisme est
 
 - **Preview** : le rendu lisible (markdown stylé, badges, etc.).
 - **Raw** : la **source brute** de la page, selon son format :
-  - **données structurées** — **projet**, **outil**, **changelog** et **services** →
-    **JSON** source (coloré, avec numéros de ligne) ;
+  - **données structurées** — **projet**, **outil**, **changelog**, **services** et
+    **status** → **JSON** source (coloré, avec numéros de ligne) ;
   - **prose** — **README** et **À propos** → le **markdown source** (ce n'est pas
     du JSON) ;
   - une future page d'un autre format afficherait **sa** source brute.
@@ -234,7 +234,7 @@ fichiers par la **liste de tous les outils** :
 
 > L'explorateur de fichiers suit la même logique : son libellé de section
 > **PAGES** porte un compteur = **les pages système** (README + about-me +
-> CHANGELOG + services) **+ tous les projets** (pro + perso), dérivé
+> CHANGELOG + services + status) **+ tous les projets** (pro + perso), dérivé
 > dynamiquement.
 
 **Cliquer un outil ouvre un onglet** (comme un projet : fermable, pas de doublon)
@@ -400,7 +400,8 @@ et **Logs**. On bascule à la souris ou au clavier (flèches gauche/droite, Entr
   - Avant la première requête, un écran d'accueil invite à essayer `GET /projects`.
 - **Documentation** — la doc de l'API dans un rendu **inspiré de Swagger UI** :
   un encart en tête rappelle que l'API est **en lecture seule** (`GET` uniquement) ;
-  les endpoints sont groupés par ressource (Projects / Tools / Profile / Stats),
+  les endpoints sont groupés par ressource (Projects / Tools / Profile / Changelog /
+  Services / Status / Stats),
   chaque endpoint étant une **carte dépliable** légèrement **teintée par sa méthode**
   (badge de méthode, chemin, description). Au dépli, deux bandes distinctes :
   - **Paramètres** : chaque paramètre avec son tag **requis** (segment de chemin
@@ -438,6 +439,7 @@ et **Logs**. On bascule à la souris ou au clavier (flèches gauche/droite, Entr
 | `GET /changelog` | L'historique des versions (antéchronologique). `?category=added\|changed\|fixed` ne garde que les versions concernées **et** ne renvoie que cette catégorie dans chaque entrée. |
 | `GET /services` | Tous les services proposés. `?stack=webflow` filtre par outil (id de stack). |
 | `GET /services/:id` | Un service par son id (id inconnu → `404`). |
+| `GET /status` | L'état des composants du portfolio (status page) + le statut global agrégé. |
 | `GET /stats` | Compteurs **calculés** : nb de projets, répartition pro/perso, nb d'outils, etc. |
 
 Les **codes d'erreur** : méthode autre que `GET` → `405`, route inconnue → `404`,
@@ -449,13 +451,14 @@ erreurs aussi : `{ error, message }`).
 > répondent avec une **enveloppe** `{ "count": N, "results": [ … ] }` — `count`
 > est le nombre d'éléments retournés (dérivé, donc cohérent avec les filtres). Les
 > endpoints qui renvoient un **objet unique** (`/projects/:id`, `/tools/:id`,
-> `/services/:id`, `/profile`, `/stats`) renvoient cet objet **tel quel**, sans
-> enveloppe.
+> `/services/:id`, `/profile`, `/status`, `/stats`) renvoient cet objet **tel
+> quel**, sans enveloppe.
 
 #### La sidebar API (les endpoints)
 
 La sidebar ne contient qu'une seule section : **Endpoints** — la liste, **groupée
-par ressource** (Projects / Tools / Profile / Stats) dans des dossiers repliables
+par ressource** (Projects / Tools / Profile / Changelog / Services / Status / Stats)
+dans des dossiers repliables
 (mêmes que l'explorateur). **Cliquer un endpoint pré-remplit** le champ de la
 console avec une URL d'exemple, **sans l'exécuter** (et bascule sur l'onglet
 Console) : on appuie ensuite sur Entrée. La documentation et les logs ne sont plus
@@ -736,6 +739,61 @@ Pour ajouter un service : ajoute un objet au tableau de `services.json` ; les
 outils dans `stack` doivent exister dans la map `tools` de `projects.json` (sinon
 l'id s'affiche tel quel) et les `relatedProjects` doivent pointer des ids de projets
 existants. La page et l'API se mettent à jour automatiquement.
+
+### La page de statut (`status.json` + `GET /status`)
+
+L'explorateur propose une page **status.json** (à côté de README, about-me,
+changelog et services), **toujours visible** (fichier système). On l'ouvre aussi via
+la **palette de commandes** (Ctrl/Cmd+K → « Ouvrir le Status »). C'est une fausse
+**status page** dans l'esprit des status pages SaaS, mais détournée : les
+« composants d'infrastructure » sont en réalité **les parties du portfolio**
+(IDE Engine, Graph Renderer, API Gateway, Command Palette Service, Search Index,
+Arcade Subsystem). Page de contenu classique : toggle **Preview / Raw** + bouton
+copier. Comme le statut est de la **donnée structurée**, le **Raw** affiche le
+**JSON source** (`status.json`), coloré et numéroté — extension `.json`, pas `.md`.
+
+Le contenu vient d'un fichier **dédié** : [`src/status.json`](src/status.json) — un
+objet `{ components, incidents }` :
+
+```json
+{
+  "components": [
+    { "id": "ide-engine", "name": "IDE Engine", "status": "operational", "uptime": 99.98 }
+  ],
+  "incidents": []
+}
+```
+
+- **Preview** : en tête, un **bandeau global** affiche le statut agrégé (vert
+  « Tous les systèmes sont opérationnels » quand tout va bien, sinon une pastille
+  colorée reprenant le pire état du moment). En dessous, **la liste des composants** :
+  chaque composant affiche son nom + un badge de statut coloré, puis la **barre
+  d'historique sur 90 jours** typique des status pages (une rangée de petits
+  segments colorés) et sa **légende** : `il y a 90 jours` (gauche) · `XX% uptime`
+  (centre) · `aujourd'hui` (droite). La barre est purement **décorative** (pas de
+  vraies données journalières) : ses couleurs reflètent le statut/uptime du
+  composant. Enfin une **section incidents** : tant qu'il n'y en a aucun, elle
+  affiche un état vide propre (« Aucun incident sur les 90 derniers jours »).
+- **Statuts possibles** (set extensible) : `operational`, `degraded`,
+  `partial-outage`, `major-outage`, `maintenance`. Chaque statut a son **libellé** et
+  sa **couleur** (dérivée de la palette du thème, en clair comme en sombre) ; le sens
+  passe par le **texte** du badge, pas seulement la couleur.
+- **Un composant « dynamique »** : la plupart des composants ont un statut et un
+  uptime **fixes** dans `status.json`. L'**Arcade Subsystem**, lui, est marqué
+  *dynamique* — son uptime et son statut sont **calculés à l'exécution** (il reflète
+  une partie « vivante » du site). Tant qu'il n'est pas pleinement actif, il tire le
+  **bandeau global** vers un état dégradé ; c'est **voulu** (le portfolio invite à
+  l'explorer). Dans la vue **Raw**, ce composant apparaît avec son marqueur (et non
+  une valeur figée) : c'est la source brute.
+- **API** : `GET /status` renvoie l'objet de statut **tel quel** (ressource unique,
+  comme `/profile`), avec un champ `overall` = le statut global agrégé. Comme la
+  page, l'API reflète l'état **calculé** de l'Arcade — les deux montrent le **même
+  état**. `POST /status` (ou toute méthode autre que `GET`) → `405`.
+
+Pour faire évoluer la page : modifie `status.json` (uptime/statut d'un composant,
+ou ajout d'un composant). Le schéma d'incident est **déjà prévu** pour plus tard —
+`{ id, title, status, date, resolution }` — la section incidents l'affichera en
+timeline (avec l'ancienneté calculée depuis la date) dès qu'on remplira le tableau.
 
 ### Bouton « copier l'email »
 

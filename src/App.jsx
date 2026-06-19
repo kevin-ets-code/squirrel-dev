@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect, useMemo, lazy, Suspense } fro
 import data from './projects.json'
 import changelog from './changelog.json'
 import services from './services.json'
+import statusData from './status.json'
 import TitleBar from './components/TitleBar.jsx'
 import ActivityBar from './components/ActivityBar.jsx'
 import Sidebar from './components/Sidebar.jsx'
@@ -23,6 +24,7 @@ import ReadmeView from './components/ReadmeView.jsx'
 import AboutView from './components/AboutView.jsx'
 import ChangelogView from './components/ChangelogView.jsx'
 import ServicesView from './components/ServicesView.jsx'
+import StatusView from './components/StatusView.jsx'
 import SettingsView from './components/SettingsView.jsx'
 import KonamiView from './components/KonamiView.jsx'
 import VictorySnakeView from './components/VictorySnakeView.jsx'
@@ -34,11 +36,13 @@ import NotFound from './components/NotFound.jsx'
 import useIsMobile from './lib/useIsMobile.js'
 import { useEasterEggs } from './lib/easterEggs.jsx'
 import {
+  GAMES,
   gameById,
   gameTabId,
   gameIdForAnswer,
   victoryGameIdForAnswer,
 } from './games/registry.js'
+import { resolveStatus } from './lib/statusPage.js'
 import {
   toolTabId,
   isToolTab,
@@ -55,6 +59,7 @@ const README_TAB = { id: 'readme', name: 'README', type: 'readme' }
 const ABOUT_TAB = { id: 'about', name: 'about-me', type: 'about' }
 const CHANGELOG_TAB = { id: 'changelog', name: 'changelog', type: 'changelog' }
 const SERVICES_TAB = { id: 'services', name: 'services', type: 'services' }
+const STATUS_TAB = { id: 'status', name: 'status', type: 'status' }
 const SETTINGS_TAB = { id: 'settings', name: 'Settings', type: 'settings' }
 const KONAMI_TAB = { id: 'konami', name: 'konami-code', type: 'konami' }
 const VICTORY_SNAKE_TAB = { id: 'victory-snake', name: 'victory-snake', type: 'victory-snake' }
@@ -148,6 +153,15 @@ export default function App() {
   const openServices = useCallback(() => {
     setTabs((prev) => (prev.some((t) => t.id === 'services') ? prev : [...prev, SERVICES_TAB]))
     setActiveTab('services')
+    setView('ide')
+    setSidebarOpen(false)
+    focusPanel()
+  }, [focusPanel])
+
+  // Ouvre l'onglet status.json (sans doublon) — même mécanisme qu'openReadme.
+  const openStatus = useCallback(() => {
+    setTabs((prev) => (prev.some((t) => t.id === 'status') ? prev : [...prev, STATUS_TAB]))
+    setActiveTab('status')
     setView('ide')
     setSidebarOpen(false)
     focusPanel()
@@ -279,10 +293,23 @@ export default function App() {
   // selectPanel (changer de panneau ne ferme pas le drawer).
   const selectApi = useCallback(() => setView('api'), [])
 
+  // Status RÉSOLU : on remplace l'Arcade (marquée `dynamic` dans status.json) par
+  // ses valeurs CALCULÉES depuis les jeux débloqués (proportion sur GAMES.length),
+  // puis on dérive le statut global (pire de TOUS les composants, Arcade incluse).
+  // Calculé UNE SEULE FOIS ici (contexte easter-eggs dispo) → partagé Preview + API.
+  const unlockedGamesCount = useMemo(
+    () => GAMES.filter((g) => gamesUnlocked[g.id]).length,
+    [gamesUnlocked],
+  )
+  const resolvedStatus = useMemo(
+    () => resolveStatus(statusData, { unlockedCount: unlockedGamesCount, totalGames: GAMES.length }),
+    [unlockedGamesCount],
+  )
+
   // Jeu de données interrogé par la fausse API (même source que tout le reste).
   const apiData = useMemo(
-    () => ({ profile, projects, tools, changelog, services }),
-    [profile, projects, tools],
+    () => ({ profile, projects, tools, changelog, services, status: resolvedStatus }),
+    [profile, projects, tools, resolvedStatus],
   ) // `changelog` et `services` sont des imports de module (identité stable) → hors deps.
 
   // Exécute une requête : parse + route via le moteur, met à jour la réponse et
@@ -615,6 +642,7 @@ export default function App() {
               onOpenAbout={openAbout}
               onOpenChangelog={openChangelog}
               onOpenServices={openServices}
+              onOpenStatus={openStatus}
               onOpenProject={openProject}
               onOpenKonami={openKonami}
               onOpenVictorySnake={openVictorySnake}
@@ -690,6 +718,10 @@ export default function App() {
                   />
                 )}
 
+                {activeTab === 'status' && (
+                  <StatusView statusRaw={statusData} resolved={resolvedStatus} />
+                )}
+
                 {activeTab === 'settings' && <SettingsView />}
 
                 {activeTab === 'konami' && <KonamiView />}
@@ -756,6 +788,7 @@ export default function App() {
         onOpenAbout={openAbout}
         onOpenChangelog={openChangelog}
         onOpenServices={openServices}
+        onOpenStatus={openStatus}
         onOpenSettings={openSettings}
         onToggleView={toggleView}
         onKonami={unlockKonamiWithToast}

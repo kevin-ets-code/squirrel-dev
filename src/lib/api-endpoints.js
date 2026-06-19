@@ -17,7 +17,11 @@
 //     query?: [{ param, values? | derive?, description }],
 //     example: string | (data) => string,
 //     handler: ({ params, query, data }) => ({ status, body }) }
-// `data` = { profile, projects, tools }.
+// `data` = { profile, projects, tools, changelog, services, status }.
+// `data.status` est l'objet status DÉJÀ RÉSOLU (Arcade calculée depuis les jeux
+// débloqués + champ `overall` agrégé), dérivé côté App.jsx avant d'arriver ici —
+// le handler /status est alors un passthrough trivial (comme /profile), mais la
+// valeur reflète le même état que la Preview de la page status.json.
 //
 // `params` énumère DÉCLARATIVEMENT les valeurs possibles d'un segment `:param`
 // du path (même forme que `query`, lu via allowedValues). C'est la SOURCE des
@@ -222,6 +226,23 @@ export const API_RESOURCES = [
           if (!service) return notFound(`Aucun service avec l'id "${params.id}".`)
           return { status: 200, body: service }
         },
+      },
+    ],
+  },
+  {
+    resource: 'Status',
+    endpoints: [
+      {
+        id: 'status',
+        method: 'GET',
+        path: '/status',
+        label: 'Statut',
+        description:
+          'État des composants du portfolio (status page), avec statut global agrégé.',
+        example: '/status',
+        // Passthrough : data.status est l'objet DÉJÀ RÉSOLU (Arcade calculée +
+        // overall), dérivé côté App.jsx → même état que la Preview de status.json.
+        handler: ({ data }) => ({ status: 200, body: data.status }),
       },
     ],
   },

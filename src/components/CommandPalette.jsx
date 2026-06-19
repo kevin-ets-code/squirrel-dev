@@ -56,6 +56,7 @@ export default function CommandPalette({
   onOpenAbout,
   onOpenChangelog,
   onOpenServices,
+  onOpenStatus,
   onOpenSettings,
   onToggleView,
   onKonami,
@@ -73,6 +74,7 @@ export default function CommandPalette({
       onOpenAbout={onOpenAbout}
       onOpenChangelog={onOpenChangelog}
       onOpenServices={onOpenServices}
+      onOpenStatus={onOpenStatus}
       onOpenSettings={onOpenSettings}
       onToggleView={onToggleView}
       onKonami={onKonami}
@@ -94,6 +96,7 @@ function CommandPaletteInner({
   onOpenAbout,
   onOpenChangelog,
   onOpenServices,
+  onOpenStatus,
   onOpenSettings,
   onToggleView,
   onKonami,
@@ -129,6 +132,7 @@ function CommandPaletteInner({
       { key: 'action:about', label: 'Ouvrir À propos', run: onOpenAbout },
       { key: 'action:changelog', label: 'Ouvrir le changelog', run: onOpenChangelog },
       { key: 'action:services', label: 'Ouvrir les Services', run: onOpenServices },
+      { key: 'action:status', label: 'Ouvrir le Status', run: onOpenStatus },
       { key: 'action:settings', label: 'Ouvrir les paramètres', run: onOpenSettings },
       { key: 'action:view', label: 'Basculer la vue IDE / Graphe', run: onToggleView },
       {
@@ -139,7 +143,7 @@ function CommandPaletteInner({
     ].map((a) => ({ ...a, isAction: true, icon: <CommandIcon size={16} /> }))
 
     return { actionItems, projectItems, toolItems }
-  }, [projects, tools, onOpenProject, onOpenTool, onOpenReadme, onOpenAbout, onOpenChangelog, onOpenServices, onOpenSettings, onToggleView, theme, setTheme])
+  }, [projects, tools, onOpenProject, onOpenTool, onOpenReadme, onOpenAbout, onOpenChangelog, onOpenServices, onOpenStatus, onOpenSettings, onToggleView, theme, setTheme])
 
   // Query normalisée : trimmée, sans le préfixe « > » éventuel, en minuscules.
   // Sert au filtrage ET à la détection de la commande cachée « konami ».
