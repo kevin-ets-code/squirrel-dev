@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect, useMemo, lazy, Suspense } from 'react'
 import data from './projects.json'
+import tools from './tools.json'
 import changelog from './changelog.json'
 import services from './services.json'
 import statusData from './status.json'
@@ -71,7 +72,7 @@ const VICTORY_SQUIRREL_TAB = {
 }
 
 export default function App() {
-  const { profile, projects, tools = {}, readme = {} } = data
+  const { profile, projects, readme = {} } = data
   const {
     easterEggUnlocked,
     gamesUnlocked,

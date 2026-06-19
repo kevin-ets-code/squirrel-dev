@@ -251,11 +251,13 @@ renommer un outil (le label) sans casser les références dans les projets.
 
 Deux endroits travaillent ensemble :
 
-1. **L'objet `tools`**, **au niveau racine** de `projects.json` (à côté de
-   `profile` et `projects`) : une **map `id` → métadonnées** de l'outil.
+1. **La map `tools`**, dans son **fichier dédié** [`src/tools.json`](src/tools.json)
+   (au même rang que `changelog.json`, `services.json`, `status.json` — c'est de la
+   donnée versionnée à part) : une **map `id` → métadonnées** de l'outil. Le fichier
+   entier **est** cette map (pas d'enveloppe).
 
    ```json
-   "tools": {
+   {
      "flutter": {
        "label": "Flutter",
        "category": "Frontend",
@@ -316,18 +318,18 @@ la console.
 
 #### Ajouter un nouvel outil
 
-1. Crée une entrée dans `tools` avec un **id** unique et au moins un `label`
+1. Crée une entrée dans [`src/tools.json`](src/tools.json) avec un **id** unique et au moins un `label`
    (et, si tu as le logo, dépose `public/logos/rust.svg` puis renseigne `logo`/`color`) :
    ```json
    "rust": { "label": "Rust", "category": "Backend", "description": "", "url": "", "logo": "/logos/rust.svg", "color": "#DEA584" }
    ```
-2. Référence cet **id** dans le `stack` des projets concernés :
+2. Référence cet **id** dans le `stack` des projets concernés (dans `projects.json`) :
    ```json
    "stack": ["rust", "supabase"]
    ```
 
 C'est tout : l'outil apparaît automatiquement dans le panneau Outils, le graphe et
-les chips de stack, avec son label. L'objet `tools` reste optionnel dans l'absolu
+les chips de stack, avec son label. La map `tools` reste optionnelle dans l'absolu
 (un id non déclaré s'affiche en fallback), mais déclarer chaque outil est
 recommandé pour avoir des labels propres et les métadonnées.
 
@@ -736,7 +738,7 @@ Le contenu vient d'un fichier **dédié** : [`src/services.json`](src/services.j
   `404`).
 
 Pour ajouter un service : ajoute un objet au tableau de `services.json` ; les
-outils dans `stack` doivent exister dans la map `tools` de `projects.json` (sinon
+outils dans `stack` doivent exister dans la map `tools` de [`tools.json`](src/tools.json) (sinon
 l'id s'affiche tel quel) et les `relatedProjects` doivent pointer des ids de projets
 existants. La page et l'API se mettent à jour automatiquement.
 
