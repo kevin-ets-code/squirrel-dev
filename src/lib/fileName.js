@@ -5,11 +5,20 @@
 //
 //   projet (type 'pro' / 'perso') & outil ('tool')   -> .json
 //       (leur vue Raw est le JSON de l'objet, cf. ProjectView / ToolView)
-//   pages système ('readme', 'about', 'changelog', 'services', 'konami',
+//   données structurées ('changelog', 'services')   -> .json
+//       (ce sont de la DONNÉE, pas de la prose : leur vue Raw est le JSON source
+//        — changelog.json / services.json — comme une fiche projet, pas du
+//        markdown généré)
+//   pages éditoriales / système en prose ('readme', 'about', 'konami',
 //       'victory-snake', 'victory-memory', 'victory-squirrel') -> .md  (leur vue
 //       Raw est du markdown source)
 //   jeu ('game')   -> .exe   (clin d'œil « exécutable » ; un jeu n'a pas de Raw)
 //   autres ('settings'…)   -> aucune extension
+//
+// NB : l'extension reflète la SOURCE BRUTE, pas l'appartenance « projet ». Un
+// .json n'est donc PAS forcément un projet (changelog/services sont des pages
+// système stockées en .json) — la couleur d'icône d'onglet se dérive du TYPE,
+// pas de l'extension (cf. tabIconColor dans EditorTabs.jsx).
 //
 // `type`  = type de l'entité : project.type, ou tab.type ('tool', 'readme',
 //           'about', 'changelog', 'services', 'konami', 'victory-snake',
@@ -21,8 +30,8 @@ const EXT_BY_TYPE = {
   tool: 'json',
   readme: 'md',
   about: 'md',
-  changelog: 'md',
-  services: 'md',
+  changelog: 'json',
+  services: 'json',
   konami: 'md',
   'victory-snake': 'md',
   'victory-memory': 'md',

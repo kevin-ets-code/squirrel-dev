@@ -2,7 +2,6 @@
 // C'est la source du mode "Preview" (rendu via react-markdown).
 
 import { toolLabel } from './tools.js'
-import { categoryLabel } from './changelog.js'
 
 // Corps de la fiche (sections), hors en-tête.
 // Le titre, l'oneliner et la ligne de méta (type/année/status) sont rendus
@@ -119,82 +118,11 @@ export function aboutToMarkdown(profile) {
   return lines.join('\n').trimEnd() + '\n'
 }
 
-// Source brute (vue Raw) de la page CHANGELOG, construite depuis changelog.json.
-// Itère sur les ENTRÉES (antéchronologiques) et, pour chacune, sur les CATÉGORIES
-// PRÉSENTES dans `changes` (jamais les trois en dur). Reflète fidèlement le
-// Preview (cartes par version). La `date` n'apparaît que si la clé est présente.
-export function changelogToMarkdown(changelog) {
-  const lines = []
-  lines.push('# Changelog')
-  lines.push('')
-  for (const entry of changelog || []) {
-    lines.push(`## ${entry.version}${entry.date ? ` — ${entry.date}` : ''}`)
-    lines.push('')
-    for (const [key, items] of Object.entries(entry.changes || {})) {
-      if (!Array.isArray(items) || items.length === 0) continue
-      lines.push(`### ${categoryLabel(key)}`)
-      lines.push('')
-      for (const item of items) lines.push(`- ${item}`)
-      lines.push('')
-    }
-  }
-  return lines.join('\n').trimEnd() + '\n'
-}
-
-// Source brute (vue Raw) de la page SERVICES, construite depuis services.json.
-// Itère sur les services et, pour chacun, sur les champs présents. La stack
-// (ids → labels via `tools`) et les projets liés (ids → name via `projects`)
-// sont résolus comme ailleurs ; une section vide (stack ou projets liés absents,
-// ou id inconnu) est OMISE — jamais en dur, jamais de crash. Reflète le Preview.
-export function servicesToMarkdown(services, tools = {}, projects = []) {
-  const projectName = (id) => {
-    const p = projects.find((pr) => pr.id === id)
-    return p ? p.name : null
-  }
-  const lines = []
-  lines.push('# Services')
-  lines.push('')
-  for (const service of services || []) {
-    lines.push(`## ${service.title}`)
-    lines.push('')
-    if (service.tagline) {
-      lines.push(`*${service.tagline}*`)
-      lines.push('')
-    }
-    if (service.description) {
-      lines.push(service.description)
-      lines.push('')
-    }
-    if (service.forWho) {
-      lines.push(`**Pour qui :** ${service.forWho}`)
-      lines.push('')
-    }
-    const deliverables = Array.isArray(service.deliverables) ? service.deliverables : []
-    if (deliverables.length > 0) {
-      lines.push('### Prestations')
-      lines.push('')
-      for (const d of deliverables) lines.push(`- ${d}`)
-      lines.push('')
-    }
-    const stack = Array.isArray(service.stack) ? service.stack : []
-    if (stack.length > 0) {
-      lines.push('### Outils')
-      lines.push('')
-      for (const techId of stack) lines.push(`- \`${toolLabel(tools, techId)}\``)
-      lines.push('')
-    }
-    const related = (Array.isArray(service.relatedProjects) ? service.relatedProjects : [])
-      .map(projectName)
-      .filter(Boolean)
-    if (related.length > 0) {
-      lines.push('### Projets liés')
-      lines.push('')
-      for (const name of related) lines.push(`- ${name}`)
-      lines.push('')
-    }
-  }
-  return lines.join('\n').trimEnd() + '\n'
-}
+// NB : changelog et services n'ont plus de helper markdown ici. Ce sont des
+// pages de DONNÉE (.json) dont la vue Raw est le JSON source brut
+// (JSON.stringify dans ChangelogView / ServicesView), comme une fiche projet —
+// pas du markdown généré. Seules les pages en PROSE (projet, about, README)
+// gardent un helper de rendu markdown ci-dessus/dessous.
 
 // Markdown de la partie texte du README d'accueil, construit depuis `profile`
 // et l'objet `readme` de projects.json. La section « Me contacter » (avec le

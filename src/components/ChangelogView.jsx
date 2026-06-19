@@ -1,5 +1,5 @@
 import ContentPage from './ContentPage.jsx'
-import { changelogToMarkdown } from '../lib/markdown.js'
+import { fileName } from '../lib/fileName.js'
 import {
   categoryLabel,
   categoryTag,
@@ -7,9 +7,10 @@ import {
   uniqueChangelogCategories,
 } from '../lib/changelog.js'
 
-// Page CHANGELOG.md (onglet `changelog`). Même mécanisme que ReadmeView /
-// AboutView : page de contenu enveloppée dans ContentPage (toggle Preview/Raw +
-// copie mutualisés). Le Raw est le markdown source (changelogToMarkdown).
+// Page changelog.json (onglet `changelog`). Le changelog est de la DONNÉE
+// structurée (pas de la prose) : sa vue Raw est donc le JSON SOURCE
+// (changelog.json), exactement comme une fiche projet — même chemin
+// ContentPage/RawView (rawFormat="json" → coloration + gouttière + copie).
 //
 // Preview = rendu DENSE pleine largeur, façon sortie terminal (groupé par
 // version). Pour chaque version : en-tête (numéro monospace + date à droite si
@@ -22,14 +23,14 @@ import {
 //
 // La liste des versions vient UNIQUEMENT de changelog.json (prop) — jamais en dur.
 export default function ChangelogView({ changelog = [] }) {
-  const source = changelogToMarkdown(changelog)
+  const source = JSON.stringify(changelog, null, 2)
   const legendKeys = uniqueChangelogCategories(changelog)
 
   const breadcrumb = (
     <>
       <span className="crumb">src</span>
       <span className="crumb-sep">›</span>
-      <span className="crumb crumb-active">changelog.md</span>
+      <span className="crumb crumb-active">{fileName('changelog', 'changelog')}</span>
     </>
   )
 
@@ -82,6 +83,6 @@ export default function ChangelogView({ changelog = [] }) {
   )
 
   return (
-    <ContentPage breadcrumb={breadcrumb} preview={preview} rawText={source} rawFormat="markdown" />
+    <ContentPage breadcrumb={breadcrumb} preview={preview} rawText={source} rawFormat="json" />
   )
 }

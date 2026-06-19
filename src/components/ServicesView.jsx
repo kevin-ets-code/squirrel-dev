@@ -1,12 +1,12 @@
 import ContentPage from './ContentPage.jsx'
 import ToolLogo from './ToolLogo.jsx'
-import { servicesToMarkdown } from '../lib/markdown.js'
+import { fileName } from '../lib/fileName.js'
 import { toolEntry } from '../lib/tools.js'
 
-// Page services.md (onglet `services`). Même mécanisme que ReadmeView /
-// AboutView / ChangelogView : page de contenu enveloppée dans ContentPage
-// (toggle Preview/Raw + copie mutualisés). Le Raw est le markdown source
-// (servicesToMarkdown).
+// Page services.json (onglet `services`). Les services sont de la DONNÉE
+// structurée (pas de la prose) : la vue Raw est donc le JSON SOURCE
+// (services.json), exactement comme une fiche projet — même chemin
+// ContentPage/RawView (rawFormat="json" → coloration + gouttière + copie).
 //
 // Preview = une CARTE par service, dans l'ordre des données. Chaque carte :
 //  - title + tagline ;
@@ -21,13 +21,13 @@ import { toolEntry } from '../lib/tools.js'
 //
 // Toute la donnée vient de services.json (prop) — rien en dur.
 export default function ServicesView({ services = [], tools = {}, projects = [], onOpenProject, onOpenTool }) {
-  const source = servicesToMarkdown(services, tools, projects)
+  const source = JSON.stringify(services, null, 2)
 
   const breadcrumb = (
     <>
       <span className="crumb">src</span>
       <span className="crumb-sep">›</span>
-      <span className="crumb crumb-active">services.md</span>
+      <span className="crumb crumb-active">{fileName('services', 'services')}</span>
     </>
   )
 
@@ -114,6 +114,6 @@ export default function ServicesView({ services = [], tools = {}, projects = [],
   )
 
   return (
-    <ContentPage breadcrumb={breadcrumb} preview={preview} rawText={source} rawFormat="markdown" />
+    <ContentPage breadcrumb={breadcrumb} preview={preview} rawText={source} rawFormat="json" />
   )
 }

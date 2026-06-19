@@ -1,22 +1,22 @@
 import { useEffect, useRef, useState } from 'react'
 import { FileIcon, CloseIcon, GearIcon, GamepadIcon } from './icons.jsx'
 import ToolLogo from './ToolLogo.jsx'
-import { fileName, extension } from '../lib/fileName.js'
+import { fileName } from '../lib/fileName.js'
 
-// Couleur de l'icône d'un onglet, DÉRIVÉE DE L'EXTENSION du fichier (source
-// unique : EXT_BY_TYPE via fileName.js) plutôt que d'une liste de types en dur —
-// ainsi toute future page hérite automatiquement de la bonne icône :
+// Couleur de l'icône d'un onglet, DÉRIVÉE DU TYPE de l'entité (pas de
+// l'extension, ni d'une liste en dur). La vraie sémantique est « fiche projet »
+// vs « page système » — et un .json n'est PAS forcément un projet (changelog/
+// services sont des pages système stockées en .json) ; se baser sur l'extension
+// les colorerait à tort en couleur projet.
 // - 'game' (.exe, branche GamepadIcon) -> --icon-perso (inchangé) ;
-// - extension .md (README, about-me, changelog, services, konami-code,
-//   victory-*, et toute future page .md) -> --icon-system (bleu fixe) ;
-// - projets .json ('pro' / 'perso') -> --icon-<type> (--icon-pro / --icon-perso) ;
-// - FALLBACK ULTIME -> --icon-system : var CSS garantie existante. Un type futur
-//   imprévu retombe sur une icône VISIBLE au lieu d'une var inexistante (qui
-//   rendait l'icône invisible) — le piège est désarmé, pas déplacé.
+// - FICHE PROJET ('pro' / 'perso', .json) -> --icon-<type> (--icon-pro / -perso) ;
+// - TOUT LE RESTE = page système (README/about .md, changelog/services .json,
+//   konami, victory-*, et toute future page) -> --icon-system (bleu fixe). C'est
+//   aussi le FALLBACK ULTIME : un type imprévu retombe sur une icône VISIBLE
+//   (var CSS garantie existante), pas sur une var inexistante (icône invisible).
 // (Les types 'tool' et 'settings' ont leur propre rendu et n'utilisent pas ceci.)
 function tabIconColor(type) {
   if (type === 'game') return 'var(--icon-perso)'
-  if (extension(type) === 'md') return 'var(--icon-system)'
   if (type === 'pro' || type === 'perso') return `var(--icon-${type})`
   return 'var(--icon-system)'
 }

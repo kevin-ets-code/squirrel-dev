@@ -160,8 +160,10 @@ gouttière/coloration et un **bouton copier** en vue Raw. Le mécanisme est
 
 - **Preview** : le rendu lisible (markdown stylé, badges, etc.).
 - **Raw** : la **source brute** de la page, selon son format :
-  - **projet** et **outil** → **JSON** de l'objet (coloré, avec numéros de ligne) ;
-  - **README** → le **markdown source** (le README n'est pas du JSON) ;
+  - **données structurées** — **projet**, **outil**, **changelog** et **services** →
+    **JSON** source (coloré, avec numéros de ligne) ;
+  - **prose** — **README** et **À propos** → le **markdown source** (ce n'est pas
+    du JSON) ;
   - une future page d'un autre format afficherait **sa** source brute.
 - **Bouton copier** (coin haut-droite du bloc Raw) : copie le contenu brut affiché
   (JSON ou markdown) dans le presse-papier, avec un bref retour visuel (icône
@@ -621,13 +623,15 @@ Elle se compose de trois parties :
    `profile.experiences` (voir « Le champ `experiences[]` »). **Aucune donnée en
    dur** : modifie le tableau dans `projects.json` et les cartes suivent (même ordre).
 
-### Le changelog (`CHANGELOG.md` + `GET /changelog`)
+### Le changelog (`changelog.json` + `GET /changelog`)
 
-L'explorateur propose une page **CHANGELOG.md** (à côté de README et about-me),
+L'explorateur propose une page **changelog.json** (à côté de README et about-me),
 **toujours visible** (fichier système). On l'ouvre aussi via la **palette de
 commandes** (Ctrl/Cmd+K → « Ouvrir le CHANGELOG »). C'est une page de contenu
-classique : toggle **Preview / Raw** + bouton copier. Le **Raw** est le markdown
-source de la page.
+classique : toggle **Preview / Raw** + bouton copier. Comme le changelog est de la
+**donnée structurée** (pas de la prose), le **Raw** affiche le **JSON source**
+(`changelog.json`), coloré et numéroté, **exactement comme une fiche projet** — son
+extension est d'ailleurs `.json`, pas `.md` (README/about, eux, restent du markdown).
 
 Le contenu vient d'un fichier **dédié** : [`src/changelog.json`](src/changelog.json)
 (distinct de `projects.json` — c'est de la donnée versionnée à part). C'est un
@@ -677,13 +681,15 @@ Pour ajouter une version : ajoute un objet **en tête** du tableau dans
 `changelog.json`. La page et l'API se mettent à jour automatiquement, et le
 compteur de fichiers de l'explorateur suit.
 
-### Les services (`services.md` + `GET /services`)
+### Les services (`services.json` + `GET /services`)
 
-L'explorateur propose une page **services.md** (à côté de README, about-me et
-CHANGELOG), **toujours visible** (fichier système). On l'ouvre aussi via la
+L'explorateur propose une page **services.json** (à côté de README, about-me et
+changelog), **toujours visible** (fichier système). On l'ouvre aussi via la
 **palette de commandes** (Ctrl/Cmd+K → « Ouvrir les Services »). C'est une page de
-contenu classique : toggle **Preview / Raw** + bouton copier. Le **Raw** est le
-markdown source de la page.
+contenu classique : toggle **Preview / Raw** + bouton copier. Comme les services
+sont de la **donnée structurée** (pas de la prose), le **Raw** affiche le **JSON
+source** (`services.json`), coloré et numéroté, **exactement comme une fiche
+projet** — son extension est `.json`, pas `.md`.
 
 Le contenu vient d'un fichier **dédié** : [`src/services.json`](src/services.json)
 (distinct de `projects.json`). C'est un **tableau de services** ; chaque entrée :
@@ -835,14 +841,17 @@ choisit manuellement, ce choix est persisté et on **arrête de suivre** le syst
 - Pour ajouter/retirer un accent : éditer `ACCENT_PRESETS` dans
   [`src/lib/preferences.jsx`](src/lib/preferences.jsx). Choisir des teintes de
   luminance proche du teal pour garder un bon contraste en clair **et** en sombre.
-- **Icône d'onglet dérivée de l'extension** : dans la barre d'onglets ouverts, la
-  couleur de l'icône de fichier se déduit de l'**extension** du fichier (calculée
-  par [`fileName.js`](src/lib/fileName.js)), pas d'une liste de types en dur. Les
-  `.md` (README, about-me, changelog, services… et **toute future page `.md`**)
-  prennent l'icône **système** (bleu `--icon-system`) ; les `.json` projets gardent
-  `--icon-pro` / `--icon-perso`. Le **fallback ultime** est `--icon-system` (var
-  garantie existante) : un type imprévu reste **visible** au lieu de disparaître.
-  Une nouvelle page hérite donc automatiquement de la bonne icône d'onglet.
+- **Icône d'onglet dérivée du TYPE (système vs projet)** : dans la barre d'onglets
+  ouverts, la couleur de l'icône de fichier distingue une **fiche projet** d'une
+  **page système** — d'après le **type**, pas l'extension. Important : un `.json`
+  n'est **pas forcément un projet** (changelog et services sont des pages système
+  stockées en `.json`), donc se baser sur l'extension les colorerait à tort en
+  couleur projet. Seuls les projets `pro` / `perso` prennent `--icon-pro` /
+  `--icon-perso` ; **tout le reste** — README, about-me (`.md`), changelog,
+  services (`.json`), et toute future page — prend l'icône **système** (bleu
+  `--icon-system`). Ce cas est aussi le **fallback ultime** (var garantie
+  existante) : un type imprévu reste **visible** au lieu de disparaître. Une
+  nouvelle page hérite donc automatiquement de la bonne icône d'onglet.
 
 ### Pastilles d'outils en mode clair
 
