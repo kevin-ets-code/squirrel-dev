@@ -685,6 +685,8 @@ textarea:focus-visible,
   text-overflow: ellipsis;
 }
 .tab-close {
+  /* relative : ancre la hit-area ::before sur le bouton (pas sur .tab). */
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -693,6 +695,20 @@ textarea:focus-visible,
   border-radius: 4px;
   color: inherit;
   opacity: 0.6;
+}
+/* Cible tactile WCAG 2.5.8 : étend la zone CLIQUABLE à 24×36px sans toucher au
+   visuel (croix 14px + pastille hover 18px inchangées). Largeur au plancher 24px
+   (empiétement minimal sur .tab-name → anti mis-tap fermer/sélectionner) ;
+   hauteur = pleine barre (--h-tabbar, espace libre, aucune cible voisine).
+   Le ::before fait partie du <button> → déclenche onClose, pas de JS. */
+.tab-close::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: var(--h-tabbar);
 }
 .tab-close:hover {
   background: var(--overlay-3);
