@@ -685,34 +685,55 @@ textarea:focus-visible,
   text-overflow: ellipsis;
 }
 .tab-close {
-  /* relative : ancre la hit-area ::before sur le bouton (pas sur .tab). */
+  /* Vraie cible tactile WCAG 2.5.8 : la BOUNDING BOX du bouton fait 24×36px
+     (Lighthouse mesure l'ÉLÉMENT interactif, pas un ::before). Le visuel — croix
+     14px + pastille de survol 18px — est préservé par un ::before DÉCORATIF
+     interne (inverse de l'ancienne hit-area ::before transparente). Largeur au
+     plancher 24px (empiétement minimal sur .tab-name → anti mis-tap fermer/
+     sélectionner) ; hauteur = pleine barre (espace vertical libre, aucune cible
+     voisine). flex:0 0 auto → les 24px ne rétrécissent jamais. */
   position: relative;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
+  min-width: 24px;
+  height: var(--h-tabbar);
   color: inherit;
   opacity: 0.6;
 }
-/* Cible tactile WCAG 2.5.8 : étend la zone CLIQUABLE à 24×36px sans toucher au
-   visuel (croix 14px + pastille hover 18px inchangées). Largeur au plancher 24px
-   (empiétement minimal sur .tab-name → anti mis-tap fermer/sélectionner) ;
-   hauteur = pleine barre (--h-tabbar, espace libre, aucune cible voisine).
-   Le ::before fait partie du <button> → déclenche onClose, pas de JS. */
+/* Pastille décorative 18×18 centrée : porte l'arrondi + le fond de survol, le
+   bouton autour restant transparent. */
 .tab-close::before {
   content: '';
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 24px;
-  height: var(--h-tabbar);
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+}
+/* La croix SVG repasse AU-DESSUS de la pastille décorative (sinon le ::before
+   positionné peindrait par-dessus le contenu en flux). */
+.tab-close svg {
+  position: relative;
+  z-index: 1;
 }
 .tab-close:hover {
-  background: var(--overlay-3);
   opacity: 1;
+}
+.tab-close:hover::before {
+  background: var(--overlay-3);
+}
+/* Focus clavier confiné au VISUEL 18px (anneau serré), pas à la boîte 24×36 :
+   on neutralise l'outline global du bouton et on le porte sur le ::before. */
+.tab-close:focus-visible {
+  outline: none;
+}
+.tab-close:focus-visible::before {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .editor-content {
