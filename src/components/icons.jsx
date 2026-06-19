@@ -1,5 +1,7 @@
 // Petites icônes SVG inline (style "codicon"), 16px par défaut.
 
+import { extension } from '../lib/fileName.js'
+
 export function FilesIcon({ size = 24 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -118,9 +120,9 @@ export function CommandIcon({ size = 16 }) {
 // Icône "API" — accolades { } (d'après lucide `braces`). Sert au bouton API de
 // l'activity bar (et au placeholder de la console). Symbole code/JSON, cohérent
 // avec le style codicon (trait fin) des autres icônes de l'activity bar.
-export function BracesIcon({ size = 24 }) {
+export function BracesIcon({ size = 24, color = 'currentColor' }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
       <path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1" />
       <path d="M16 3h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2 2 2 0 0 0-2 2v5a2 2 0 0 1-2 2h-1" />
     </svg>
@@ -160,9 +162,9 @@ export function CheckIcon({ size = 14 }) {
 // Icône "Jeux" — manette (d'après lucide `gamepad-2`). Sert au panneau Jeux
 // (activity bar + onglets mobiles), visible seulement quand le mode Jeux est
 // débloqué (Konami Code).
-export function GamepadIcon({ size = 24 }) {
+export function GamepadIcon({ size = 24, color = 'currentColor' }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
       <line x1="6" y1="11" x2="10" y2="11" />
       <line x1="8" y1="9" x2="8" y2="13" />
       <line x1="15" y1="12" x2="15.01" y2="12" />
@@ -170,6 +172,23 @@ export function GamepadIcon({ size = 24 }) {
       <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.544-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.152A4 4 0 0 0 17.32 5z" />
     </svg>
   )
+}
+
+// Icône de fichier dont la FORME est DÉRIVÉE DE L'EXTENSION (source unique :
+// `extension(type)` via fileName.js), indépendamment de la COULEUR (elle, dérivée
+// du TYPE par l'appelant — cf. tabIconColor / var(--icon-*)). Deux dimensions
+// ORTHOGONALES : la forme dit « quel format » (.json = accolades, .exe = manette,
+// défaut = document), la couleur dit « quel rôle » (projet vs système).
+// Un `.json` affiche donc les accolades quel que soit son rôle (fiche projet,
+// changelog, services). Réutilisé par les onglets, l'explorateur, la palette et la
+// recherche — JAMAIS de forme codée en dur par surface.
+// (Les outils/réglages gardent un rendu dédié EN AMONT — ToolLogo / engrenage — et
+// n'utilisent pas ce helper.)
+export function FileTypeIcon({ type, size = 16, color = 'currentColor' }) {
+  const ext = extension(type)
+  if (ext === 'json') return <BracesIcon size={size} color={color} />
+  if (ext === 'exe') return <GamepadIcon size={size} color={color} />
+  return <FileIcon size={size} color={color} />
 }
 
 // Cadenas FERMÉ (d'après lucide `lock`) — état verrouillé du panneau Jeux.

@@ -841,17 +841,26 @@ choisit manuellement, ce choix est persisté et on **arrête de suivre** le syst
 - Pour ajouter/retirer un accent : éditer `ACCENT_PRESETS` dans
   [`src/lib/preferences.jsx`](src/lib/preferences.jsx). Choisir des teintes de
   luminance proche du teal pour garder un bon contraste en clair **et** en sombre.
-- **Icône d'onglet dérivée du TYPE (système vs projet)** : dans la barre d'onglets
-  ouverts, la couleur de l'icône de fichier distingue une **fiche projet** d'une
-  **page système** — d'après le **type**, pas l'extension. Important : un `.json`
-  n'est **pas forcément un projet** (changelog et services sont des pages système
-  stockées en `.json`), donc se baser sur l'extension les colorerait à tort en
-  couleur projet. Seuls les projets `pro` / `perso` prennent `--icon-pro` /
-  `--icon-perso` ; **tout le reste** — README, about-me (`.md`), changelog,
-  services (`.json`), et toute future page — prend l'icône **système** (bleu
-  `--icon-system`). Ce cas est aussi le **fallback ultime** (var garantie
-  existante) : un type imprévu reste **visible** au lieu de disparaître. Une
-  nouvelle page hérite donc automatiquement de la bonne icône d'onglet.
+- **Icône de fichier à deux dimensions (forme ← extension, couleur ← type)** :
+  l'icône d'un fichier combine **deux réglages indépendants**, appliqués de façon
+  cohérente sur les **4 surfaces** où un fichier apparaît — onglets, explorateur,
+  palette de commandes, recherche.
+  - **Forme** = le **format**, dérivée de l'**extension** : `.json` → accolades
+    `{ }` (fiches projet, changelog, services), `.exe` → manette (jeux), défaut /
+    `.md` → document (README, about-me…). Un seul composant `FileTypeIcon` décide
+    la forme : aucune surface ne la code en dur. Un `.json` affiche donc les
+    accolades **quel que soit son rôle**.
+  - **Couleur** = le **rôle**, dérivée du **type** : projets `pro` / `perso` →
+    `--icon-pro` / `--icon-perso` ; jeux → `--icon-perso` ; **tout le reste**
+    (README, about-me, changelog, services, et toute future page) → icône
+    **système** (bleu `--icon-system`). À noter : un `.json` n'est **pas forcément
+    un projet** — changelog/services sont des pages système, d'où leur couleur
+    système malgré les accolades. Le **fallback ultime** est `--icon-system` : un
+    type imprévu reste **visible** au lieu de disparaître.
+  - Les **outils** (onglet/fiche) gardent leur **logo** et les **réglages** leur
+    engrenage : rendus dédiés, hors de cette règle. Le **point de statut** coloré
+    des fiches projet (explorateur) est **indépendant** de l'icône — inchangé.
+  Une nouvelle page hérite donc automatiquement de la bonne forme **et** couleur.
 
 ### Pastilles d'outils en mode clair
 

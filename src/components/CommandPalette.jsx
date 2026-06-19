@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { FileIcon, CommandIcon } from './icons.jsx'
+import { FileTypeIcon, CommandIcon } from './icons.jsx'
 import ToolLogo from './ToolLogo.jsx'
 import { buildTools } from '../lib/tools.js'
 import { fileName } from '../lib/fileName.js'
@@ -112,7 +112,7 @@ function CommandPaletteInner({
       key: 'project:' + p.id,
       label: fileName(p.type, p.name),
       hint: p.title,
-      icon: <FileIcon color={`var(--icon-${p.type})`} />,
+      icon: <FileTypeIcon type={p.type} color={`var(--icon-${p.type})`} />,
       run: () => onOpenProject(p),
     }))
 

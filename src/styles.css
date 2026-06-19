@@ -3105,13 +3105,8 @@ a.contact-link .contact-value {
 }
 
 /* ============================================================
-   Onglet de jeu (icône manette) + Jeu Memory
+   Jeu Memory
    ============================================================ */
-.tab-game-icon {
-  display: inline-flex;
-  align-items: center;
-}
-
 .memory-game {
   max-width: 560px;
   margin: 0 auto;

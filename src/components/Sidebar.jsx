@@ -1,4 +1,4 @@
-import { FileIcon } from './icons.jsx'
+import { FileTypeIcon } from './icons.jsx'
 import { statusColor } from '../lib/status.js'
 import { fileName } from '../lib/fileName.js'
 import Folder from './Folder.jsx'
@@ -42,7 +42,7 @@ export default function Sidebar({
       className={'file-row' + (activeTab === project.id ? ' active' : '')}
       onClick={() => onOpenProject(project)}
     >
-      <FileIcon color={`var(--icon-${project.type})`} />
+      <FileTypeIcon type={project.type} color={`var(--icon-${project.type})`} />
       <span className="file-name">{fileName(project.type, project.name)}</span>
       {project.status && (
         <span
@@ -66,7 +66,7 @@ export default function Sidebar({
           className={'file-row file-readme' + (activeTab === 'readme' ? ' active' : '')}
           onClick={onOpenReadme}
         >
-          <FileIcon color="var(--icon-system)" />
+          <FileTypeIcon type="readme" color="var(--icon-system)" />
           <span className="file-name">{fileName('readme', 'README')}</span>
         </button>
 
@@ -74,7 +74,7 @@ export default function Sidebar({
           className={'file-row file-readme' + (activeTab === 'about' ? ' active' : '')}
           onClick={onOpenAbout}
         >
-          <FileIcon color="var(--icon-system)" />
+          <FileTypeIcon type="about" color="var(--icon-system)" />
           <span className="file-name">{fileName('about', 'about-me')}</span>
         </button>
 
@@ -82,7 +82,7 @@ export default function Sidebar({
           className={'file-row file-readme' + (activeTab === 'changelog' ? ' active' : '')}
           onClick={onOpenChangelog}
         >
-          <FileIcon color="var(--icon-system)" />
+          <FileTypeIcon type="changelog" color="var(--icon-system)" />
           <span className="file-name">{fileName('changelog', 'changelog')}</span>
         </button>
 
@@ -90,7 +90,7 @@ export default function Sidebar({
           className={'file-row file-readme' + (activeTab === 'services' ? ' active' : '')}
           onClick={onOpenServices}
         >
-          <FileIcon color="var(--icon-system)" />
+          <FileTypeIcon type="services" color="var(--icon-system)" />
           <span className="file-name">{fileName('services', 'services')}</span>
         </button>
 
@@ -99,7 +99,7 @@ export default function Sidebar({
             className={'file-row file-readme' + (activeTab === 'konami' ? ' active' : '')}
             onClick={onOpenKonami}
           >
-            <FileIcon color="var(--icon-system)" />
+            <FileTypeIcon type="konami" color="var(--icon-system)" />
             <span className="file-name">{fileName('konami', 'konami-code')}</span>
           </button>
         )}
@@ -109,7 +109,7 @@ export default function Sidebar({
             className={'file-row file-readme' + (activeTab === 'victory-snake' ? ' active' : '')}
             onClick={onOpenVictorySnake}
           >
-            <FileIcon color="var(--icon-system)" />
+            <FileTypeIcon type="victory-snake" color="var(--icon-system)" />
             <span className="file-name">{fileName('victory-snake', 'victory-snake')}</span>
           </button>
         )}
@@ -119,7 +119,7 @@ export default function Sidebar({
             className={'file-row file-readme' + (activeTab === 'victory-memory' ? ' active' : '')}
             onClick={onOpenVictoryMemory}
           >
-            <FileIcon color="var(--icon-system)" />
+            <FileTypeIcon type="victory-memory" color="var(--icon-system)" />
             <span className="file-name">{fileName('victory-memory', 'victory-memory')}</span>
           </button>
         )}
@@ -129,7 +129,7 @@ export default function Sidebar({
             className={'file-row file-readme' + (activeTab === 'victory-squirrel' ? ' active' : '')}
             onClick={onOpenVictorySquirrel}
           >
-            <FileIcon color="var(--icon-system)" />
+            <FileTypeIcon type="victory-squirrel" color="var(--icon-system)" />
             <span className="file-name">{fileName('victory-squirrel', 'victory-squirrel')}</span>
           </button>
         )}

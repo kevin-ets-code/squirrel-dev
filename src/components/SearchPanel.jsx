@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { FileIcon } from './icons.jsx'
+import { FileTypeIcon } from './icons.jsx'
 import ToolLogo from './ToolLogo.jsx'
 import { buildTools } from '../lib/tools.js'
 import { fileName } from '../lib/fileName.js'
@@ -22,7 +22,7 @@ export default function SearchPanel({ projects, tools, onOpenProject, onOpenTool
       haystack: [p.name, p.title, p.oneliner, p.type, ...(p.stack || [])]
         .join(' ')
         .toLowerCase(),
-      icon: <FileIcon color={`var(--icon-${p.type})`} />,
+      icon: <FileTypeIcon type={p.type} color={`var(--icon-${p.type})`} />,
       open: () => onOpenProject(p),
     }))
 

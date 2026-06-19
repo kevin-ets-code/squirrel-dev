@@ -1,19 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
-import { FileIcon, CloseIcon, GearIcon, GamepadIcon } from './icons.jsx'
+import { FileTypeIcon, CloseIcon, GearIcon } from './icons.jsx'
 import ToolLogo from './ToolLogo.jsx'
 import { fileName } from '../lib/fileName.js'
 
-// Couleur de l'icône d'un onglet, DÉRIVÉE DU TYPE de l'entité (pas de
-// l'extension, ni d'une liste en dur). La vraie sémantique est « fiche projet »
-// vs « page système » — et un .json n'est PAS forcément un projet (changelog/
-// services sont des pages système stockées en .json) ; se baser sur l'extension
-// les colorerait à tort en couleur projet.
-// - 'game' (.exe, branche GamepadIcon) -> --icon-perso (inchangé) ;
-// - FICHE PROJET ('pro' / 'perso', .json) -> --icon-<type> (--icon-pro / -perso) ;
-// - TOUT LE RESTE = page système (README/about .md, changelog/services .json,
-//   konami, victory-*, et toute future page) -> --icon-system (bleu fixe). C'est
-//   aussi le FALLBACK ULTIME : un type imprévu retombe sur une icône VISIBLE
-//   (var CSS garantie existante), pas sur une var inexistante (icône invisible).
+// COULEUR de l'icône d'un onglet, DÉRIVÉE DU TYPE de l'entité (pas de
+// l'extension, ni d'une liste en dur). C'est l'une des DEUX dimensions
+// orthogonales de l'icône : la couleur dit « quel rôle » (ici), la FORME dit
+// « quel format » (cf. FileTypeIcon, dérivée de l'extension). La vraie sémantique
+// de couleur = « fiche projet » vs « page système » — et un .json n'est PAS
+// forcément un projet (changelog/services sont des pages système en .json) ; se
+// baser sur l'extension les colorerait à tort en couleur projet.
+// - 'game' (.exe) -> --icon-perso (inchangé) ;
+// - FICHE PROJET ('pro' / 'perso') -> --icon-<type> (--icon-pro / --icon-perso) ;
+// - TOUT LE RESTE = page système (README/about, changelog/services, konami,
+//   victory-*, et toute future page) -> --icon-system (bleu fixe). C'est aussi le
+//   FALLBACK ULTIME : un type imprévu retombe sur une icône VISIBLE (var CSS
+//   garantie existante), pas sur une var inexistante (icône invisible).
 // (Les types 'tool' et 'settings' ont leur propre rendu et n'utilisent pas ceci.)
 function tabIconColor(type) {
   if (type === 'game') return 'var(--icon-perso)'
@@ -104,12 +106,10 @@ export default function EditorTabs({ tabs, activeTab, onActivate, onClose, focus
               <ToolLogo logo={tab.logo} color={tab.color} label={tab.name} shape="square" size={15} />
             ) : tab.type === 'settings' ? (
               <GearIcon size={14} color="var(--accent)" />
-            ) : tab.type === 'game' ? (
-              <span className="tab-game-icon" style={{ color }}>
-                <GamepadIcon size={14} />
-              </span>
             ) : (
-              <FileIcon size={14} color={color} />
+              // Forme dérivée de l'extension (.json = accolades, .exe = manette,
+              // défaut = document) ; couleur dérivée du type (tabIconColor).
+              <FileTypeIcon type={tab.type} size={14} color={color} />
             )}
             <span className="tab-name">{label}</span>
             <button
