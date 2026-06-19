@@ -1,9 +1,14 @@
 # Guide — Portfolio "IDE"
 
 Ce portfolio est une application Vite + React qui ressemble à un éditeur de code
-(thème sombre type VS Code). Tout le contenu vient d'un seul fichier de données :
-[`src/projects.json`](src/projects.json). Pas besoin de toucher au code React pour
-ajouter ou modifier un projet.
+(thème sombre type VS Code). Tout le contenu est piloté par des **fichiers de
+données dédiés, une source par entité** : les projets dans
+[`src/projects.json`](src/projects.json), les outils dans
+[`src/tools.json`](src/tools.json), les services dans
+[`src/services.json`](src/services.json), le changelog dans
+[`src/changelog.json`](src/changelog.json) et la page de statut dans
+[`src/status.json`](src/status.json). Pas besoin de toucher au code React pour
+ajouter ou modifier du contenu.
 
 ---
 
