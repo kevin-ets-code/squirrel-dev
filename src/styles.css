@@ -26,15 +26,24 @@
 
   /* Texte */
   --fg: #d4d4d4;
-  --fg-muted: #858585;
+  --fg-muted: #9d9d9d;          /* secondaire : remonté de #858585 pour WCAG AA (sidebar/toggle/compteurs) */
   --fg-bright: #ffffff;
   --fg-heading: #e8e8e8;
+  /* Texte de la barre de titre : variable DÉDIÉE car son fond (--bg-titlebar
+     #3c3c3c) est la surface la plus claire du chrome → --fg-muted n'y atteint pas
+     4.5:1. #b0b0b0 sur #3c3c3c ≈ 5.1:1. */
+  --fg-titlebar: #b0b0b0;
 
   /* Accents */
   --accent: #4ec9b0;            /* teal — surchargeable au runtime (Paramètres) */
   /* Dérivés de --accent : suivent automatiquement la couleur d'accent choisie.
      --accent-status = même teinte assombrie (barre de statut VS Code). */
   --accent-status: color-mix(in srgb, var(--accent) 55%, #000);
+  /* Accent utilisé comme COULEUR DE TEXTE (≠ bordure/fond). En sombre l'accent
+     pur passe AA sur les fonds éditeur/sidebar ; en clair il échoue sur blanc
+     (teal ≈ 2:1) → assombri dans le bloc [data-theme='light']. Dérivé de --accent
+     → suit les 5 presets et le runtime, sans toucher --accent (bordures/fonds). */
+  --accent-text: var(--accent);
   /* Couleur de la méthode GET (badge + teinte des cartes de la doc API). Dérivée
      du bleu de code (suit le thème clair/sombre), distincte de --accent pour que
      GET reste reconnaissable. */
@@ -141,8 +150,13 @@
 
   /* Texte (--fg-bright reste blanc : utilisé sur fonds colorés) */
   --fg: #2b2b2b;
-  --fg-muted: #6a6a6a;
+  --fg-muted: #636363;          /* secondaire : assombri de #6a6a6a pour WCAG AA (titlebar/toggle/compteurs en clair) */
   --fg-heading: #1a1a1a;
+  /* Barre de titre (cf. note du bloc sombre) : #5f5f5f sur --bg-titlebar #e4e4e4 ≈ 5.0:1. */
+  --fg-titlebar: #5f5f5f;
+  /* Accent-en-texte assombri pour le fond clair. 58 % (pas 62 %) : couvre les 5
+     presets jusque sur --bg-sidebar #f3f3f3 (cartes), pire cas amber ≈ 4.78:1. */
+  --accent-text: color-mix(in srgb, var(--accent) 58%, #000);
 
   /* Bordures */
   --border: #d0d0d0;
@@ -379,7 +393,7 @@ textarea:focus-visible,
 
 .title-center {
   flex: 0 1 auto;
-  color: var(--fg-muted);
+  color: var(--fg-titlebar);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -914,7 +928,7 @@ textarea:focus-visible,
 }
 .markdown-body h2 {
   font-size: 19px;
-  color: var(--accent);
+  color: var(--accent-text);
   margin-top: 32px;
   margin-bottom: 12px;
   padding-bottom: 6px;
@@ -935,7 +949,7 @@ textarea:focus-visible,
   color: var(--fg-heading);
 }
 .markdown-body a {
-  color: var(--accent);
+  color: var(--accent-text);
   text-decoration: none;
   border-bottom: 1px solid transparent;
 }
@@ -1044,7 +1058,7 @@ textarea:focus-visible,
 /* Badge "nature" (kinds) : teinté accent pour se distinguer du chip type/année.
    Libellé dérivé de la valeur (cf. src/lib/kinds.js) — liste ouverte. */
 .kind-chip {
-  color: var(--accent);
+  color: var(--accent-text);
   border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
   background: color-mix(in srgb, var(--accent) 12%, transparent);
   font-weight: 600;
@@ -1104,7 +1118,7 @@ a.platform-tag svg {
 .sc-hash {
   font-family: var(--font-mono);
   font-size: 12px;
-  color: var(--accent);
+  color: var(--accent-text);
   flex-shrink: 0;
 }
 .sc-message {
@@ -1300,7 +1314,7 @@ a.contact-link:hover {
   background: var(--bg-card-hover);
 }
 a.contact-link .contact-value {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .copy-email {
@@ -1349,7 +1363,7 @@ a.contact-link .contact-value {
   margin-top: 0;
 }
 .about-role {
-  color: var(--accent);
+  color: var(--accent-text);
   font-weight: 600;
   margin-top: 2px;
 }
@@ -1388,7 +1402,7 @@ a.contact-link .contact-value {
   margin: 4px 0 0;
 }
 .exp-context {
-  color: var(--accent);
+  color: var(--accent-text);
   font-size: 14px;
   margin: 2px 0 0;
 }
@@ -1436,7 +1450,7 @@ a.contact-link .contact-value {
   margin: 0;
   font-family: var(--font-mono);
   font-size: 15px;
-  color: var(--accent);
+  color: var(--accent-text);
 }
 .changelog-date {
   font-family: var(--font-mono);
@@ -1500,7 +1514,7 @@ a.contact-link .contact-value {
   margin: 0;
 }
 .service-tagline {
-  color: var(--accent);
+  color: var(--accent-text);
   font-style: italic;
   margin: 4px 0 0;
 }
@@ -1578,7 +1592,7 @@ a.contact-link .contact-value {
 .service-related-chip {
   font-family: var(--font-mono);
   font-size: 13px;
-  color: var(--accent);
+  color: var(--accent-text);
   background: color-mix(in srgb, var(--accent) 12%, transparent);
   border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
   border-radius: 6px;
@@ -2318,7 +2332,7 @@ a.contact-link .contact-value {
   padding: 4px 12px;
   border-radius: 5px;
   border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--border));
-  color: var(--accent);
+  color: var(--accent-text);
   background: color-mix(in srgb, var(--accent) 10%, transparent);
   transition: background 0.12s ease;
 }
@@ -2663,7 +2677,7 @@ a.contact-link .contact-value {
   display: block;
 }
 .nf-prompt {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 .nf-path {
   color: var(--code-orange);
@@ -2876,7 +2890,7 @@ a.contact-link .contact-value {
 .settings-section-title {
   font-family: var(--font-mono);
   font-size: 16px;
-  color: var(--accent);
+  color: var(--accent-text);
   margin-bottom: 14px;
   padding-bottom: 6px;
   border-bottom: 1px solid var(--border-soft);
